@@ -1,0 +1,52 @@
+server:
+  port: 8083 # Ou outra porta única
+
+spring:
+  application:
+    name: agendamento-service-AgendeNail # Nome no Eureka
+  datasource:
+    url: jdbc:h2:mem:agendamentosdb # Banco de dados em memória para este serviço
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: # Senha vazia para H2
+  h2:
+    console:
+      enabled: true
+      path: /h2-console-agendamentos # Caminho único para o console H2 deste serviço
+  jpa:
+    hibernate:
+      ddl-auto: update # ou create-drop para desenvolvimento
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        # database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+# Se for usar OpenFeign:
+# cloud:
+#   openfeign:
+#     client:
+#       config:
+#         default:
+#           connectTimeout: 5000
+#           readTimeout: 5000
+
+# Chave secreta para validação do JWT
+jwt:
+  secret:
+    key: NDAzZjU5YTgtYmI4YS00YjU5LTg5ODYtZGIxYzg4Y2E4N2ZlCg==
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    # prefer-ip-address: true # Opcional
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics

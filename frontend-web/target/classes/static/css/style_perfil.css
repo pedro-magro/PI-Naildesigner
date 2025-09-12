@@ -1,0 +1,647 @@
+/* style_perfil.css */
+
+/* Reset Básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to bottom, #e0ccff, #c9b6ff, #bb9ce9);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    color: #3c2c54; /* Cor de texto padrão para o corpo */
+}
+
+/* Container Global para Conteúdo (limita a largura principal do site) */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* HEADER - Estilos Gerais */
+header {
+    background-color: transparent;
+    padding: 30px 0;
+    position: relative;
+    z-index: 10;
+}
+
+/* Container para o Header DESKTOP (visível apenas em desktop) */
+.header-desktop {
+    display: flex; /* GARANTE QUE ESTEJA VISÍVEL POR PADRÃO EM TELAS GRANDES */
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 20px;
+}
+
+.logo {
+    height: 90px;
+    width: 90px;
+    object-fit: contain;
+    margin-left: 0;
+}
+
+.menu {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-grow: 1;
+    flex-basis: auto;
+    padding: 0 40px;
+}
+
+.menu .menu-page {
+    display: flex;
+}
+
+.menu .menu-page a {
+    position: relative;
+    text-decoration: none;
+    font-size: 21px;
+    color: #3c2c54;
+    font-family: "Hedvig Letters Serif", serif;
+    transition: color 0.3s ease;
+    padding: 5px 0;
+    white-space: nowrap;
+}
+
+.menu .menu-page a:hover {
+    color: #875ea5;
+}
+
+.menu .menu-page a::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -5%;
+    background-color: #875ea5;
+    transition: width 0.3s ease;
+}
+
+.menu .menu-page a:hover::after {
+    width: 40%;
+}
+
+.profile-icon-desktop .foto-perfil { /* Adicionado a classe para o perfil desktop */
+    height: 65px;
+    width: 65px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #875ea5;
+    transition: transform 0.5s ease;
+    margin-right: 0;
+}
+
+.profile-icon-desktop .foto-perfil:hover {
+    transform: scale(1.1);
+}
+
+/* HEADER MOBILE (Elementos do Hamburguer) */
+.header-mobile {
+    display: none; /* ESCONDIDO POR PADRÃO EM TELAS GRANDES */
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 15;
+}
+
+.hamburger-icon, .close-btn {
+    font-size: 1.8em;
+    color: #3c2c54;
+    cursor: pointer;
+    padding: 5px;
+    transition: color 0.3s ease;
+}
+
+.hamburger-icon:hover, .close-btn:hover {
+    color: #875ea5;
+}
+
+.logo-mobile {
+    height: 55px;
+    width: 55px;
+    object-fit: contain;
+}
+
+.profile-icon-mobile .foto-perfil-mobile {
+    height: 38px;
+    width: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #875ea5;
+}
+
+/* MENU OFF-CANVAS (Menu Lateral) */
+.off-canvas-menu {
+    position: fixed;
+    top: 0;
+    left: -280px; /* Escondido por padrão */
+    width: 280px;
+    height: 100%;
+    background-color: #3c2c54;
+    color: #f8f8f8;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+    transition: left 0.3s ease-in-out;
+    z-index: 2000;
+    padding-top: 20px;
+    overflow-y: auto;
+}
+
+.off-canvas-menu.active {
+    left: 0; /* Visível quando ativo via JS */
+}
+
+.off-canvas-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 20px;
+}
+
+.logo-off-canvas {
+    height: 60px;
+    width: 60px;
+    object-fit: contain;
+}
+
+.close-btn {
+    font-size: 2em;
+    color: #e0ccff;
+}
+.close-btn:hover {
+    color: #bb9ce9;
+}
+
+.off-canvas-profile-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* ALINHA ITENS (FOTO E SPAN) AO CENTRO DA COLUNA */
+    padding: 15px 20px;
+    margin-bottom: 25px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    text-align: center; /* CENTRALIZA O TEXTO DENTRO DO SPAN */
+}
+
+.foto-perfil-off-canvas {
+    height: 80px;
+    width: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #e0ccff;
+    margin-bottom: 10px;
+}
+
+.off-canvas-profile-info span {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #e0ccff;
+}
+
+.off-canvas-menu ul {
+    list-style: none;
+    padding: 0;
+}
+
+.off-canvas-menu ul li a {
+    display: flex;
+    align-items: center;
+    padding: 15px 25px;
+    text-decoration: none;
+    color: #f8f8f8;
+    font-size: 1.1em;
+    font-family: 'Segoe UI', sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.off-canvas-menu ul li a i {
+    margin-right: 15px;
+    font-size: 1.2em;
+    color: #c9b6ff;
+}
+
+.off-canvas-menu ul li a:hover {
+    background-color: rgba(255,255,255,0.1);
+    color: #e0ccff;
+}
+
+/* OVERLAY ESCURO (para o menu lateral) */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1500;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+.overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+/* MAIN - Conteúdo de Edição de Perfil */
+main.perfil {
+    flex-grow: 1; /* Permite que o main ocupe o espaço restante */
+    display: flex;
+    justify-content: center; /* Centraliza o perfil-container horizontalmente */
+    align-items: center; /* Centraliza o perfil-container verticalmente (se houver espaço) */
+    padding: 60px 20px; /* Padding ao redor do conteúdo principal */
+}
+
+.perfil-container {
+    background-color: rgba(255, 255, 255, 0.9); /* Fundo branco semi-transparente */
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); /* Sombra suave */
+    padding: 40px;
+    width: 100%; /* Ocupa a largura total disponível */
+    max-width: 700px; /* Limita a largura máxima para melhor legibilidade */
+    display: flex;
+    flex-direction: column; /* Organiza os itens em coluna */
+    align-items: center; /* Centraliza os itens (foto e formulário) horizontalmente */
+    gap: 30px; /* Espaço entre a foto e o formulário */
+}
+
+.foto-perfil-editavel {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centraliza a imagem e o botão "Editar foto" */
+    gap: 15px;
+}
+
+.foto-perfil-editavel img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%; /* Imagem circular */
+    object-fit: cover; /* Garante que a imagem preencha o círculo */
+    border: 5px solid #875ea5; /* Borda elegante */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.botao-editar-foto {
+    background-color: #bb9ce9; /* Cor do botão */
+    color: white;
+    font-family: 'Hedvig Letters Serif', serif;
+    padding: 10px 20px;
+    border-radius: 50px; /* Borda arredondada */
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    font-size: 1.1em;
+    display: inline-block; /* Para que o padding funcione corretamente */
+}
+
+.botao-editar-foto:hover {
+    background-color: #a48ac2; /* Tom mais escuro no hover */
+}
+
+.formulario-perfil {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Espaço entre as linhas de input */
+}
+
+.linha-inputs {
+    display: flex;
+    gap: 20px; /* Espaço entre os campos na mesma linha */
+    width: 100%;
+}
+
+.campo {
+    flex: 1; /* Faz com que os campos ocupem o mesmo espaço na linha */
+    display: flex;
+    flex-direction: column;
+}
+
+.campo label {
+    font-size: 1.1em;
+    color: #5d3a8b;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.campo input {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1em;
+    color: #4a4a4a;
+    box-sizing: border-box; /* Garante que padding não aumente a largura total */
+}
+
+.campo input:focus {
+    outline: none;
+    border-color: #875ea5;
+    box-shadow: 0 0 5px rgba(135, 94, 165, 0.5);
+}
+
+.botao-editar {
+    background-color: #875ea5; /* Cor principal do botão */
+    color: white;
+    font-family: 'Hedvig Letters Serif', serif;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 50px; /* Formato de pílula */
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    align-self: center; /* Centraliza o botão dentro do formulário */
+    max-width: 250px; /* Limita a largura do botão para não ficar muito grande */
+    width: 100%;
+}
+
+.botao-editar:hover {
+    background-color: #5d3a8b; /* Tom mais escuro no hover */
+    transform: scale(1.02);
+}
+
+.botao-logout {
+    background-color: #dc3545; /* Um vermelho vibrante para "sair" */
+    color: white;
+    font-family: 'Hedvig Letters Serif', serif;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 50px; /* Mantém o formato de pílula */
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    align-self: center; /* Centraliza o botão dentro do formulário */
+    max-width: 250px; /* Mesma largura máxima do botão de editar */
+    width: 100%; /* Ocupa a largura total disponível dentro do max-width */
+    margin-top: 15px; /* Adiciona um espaço acima do botão de logout, separando-o do botão de editar */
+}
+
+/* Efeito hover para o botão de Logout */
+.botao-logout:hover {
+    background-color: #c82333; /* Um vermelho ligeiramente mais escuro no hover */
+    transform: scale(1.02); /* Mantém o mesmo efeito de "escala" no hover */
+}
+
+/* Opcional: Se quiser uma sombra para o botão de logout, adicione estas linhas */
+.botao-logout {
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4); /* Sombra suave com a cor do botão */
+}
+
+.botao-logout:hover {
+    box-shadow: 0 6px 20px rgba(220, 53, 69, 0.6); /* Sombra mais pronunciada no hover */
+}
+
+/* FOOTER */
+footer {
+    background-color: #3c2c54;
+    color: #f8f8f8;
+    padding: 50px 0 25px;
+    margin-top: auto; /* Empurra o footer para o final da página */
+    border-top: 5px solid #875ea5;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-shadow: 0 -5px 15px rgba(0,0,0,0.25);
+}
+
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 40px;
+    text-align: left;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.footer-section {
+    flex: 1;
+    min-width: 220px;
+    margin-bottom: 20px;
+}
+
+.footer-section h3 {
+    color: #e0ccff;
+    margin-bottom: 20px;
+    font-size: 1.6em;
+    border-bottom: 2px solid rgba(224, 204, 255, 0.15);
+    padding-bottom: 12px;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+}
+
+.footer-section p,
+.footer-section ul {
+    font-size: 1em;
+    line-height: 1.8;
+    margin: 0;
+    padding: 0;
+}
+
+.footer-section ul {
+    list-style: none;
+}
+
+.footer-section ul li {
+    margin-bottom: 10px;
+}
+
+.footer-section ul li a {
+    color: #f8f8f8;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-section ul li a:hover {
+    color: #e0ccff;
+}
+
+.footer-section.contact p i {
+    margin-right: 12px;
+    color: #e0ccff;
+    font-size: 1.1em;
+}
+
+.social-links a {
+    color: #e0ccff;
+    font-size: 1.8em;
+    margin-right: 20px;
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.social-links a:hover {
+    color: #bb9ce9;
+    transform: translateY(-4px);
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 25px;
+    margin-top: 40px;
+    border-top: 1px solid rgba(248, 248, 248, 0.1);
+    font-size: 0.9em;
+    color: rgba(248, 248, 248, 0.7);
+}
+
+/* RESPONSIVIDADE */
+
+/* Esconde o header desktop em telas menores que 992px e mostra o mobile */
+@media (max-width: 992px) {
+    /* Header (desktop oculto, mobile visível) */
+    .header-desktop {
+        display: none; /* ESCONDE O HEADER DESKTOP */
+    }
+    .header-mobile {
+        display: flex; /* MOSTRA O HEADER MOBILE */
+        padding: 15px 20px;
+    }
+    /* O off-canvas-menu e o overlay são controlados por JS, então não precisam de display aqui */
+
+    main.perfil {
+        padding: 40px 15px;
+    }
+    .perfil-container {
+        padding: 30px;
+    }
+    .foto-perfil-editavel img {
+        width: 120px;
+        height: 120px;
+    }
+    .botao-editar-foto {
+        font-size: 1em;
+        padding: 8px 15px;
+    }
+    .campo label {
+        font-size: 1em;
+    }
+    .campo input {
+        padding: 10px;
+        font-size: 0.95em;
+    }
+    .botao-editar {
+        font-size: 1.1em;
+        padding: 12px 25px;
+    }
+}
+
+@media (max-width: 768px) {
+    .linha-inputs {
+        flex-direction: column; /* Inputs empilham em telas menores */
+        gap: 15px;
+    }
+    .menu {
+        gap: 10px;
+    }
+    .menu-page a {
+        font-size: 18px;
+    }
+    .perfil-container {
+        padding: 25px;
+        gap: 20px;
+    }
+    .foto-perfil-editavel img {
+        width: 100px;
+        height: 100px;
+    }
+    .botao-editar-foto {
+        font-size: 0.95em;
+    }
+    .campo input {
+        font-size: 0.9em;
+    }
+    .botao-editar {
+        font-size: 1em;
+        padding: 10px 20px;
+    }
+
+    /* Footer - Ajustes para telas menores */
+    .footer-content {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center; /* Centraliza o texto do footer em mobile */
+    }
+    .footer-section {
+        min-width: unset; /* Remove o min-width para mobile */
+        width: 100%; /* Ocupa a largura total */
+    }
+    .footer-section h3 {
+        text-align: center;
+        border-bottom: none;
+        padding-bottom: 0;
+        margin-bottom: 10px;
+    }
+    .footer-section p, .footer-section ul {
+        text-align: center;
+    }
+    .social-links {
+        justify-content: center; /* Centraliza os ícones sociais */
+        display: flex; /* Adiciona display flex para centralizar */
+    }
+}
+
+@media (max-width: 576px) {
+    .logo {
+        height: 60px;
+        width: 60px;
+    }
+    .menu-page a {
+        font-size: 16px;
+    }
+    .perfil-container {
+        padding: 15px;
+    }
+    .foto-perfil-editavel img {
+        width: 80px;
+        height: 80px;
+    }
+    .botao-editar-foto {
+        font-size: 0.85em;
+    }
+    .campo label {
+        font-size: 0.9em;
+    }
+    .campo input {
+        padding: 8px;
+        font-size: 0.85em;
+    }
+    .botao-editar {
+        font-size: 0.9em;
+        padding: 8px 15px;
+    }
+    .footer-section h3 {
+        font-size: 1.4em;
+    }
+    .footer-section p, .footer-section ul li a {
+        font-size: 0.8em;
+    }
+    .social-links a {
+        font-size: 1.5em;
+        margin: 0 5px;
+    }
+    .footer-bottom {
+        font-size: 0.7em;
+    }
+}

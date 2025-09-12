@@ -1,0 +1,48 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: servico-service # Rota para o serviço de serviços
+          uri: lb://servico-service
+          predicates:
+            - Path=/api/servicos/**
+
+        - id: agendamento-service # Rota para o serviço de agendamento (agendamentos)
+          uri: lb://agendamento-service-AgendeNail
+          predicates:
+            - Path=/api/agendamentos/**
+
+        - id: bloqueio-horario-service # NOVA ROTA: para os endpoints de bloqueio
+          uri: lb://agendamento-service-AgendeNail # Aponta para o mesmo serviço de agendamento
+          predicates:
+            - Path=/api/bloqueios/** # O caminho que o Gateway vai interceptar
+
+        - id: auth_service_route
+          uri: lb://auth-service # "lb" significa Load Balancer - ele vai usar o Eureka!
+          predicates:
+            - Path=/api/auth/**
+          filters:
+            - StripPrefix=1
+
+        - id: messaging_service_route # Rota para o serviço de mensageria
+          uri: lb://messaging-service
+          predicates:
+            - Path=/api/messaging/**
+          filters:
+            - StripPrefix=2
+
+jwt:
+  secret:
+    key: NDAzZjU5YTgtYmI4YS00YjU5LTg5ODYtZGIxYzg4Y2E4N2ZlCg== # Sua chave secreta em Base64
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/

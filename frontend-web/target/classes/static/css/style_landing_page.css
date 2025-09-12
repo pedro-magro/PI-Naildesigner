@@ -1,0 +1,1088 @@
+/* style_landing_page.css - OTIMIZADO PARA BOAS PRÁTICAS */
+
+/* Reset Básico e Globais */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* Fundo suave e claro, mantendo a paleta */
+    background: linear-gradient(to bottom, #f5f0ff, #e8dffc);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden; /* Evita rolagem horizontal indesejada */
+    color: #3c2c54; /* Cor de texto padrão */
+}
+
+/* Container Global */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* HEADER - Estilos Gerais */
+header {
+    background-color: transparent;
+    padding: 30px 0;
+    position: relative;
+    z-index: 10;
+}
+
+/* Container para o Header DESKTOP (visível apenas em desktop) */
+.header-desktop {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 20px;
+}
+
+.logo {
+    height: 90px;
+    width: 90px;
+    object-fit: contain;
+    margin-left: 0;
+}
+
+.menu {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-grow: 1;
+    flex-basis: auto;
+    padding: 0 40px;
+}
+
+.menu .menu-page {
+    display: flex;
+}
+
+.menu .menu-page a {
+    position: relative;
+    text-decoration: none;
+    font-size: 21px;
+    color: #3c2c54;
+    font-family: "Hedvig Letters Serif", serif;
+    transition: color 0.3s ease;
+    padding: 5px 0;
+    white-space: nowrap;
+}
+
+.menu .menu-page a:hover {
+    color: #875ea5;
+}
+
+.menu .menu-page a::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -5%;
+    background-color: #875ea5;
+    transition: width 0.3s ease;
+}
+
+.menu .menu-page a:hover::after {
+    width: 40%;
+}
+
+.profile-icon-desktop .foto-perfil {
+    height: 65px;
+    width: 65px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #875ea5;
+    transition: transform 0.5s ease;
+    margin-right: 0;
+}
+
+.profile-icon-desktop .foto-perfil:hover {
+    transform: scale(1.1);
+}
+
+/* HEADER MOBILE (Elementos do Hamburguer) */
+.header-mobile {
+    display: none; /* Escondido por padrão em telas grandes */
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 15;
+}
+
+.hamburger-icon, .close-btn {
+    font-size: 1.8em;
+    color: #3c2c54;
+    cursor: pointer;
+    padding: 5px;
+    transition: color 0.3s ease;
+}
+
+.hamburger-icon:hover, .close-btn:hover {
+    color: #875ea5;
+}
+
+.logo-mobile {
+    height: 55px;
+    width: 55px;
+    object-fit: contain;
+}
+
+.profile-icon-mobile .foto-perfil-mobile {
+    height: 38px;
+    width: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #875ea5;
+}
+
+/* MENU OFF-CANVAS (Menu Lateral) */
+.off-canvas-menu {
+    position: fixed;
+    top: 0;
+    left: -280px; /* Escondido por padrão */
+    width: 280px;
+    height: 100%;
+    background-color: #3c2c54;
+    color: #f8f8f8;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+    transition: left 0.3s ease-in-out;
+    z-index: 2000;
+    padding-top: 20px;
+    overflow-y: auto;
+}
+
+.off-canvas-menu.active {
+    left: 0; /* Visível quando ativo via JS */
+}
+
+.off-canvas-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 20px;
+}
+
+.logo-off-canvas {
+    height: 60px;
+    width: 60px;
+    object-fit: contain;
+}
+
+.close-btn {
+    font-size: 2em;
+    color: #e0ccff;
+}
+.close-btn:hover {
+    color: #bb9ce9;
+}
+
+.off-canvas-profile-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px 20px;
+    margin-bottom: 25px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.foto-perfil-off-canvas {
+    height: 80px;
+    width: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #e0ccff;
+    margin-bottom: 10px;
+}
+
+.off-canvas-profile-info span {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #e0ccff;
+}
+
+.off-canvas-menu ul {
+    list-style: none;
+    padding: 0;
+}
+
+.off-canvas-menu ul li a {
+    display: flex;
+    align-items: center;
+    padding: 15px 25px;
+    text-decoration: none;
+    color: #f8f8f8;
+    font-size: 1.1em;
+    font-family: 'Segoe UI', sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.off-canvas-menu ul li a i {
+    margin-right: 15px;
+    font-size: 1.2em;
+    color: #c9b6ff;
+}
+
+.off-canvas-menu ul li a:hover {
+    background-color: rgba(255,255,255,0.1);
+    color: #e0ccff;
+}
+
+/* OVERLAY ESCURO (para o menu lateral) */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1500;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+.overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* --- MAIN CONTENT SECTIONS --- */
+
+/* Hero Section */
+.hero-section {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 90vh;
+    padding: 80px 20px;
+    text-align: center;
+    background: url('/img/hero-background-nail.jpg') no-repeat center center/cover;
+    color: #3c2c54;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.7);
+    z-index: 1;
+}
+
+.hero-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 50px;
+    position: relative;
+    z-index: 2;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.hero-text-area {
+    flex: 1;
+    text-align: left;
+}
+
+.hero-intro {
+    font-size: 1.5em;
+    color: #5d3a8b;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.hero-title {
+    font-family: "Playfair Display", serif;
+    font-size: 5.5em;
+    font-weight: 700;
+    line-height: 1.1;
+    color: #3c2c54;
+    margin-bottom: 25px;
+    text-shadow: 3px 3px 6px rgba(0,0,0,0.15);
+}
+
+.highlight-text {
+    color: #875ea5;
+}
+
+.hero-slogan {
+    font-size: 1.6em;
+    font-weight: 400;
+    color: #4a4a4a;
+    margin-bottom: 40px;
+    max-width: 600px;
+    line-height: 1.4;
+}
+
+.italic-highlight {
+    font-style: italic;
+    font-weight: bold;
+    color: #bb9ce9;
+}
+
+.cta-button {
+    background-color: #bb9ce9;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 18px 40px;
+    font-size: 1.3em;
+    font-family: "Hedvig Letters Serif", serif;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    display: inline-block;
+    text-decoration: none;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.cta-button:hover {
+    background-color: #a48ac2;
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+.primary-cta {
+    background-color: #875ea5;
+}
+
+.primary-cta:hover {
+    background-color: #5d3a8b;
+}
+
+.hero-image-area {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 500px;
+}
+
+.hero-image-area img {
+    width: 100%;
+    height: auto;
+    border-radius: 25px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+}
+
+.scroll-down-indicator {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: #5d3a8b;
+    font-size: 1.1em;
+    z-index: 2;
+}
+
+.scroll-down-indicator a {
+    color: #5d3a8b;
+    font-size: 2em;
+    animation: bounce 2s infinite;
+}
+
+.scroll-down-indicator a:hover {
+    color: #875ea5;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-12px); }
+    60% { transform: translateY(-6px); }
+}
+
+/* Gallery Section */
+.gallery-section {
+    padding: 100px 20px;
+    text-align: center;
+    background-color: rgba(255,255,255,0.9);
+    margin-top: -30px;
+    position: relative;
+    z-index: 5;
+    border-radius: 40px 40px 0 0;
+    box-shadow: 0 -10px 30px rgba(0,0,0,0.08);
+}
+
+.section-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.8em;
+    font-weight: 700;
+    color: #3c2c54;
+    margin-bottom: 20px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+}
+
+.section-subheading {
+    font-size: 1.3em;
+    color: #4a4a4a;
+    max-width: 900px;
+    margin: 0 auto 60px auto;
+    line-height: 1.6;
+}
+
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    justify-content: center;
+    align-items: stretch;
+    margin-bottom: 60px;
+}
+
+.grid-item {
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.18);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    border: 3px solid transparent;
+}
+
+.grid-item:hover {
+    transform: translateY(-10px) scale(1.03);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+    border-color: #bb9ce9;
+}
+
+.secondary-cta {
+    background-color: #bb9ce9;
+    color: white;
+}
+
+.secondary-cta:hover {
+    background-color: #a48ac2;
+}
+
+
+/* Features Section (Produtos e Serviços) */
+.features-section {
+    padding: 100px 20px;
+    background: linear-gradient(to right, #bb9ce9, #e0ccff);
+    color: #3c2c54;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 80px;
+    margin-bottom: 120px;
+}
+
+.feature-item:last-child {
+    margin-bottom: 0;
+}
+
+.feature-item.reverse-layout {
+    flex-direction: row-reverse;
+}
+
+.feature-text-area {
+    flex: 1;
+    text-align: left;
+    max-width: 550px;
+}
+
+.feature-icon {
+    font-size: 3.5em;
+    color: #5d3a8b;
+    margin-bottom: 25px;
+}
+
+.outline-cta {
+    background-color: transparent;
+    border: 2px solid #5d3a8b;
+    color: #5d3a8b;
+    box-shadow: none;
+}
+
+.outline-cta:hover {
+    background-color: #5d3a8b;
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.feature-image-area {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.feature-image-area img {
+    width: 100%;
+    max-width: 550px;
+    height: auto;
+    border-radius: 25px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+    object-fit: cover;
+}
+
+/* Location & Contact Section */
+.location-contact-section {
+    padding: 100px 20px;
+    text-align: center;
+    background-color: rgba(255,255,255,0.95);
+}
+
+.location-content-wrapper {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 80px;
+    width: auto;
+    margin-top: 60px;
+}
+
+.location-map-area {
+    flex: 1;
+    min-width: 500px;
+}
+
+.location-map-area iframe {
+    width: 100%;
+    height: 480px;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+}
+
+.contact-info-area {
+    flex: 1;
+    text-align: left;
+    max-width: 500px;
+}
+
+.contact-info-area h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5em;
+    color: #5d3a8b;
+    margin-bottom: 25px;
+}
+
+.contact-info-area p {
+    font-size: 1.2em;
+    line-height: 1.6;
+    color: #4a4a4a;
+    margin-bottom: 30px;
+}
+
+.contact-info-area p i {
+    color: #875ea5;
+    margin-right: 15px;
+}
+
+.whatsapp-contact-button {
+    background-color: #25d366;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 16px 35px;
+    font-size: 1.2em;
+    font-family: "Hedvig Letters Serif", serif;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    margin-bottom: 40px;
+}
+
+.whatsapp-contact-button:hover {
+    background-color: #1da851;
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+.social-connect-prompt {
+    font-size: 1.1em;
+    color: #4a4a4a;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+.social-icons-contact {
+    display: flex;
+    gap: 30px;
+    justify-content: flex-start;
+}
+
+.social-icons-contact a {
+    color: #875ea5;
+    font-size: 2.5em;
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.social-icons-contact a:hover {
+    color: #5d3a8b;
+    transform: translateY(-6px);
+}
+
+/* Instagram Feed Section - CORRIGIDO PARA 3 FOTOS POR LINHA */
+.instagram-feed-section {
+    padding: 100px 20px;
+    text-align: center;
+    background-color: #f8f8f8;
+}
+
+.instagram-profile-card {
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    max-width: 950px; /* Largura máxima da seção de posts */
+    margin: 60px auto 0 auto;
+    overflow: hidden;
+}
+
+.profile-header-card {
+    display: flex;
+    align-items: center;
+    padding: 30px;
+    border-bottom: 1px solid #eee;
+}
+
+.profile-pic-card {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 20px;
+    border: 4px solid #bb9ce9;
+}
+
+.profile-info-card {
+    flex-grow: 1;
+    text-align: left;
+}
+
+.username-card {
+    font-weight: 600;
+    font-size: 1.3em;
+    color: #3c2c54;
+    margin: 0;
+}
+
+.name-card {
+    font-size: 1.1em;
+    color: #666;
+    margin: 5px 0 0 0;
+}
+
+.profile-buttons-card {
+    display: flex;
+    gap: 15px;
+}
+
+.follow-btn-card {
+    background: #875ea5;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 12px 25px;
+    font-weight: bold;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.follow-btn-card:hover {
+    background: #5d3a8b;
+    transform: translateY(-2px);
+}
+
+.message-btn-card {
+    background: transparent;
+    border: 2px solid #875ea5;
+    color: #875ea5;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.3em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    text-decoration: none;
+}
+
+.message-btn-card:hover {
+    background-color: #875ea5;
+    color: white;
+}
+
+/* GRADE DE IMAGENS/VÍDEOS: 3 por linha */
+.image-grid-instagram {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* FORÇA 3 COLUNAS IGUAIS */
+    gap: 8px; /* Espaçamento entre as fotos */
+    padding: 8px; /* Padding interno para o grid */
+}
+
+.instagram-item {
+    position: relative;
+    aspect-ratio: 1/1; /* Mantém as imagens quadradas */
+    overflow: hidden;
+    cursor: pointer;
+    border-radius: 8px;
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    background-color: #000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.instagram-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.instagram-item:hover img {
+    transform: scale(1.05);
+    opacity: 0.7;
+}
+
+.instagram-overlay-icons {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    padding: 10px;
+    box-sizing: border-box;
+    gap: 15px;
+}
+
+.instagram-item:hover .instagram-overlay-icons {
+    opacity: 1;
+}
+
+/* Ícone de Play - Simula um vídeo */
+.instagram-overlay-icons .fa-play-circle {
+    font-size: 4.5em;
+    color: white;
+    text-shadow: 0 0 15px rgba(0,0,0,0.9);
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.instagram-overlay-icons .fa-play-circle:hover {
+    transform: scale(1.1);
+    color: #e0ccff;
+}
+
+/* Oculta o ícone de Instagram grande que existia antes */
+.instagram-icon-large {
+    display: none;
+}
+
+.instagram-stats-overlay {
+    display: flex;
+    gap: 20px;
+    color: white;
+    font-size: 1.1em;
+    font-weight: bold;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+    margin-top: 10px;
+}
+
+.instagram-stats-overlay span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.instagram-stats-overlay span i {
+    font-size: 1em;
+    color: #e0ccff;
+}
+
+/* --- RESPONSIVIDADE OTIMIZADA --- */
+
+@media (max-width: 992px) {
+    .header-desktop { display: none; }
+    .header-mobile { display: flex; padding: 15px 20px; }
+    .off-canvas-menu, .overlay { display: block; }
+
+    .hero-section { min-height: 80vh; padding: 60px 20px; }
+    .hero-content { flex-direction: column; text-align: center; gap: 40px; }
+    .hero-text-area { text-align: center; }
+    .hero-intro { font-size: 1.3em; }
+    .hero-title { font-size: 4em; }
+    .hero-slogan { font-size: 1.3em; max-width: 100%; }
+    .cta-button { padding: 15px 30px; font-size: 1.1em; }
+    .hero-image-area { display: none; }
+    .scroll-down-indicator { display: none; }
+
+    .gallery-section { padding: 80px 20px; }
+    .section-heading { font-size: 3em; }
+    .section-subheading { font-size: 1.1em; margin-bottom: 50px; }
+    .image-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+    .grid-item { height: 280px; }
+
+    .feature-item, .feature-item.reverse-layout { flex-direction: column; text-align: center; gap: 50px; margin-bottom: 100px; }
+    .feature-text-area { text-align: center; max-width: 100%; }
+    .feature-icon { font-size: 3em; }
+    .outline-cta { padding: 10px 20px; font-size: 0.9em; }
+    .feature-image-area img { max-width: 450px; }
+
+    .location-content-wrapper { flex-direction: column; justify-content: center; align-items: center; text-align: center; margin: auto; gap: 50px; }
+    .location-map-area iframe { height: 400px; }
+    .contact-info-area { flex-direction: column; justify-content: center; align-items: center; text-align: center; max-width: 100%; margin: 0 auto; }
+    .social-icons-contact { justify-content: center; }
+
+    /* Instagram Feed Section (Responsive) */
+    .instagram-profile-card { max-width: 750px; }
+    .profile-header-card { flex-direction: column; text-align: center; gap: 15px; }
+    .profile-info-card { text-align: center; }
+    .profile-buttons-card { justify-content: center; }
+    .image-grid-instagram {
+        grid-template-columns: repeat(3, 1fr); /* Tenta manter 3 colunas, ajusta para telas menores */
+    }
+    .instagram-overlay-icons .fa-play-circle { font-size: 4em; }
+    .instagram-stats-overlay { font-size: 1em; }
+}
+
+@media (max-width: 768px) {
+    .logo-mobile { height: 45px; width: 45px; }
+    .profile-icon-mobile .foto-perfil-mobile { height: 32px; width: 32px; }
+
+    .hero-title { font-size: 3.2em; }
+    .hero-slogan { font-size: 1.2em; }
+    .cta-button { padding: 12px 25px; font-size: 1em; }
+
+    .section-heading { font-size: 2.5em; }
+    .section-subheading { font-size: 1em; }
+    .image-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
+    .grid-item { height: 200px; }
+
+    .section-heading { font-size: 2.2em; }
+    .section-subheading { font-size: 0.95em; }
+    .feature-icon { font-size: 2.8em; }
+    .outline-cta { padding: 10px 20px; font-size: 0.9em; }
+
+    .location-map-area iframe { height: 350px; }
+    .contact-info-area h3 { font-size: 2em; }
+    .contact-info-area p { font-size: 1em; }
+    .whatsapp-contact-button { padding: 12px 25px; font-size: 1.1em; }
+    .social-icons-contact a { font-size: 2.2em; }
+
+    /* Instagram Feed Section (Responsive) */
+    .instagram-profile-card { padding: 20px; }
+    .profile-pic-card { width: 60px; height: 60px; }
+    .username-card { font-size: 1.1em; }
+    .name-card { font-size: 0.9em; }
+    .follow-btn-card { padding: 8px 15px; font-size: 0.9em; }
+    .message-btn-card { width: 38px; height: 38px; font-size: 1.1em; }
+    .image-grid-instagram {
+        grid-template-columns: repeat(2, 1fr); /* Em tablets, 2 colunas, para não ficarem minúsculas */
+        gap: 10px;
+    }
+    .instagram-overlay-icons .fa-play-circle { font-size: 3.5em; }
+    .instagram-stats-overlay { font-size: 0.9em; }
+
+    /* Footer */
+    .footer-content { flex-direction: column; gap: 20px; }
+    .footer-section { min-width: unset; width: 100%; text-align: center; }
+    .footer-section h3 { text-align: center; border-bottom: none; padding-bottom: 0; margin-bottom: 10px; }
+    .footer-section p, .footer-section ul { text-align: center; }
+    .social-links { justify-content: center; }
+    .social-links a { font-size: 1.4em; margin: 0 8px; }
+    .footer-bottom { padding-top: 15px; margin-top: 20px; font-size: 0.75em; }
+}
+
+@media (max-width: 576px) {
+    .header-mobile { padding: 10px 15px; }
+    .logo-mobile { height: 40px; width: 40px; }
+    .profile-icon-mobile .foto-perfil-mobile { height: 30px; width: 30px; }
+
+    .hero-section { padding: 40px 15px; min-height: 70vh; }
+    .hero-intro { font-size: 1.1em; }
+    .hero-title { font-size: 2.8em; }
+    .hero-slogan { font-size: 1em; }
+    .cta-button { padding: 10px 20px; font-size: 0.9em; }
+    .hero-image-area { display: none; }
+    .scroll-down-indicator { display: none; }
+
+    .gallery-section { padding: 60px 15px; }
+    .section-heading { font-size: 2em; margin-bottom: 15px; }
+    .section-subheading { font-size: 0.85em; margin-bottom: 30px; }
+    .image-grid { grid-template-columns: 1fr; gap: 15px; }
+    .grid-item { height: 220px; max-width: 320px; margin: 0 auto; }
+
+    .features-section { padding: 50px 15px; }
+    .feature-item { gap: 30px; margin-bottom: 60px; }
+    .feature-icon { font-size: 2.2em; }
+    .section-heading { font-size: 1.8em; }
+    .section-subheading { font-size: 0.85em; }
+    .outline-cta { padding: 8px 15px; font-size: 0.8em; }
+    .feature-image-area img { max-width: 300px; }
+
+    .location-contact-section { padding: 60px 15px; }
+    .location-content-wrapper { gap: 30px; }
+    .location-map-area iframe { height: 280px; }
+    .contact-info-area h3 { font-size: 1.8em; }
+    .contact-info-area p { font-size: 0.9em; }
+    .whatsapp-contact-button { padding: 10px 20px; font-size: 1em; }
+    .social-icons-contact a { font-size: 2em; }
+
+    /* Instagram Feed Section (Responsive) */
+    .instagram-feed-section { padding: 40px 15px; }
+    .instagram-profile-card { padding: 15px; margin-top: 40px; }
+    .profile-header-card { padding: 15px; }
+    .profile-pic-card { width: 45px; height: 45px; }
+    .username-card { font-size: 0.9em; }
+    .name-card { font-size: 0.75em; }
+    .follow-btn-card { padding: 6px 10px; font-size: 0.75em; width: auto; }
+    .message-btn-card { width: 30px; height: 30px; font-size: 0.9em; }
+    .image-grid-instagram {
+        grid-template-columns: 1fr; /* Em smartphones muito pequenos, 1 coluna */
+        gap: 5px;
+        padding: 5px;
+    }
+    .instagram-item { max-width: 320px; margin: 0 auto; }
+    .instagram-overlay-icons .fa-play-circle { font-size: 3em; }
+    .instagram-stats-overlay { font-size: 0.8em; }
+}
+
+/* --- FOOTER (Mantido Consistente) --- */
+footer {
+    background-color: #3c2c54;
+    color: #f8f8f8;
+    padding: 50px 0 25px;
+    margin-top: auto;
+    border-top: 5px solid #875ea5;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-shadow: 0 -5px 15px rgba(0,0,0,0.25);
+}
+
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 40px;
+    text-align: left;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.footer-section {
+    flex: 1;
+    min-width: 220px;
+    margin-bottom: 20px;
+}
+
+.footer-section h3 {
+    color: #e0ccff;
+    margin-bottom: 20px;
+    font-size: 1.6em;
+    border-bottom: 2px solid rgba(224, 204, 255, 0.15);
+    padding-bottom: 12px;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+}
+
+.footer-section p,
+.footer-section ul {
+    font-size: 1em;
+    line-height: 1.8;
+    margin: 0;
+    padding: 0;
+}
+
+.footer-section ul {
+    list-style: none;
+}
+
+.footer-section ul li {
+    margin-bottom: 10px;
+}
+
+.footer-section ul li a {
+    color: #f8f8f8;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-section ul li a:hover {
+    color: #e0ccff;
+}
+
+.footer-section.contact p i {
+    margin-right: 12px;
+    color: #e0ccff;
+    font-size: 1.1em;
+}
+
+.social-links {
+    display: flex;
+    gap: 15px;
+}
+
+.social-links a {
+    color: #e0ccff;
+    font-size: 1.8em;
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.social-links a:hover {
+    color: #bb9ce9;
+    transform: translateY(-4px);
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 25px;
+    margin-top: 40px;
+    border-top: 1px solid rgba(248, 248, 248, 0.1);
+    font-size: 0.9em;
+    color: rgba(248, 248, 248, 0.7);
+}

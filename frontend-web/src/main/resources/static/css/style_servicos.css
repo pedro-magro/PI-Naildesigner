@@ -1,0 +1,1099 @@
+/* style_servicos.css - Estilos completos para a Página de Serviços (VERSÃO ARTÍSTICA FINAL) */
+
+/* Reset Básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to bottom, #e0ccff, #c9b6ff, #bb9ce9);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    color: #3c2c54; /* Cor de texto padrão para o corpo */
+}
+
+/* Container Global para Conteúdo (limita a largura principal do site) */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* HEADER - Estilos Gerais */
+header {
+    background-color: transparent;
+    padding: 30px 0;
+    position: relative;
+    z-index: 10;
+}
+
+/* Container para o Header DESKTOP (visível apenas em desktop) */
+.header-desktop {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 20px;
+}
+
+.logo {
+    height: 90px;
+    width: 90px;
+    object-fit: contain;
+    margin-left: 0;
+}
+
+.menu {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-grow: 1;
+    flex-basis: auto;
+    padding: 0 40px;
+}
+
+.menu .menu-page {
+    display: flex;
+}
+
+.menu .menu-page a {
+    position: relative;
+    text-decoration: none;
+    font-size: 21px;
+    color: #3c2c54;
+    font-family: "Hedvig Letters Serif", serif;
+    transition: color 0.3s ease;
+    padding: 5px 0;
+    white-space: nowrap;
+}
+
+.menu .menu-page a:hover {
+    color: #875ea5;
+}
+
+.menu .menu-page a::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -5%;
+    background-color: #875ea5;
+    transition: width 0.3s ease;
+}
+
+.menu .menu-page a:hover::after {
+    width: 40%;
+}
+
+.profile-icon-desktop .foto-perfil {
+    height: 65px;
+    width: 65px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #875ea5;
+    transition: transform 0.5s ease;
+    margin-right: 0;
+}
+
+.profile-icon-desktop .foto-perfil:hover {
+    transform: scale(1.1);
+}
+
+/* HEADER MOBILE (Elementos do Hamburguer) */
+.header-mobile {
+    display: none; /* Escondido por padrão em telas grandes */
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 15;
+}
+
+.hamburger-icon, .close-btn {
+    font-size: 1.8em;
+    color: #3c2c54;
+    cursor: pointer;
+    padding: 5px;
+    transition: color 0.3s ease;
+}
+
+.hamburger-icon:hover, .close-btn:hover {
+    color: #875ea5;
+}
+
+.logo-mobile {
+    height: 55px;
+    width: 55px;
+    object-fit: contain;
+}
+
+.profile-icon-mobile .foto-perfil-mobile {
+    height: 38px;
+    width: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #875ea5;
+}
+
+/* MENU OFF-CANVAS (Menu Lateral) */
+.off-canvas-menu {
+    position: fixed;
+    top: 0;
+    left: -280px; /* Escondido por padrão */
+    width: 280px;
+    height: 100%;
+    background-color: #3c2c54;
+    color: #f8f8f8;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+    transition: left 0.3s ease-in-out;
+    z-index: 2000;
+    padding-top: 20px;
+    overflow-y: auto;
+}
+
+.off-canvas-menu.active {
+    left: 0; /* Visível quando ativo via JS */
+}
+
+.off-canvas-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 20px;
+}
+
+.logo-off-canvas {
+    height: 60px;
+    width: 60px;
+    object-fit: contain;
+}
+
+.close-btn {
+    font-size: 2em;
+    color: #e0ccff;
+}
+.close-btn:hover {
+    color: #bb9ce9;
+}
+
+.off-canvas-profile-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px 20px;
+    margin-bottom: 25px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.foto-perfil-off-canvas {
+    height: 80px;
+    width: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #e0ccff;
+    margin-bottom: 10px;
+}
+
+.off-canvas-profile-info span {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #e0ccff;
+}
+
+.off-canvas-menu ul {
+    list-style: none;
+    padding: 0;
+}
+
+.off-canvas-menu ul li a {
+    display: flex;
+    align-items: center;
+    padding: 15px 25px;
+    text-decoration: none;
+    color: #f8f8f8;
+    font-size: 1.1em;
+    font-family: 'Segoe UI', sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.off-canvas-menu ul li a i {
+    margin-right: 15px;
+    font-size: 1.2em;
+    color: #c9b6ff;
+}
+
+.off-canvas-menu ul li a:hover {
+    background-color: rgba(255,255,255,0.1);
+    color: #e0ccff;
+}
+
+/* OVERLAY ESCURO (para o menu lateral) */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1500;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+.overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+/* CONTEÚDO PRINCIPAL (MAIN) - Página de Serviços (NOVOS ESTILOS ARTÍSTICOS) */
+.servicos-main-artistic {
+    flex-grow: 1;
+    padding-top: 0; /* Começa logo abaixo do header */
+    z-index: 1;
+}
+
+/* SEÇÃO DE INTRODUÇÃO ARTÍSTICA */
+.intro-artistic-section {
+    /* Gradiente com opacidade ajustada para a imagem ser mais visível */
+    background: linear-gradient(rgba(224, 204, 255, 0.5), rgba(187, 156, 233, 0.5)),
+                url('/nailDesigner/src/main/resources/static/img/unha-11.jpg') no-repeat center center/cover;
+    color: #3c2c54;
+    padding: 120px 20px 80px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 60px;
+}
+
+.intro-artistic-section::before { /* Efeito de brilho sutil */
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    transform: rotate(45deg);
+    pointer-events: none;
+}
+
+.intro-artistic-section .intro-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 4.5em;
+    font-weight: 700;
+    color: #3c2c54;
+    margin-bottom: 20px;
+    text-shadow: 3px 3px 6px rgba(0,0,0,0.15);
+    position: relative;
+    z-index: 2;
+}
+
+.intro-artistic-section .intro-description {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 1.3em;
+    max-width: 800px;
+    margin: 0 auto 40px;
+    line-height: 1.6;
+    color: #3c2c54;
+    opacity: 0.9;
+    position: relative;
+    z-index: 2;
+}
+
+.scroll-down-hint {
+    margin-top: 50px;
+    color: #5d3a8b;
+    font-size: 1.1em;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    animation: bounce 2s infinite;
+    position: relative;
+    z-index: 2;
+}
+
+.scroll-down-hint i {
+    font-size: 1.5em;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+
+/* SEÇÃO PRINCIPAL DE SERVIÇOS (Galeria Artística) */
+.services-gallery-artistic {
+    padding: 60px 20px;
+    text-align: center; /* Centraliza o subtítulo */
+}
+
+.services-gallery-artistic .section-subtitle {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.2em;
+    font-weight: 700;
+    color: #5d3a8b;
+    margin-bottom: 60px;
+    position: relative;
+    display: inline-block;
+}
+
+.services-gallery-artistic .section-subtitle::after {
+    content: '';
+    position: absolute;
+    width: 60%;
+    height: 4px;
+    background: linear-gradient(to right, #e0ccff, #bb9ce9);
+    bottom: -15px;
+    left: 20%;
+    border-radius: 5px;
+}
+
+/* GALERIA DE CARDS (Mantém a lógica de grid flexível) */
+.galeria-servicos {
+    display: grid;
+    /* Padrão para telas grandes (desktop): tenta 3 colunas, cada uma com no mínimo 280px */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 40px; /* Aumentei um pouco o gap para mais espaço visual */
+    justify-content: center; /* Centraliza o grid horizontalmente dentro do container */
+    align-items: stretch; /* Garante que todos os cards tenham a mesma altura na linha */
+    justify-items: center; /* CENTRALIZA OS ITENS DENTRO DE CADA CÉLULA DO GRID.
+                                 Isso é o que vai centralizar os cards na última linha se não houver um número completo de colunas. */
+}
+
+.artistic-card {
+    background: linear-gradient(145deg, #f8f8f8, #e0ccff); /* Gradiente suave */
+    border-radius: 20px; /* Mais arredondado */
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15); /* Sombra mais suave e proeminente */
+    transition: all 0.4s ease; /* Transição para todos os efeitos */
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%; /* Garante que os cards se expandam para preencher a célula do grid */
+}
+
+.artistic-card:hover {
+    transform: translateY(-15px) scale(1.02); /* Efeito de elevação e leve aumento */
+    box-shadow: 0 25px 40px rgba(0, 0, 0, 0.25);
+    border: 2px solid #875ea5; /* Adiciona uma borda na interação */
+}
+
+.artistic-card .card-image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    border-radius: 20px 20px 0 0; /* Borda arredondada no topo */
+}
+
+.artistic-card .card-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.artistic-card:hover .card-image-wrapper img {
+    transform: scale(1.1); /* Zoom na imagem ao passar o mouse */
+}
+
+.artistic-card .card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(135, 94, 165, 0.2); /* Overlay sutil sobre a imagem */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.artistic-card:hover .card-overlay {
+    opacity: 1;
+}
+
+.artistic-card .card-content {
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex-grow: 1; /* Permite que o conteúdo ocupe o espaço restante */
+}
+
+.artistic-card .card-icon {
+    font-size: 2.5em;
+    color: #5d3a8b;
+    margin-bottom: 15px;
+    animation: pulse 1.5s infinite alternate; /* Pequena animação no ícone */
+}
+
+@keyframes pulse {
+    from {
+        transform: scale(1);
+    }
+    to {
+        transform: scale(1.08);
+    }
+}
+
+
+.artistic-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8em;
+    color: #3c2c54;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.artistic-card p {
+    font-size: 0.95em;
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 15px;
+}
+
+.artistic-card .card-price {
+    font-family: 'Hedvig Letters Serif', serif;
+    font-size: 1.2em;
+    color: #875ea5;
+    font-weight: bold;
+    margin-top: auto; /* Empurra o preço para baixo, antes do botão */
+    margin-bottom: 15px;
+}
+
+.artistic-card .btn-agendar-card {
+    background-color: #bb9ce9; /* Cor mais clara para o botão no card */
+    color: white;
+    text-decoration: none;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 80%; /* Botão com largura definida no card */
+}
+
+.artistic-card .btn-agendar-card:hover {
+    background-color: #a48ac2;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+}
+
+/* SEÇÃO DE CHAMADA PARA AÇÃO */
+.call-to-action-section {
+    background: linear-gradient(to right, #875ea5, #5d3a8b); /* Gradiente marcante */
+    color: white;
+    padding: 80px 20px;
+    text-align: center;
+    margin-top: 80px; /* Espaçamento do topo */
+}
+
+.call-to-action-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 3em;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+}
+
+.call-to-action-section p {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 1.2em;
+    max-width: 700px;
+    margin: 0 auto 40px;
+    line-height: 1.6;
+    opacity: 0.9;
+}
+
+.call-to-action-section .cta-button {
+    background-color: #e0ccff; /* Botão em destaque */
+    color: #5d3a8b;
+    text-decoration: none;
+    font-family: 'Hedvig Letters Serif', serif;
+    font-size: 1.5em;
+    padding: 18px 40px;
+    border-radius: 50px; /* Botão em formato de pílula */
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    display: inline-block; /* Para aplicar padding e transform */
+}
+
+.call-to-action-section .cta-button:hover {
+    background-color: #f8f8f8;
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.4);
+}
+
+
+/* MODAL DE CONFIRMAÇÃO (Estilizado para combinar com o tema) */
+.overlay.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Overlay mais escuro */
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.modal {
+    background-color: #fff;
+    padding: 40px; /* Maior padding */
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    text-align: center;
+    max-width: 450px;
+    width: 90%;
+    transform: scale(0.9); /* Inicia menor para a transição */
+    opacity: 0; /* Inicia transparente */
+    transition: all 0.3s ease-out;
+}
+
+/* Regra para mostrar o modal e aplicar a transição */
+/* Esta regra é ativada quando o JS muda o 'display' para 'flex' no .overlay.modal-overlay */
+.overlay.modal-overlay[style*="display: flex"] .modal {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.modal h2 {
+    font-size: 2.2em;
+    color: #3c2c54;
+    margin-bottom: 20px;
+    font-family: 'Playfair Display', serif;
+}
+
+.modal p {
+    font-size: 1.1em;
+    color: #555;
+    margin-bottom: 35px;
+}
+
+.modal-buttons button {
+    padding: 14px 30px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin: 0 12px;
+}
+
+.btn-cancelar {
+    background-color: #bb9ce9;
+    color: white;
+}
+
+.btn-cancelar:hover {
+    background-color: #a48ac2;
+    transform: translateY(-2px);
+}
+
+.btn-confirmar {
+    background-color: #5d3a8b;
+    color: white;
+}
+
+.btn-confirmar:hover {
+    background-color: #875ea5;
+    transform: translateY(-2px);
+}
+
+
+/* FOOTER */
+footer {
+    background-color: #3c2c54;
+    color: #f8f8f8;
+    padding: 50px 0 25px;
+    margin-top: auto;
+    border-top: 5px solid #875ea5;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-shadow: 0 -5px 15px rgba(0,0,0,0.25);
+}
+
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 40px;
+    text-align: left;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.footer-section {
+    flex: 1;
+    min-width: 220px;
+    margin-bottom: 20px;
+}
+
+.footer-section h3 {
+    color: #e0ccff;
+    margin-bottom: 20px;
+    font-size: 1.6em;
+    border-bottom: 2px solid rgba(224, 204, 255, 0.15);
+    padding-bottom: 12px;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+}
+
+.footer-section p,
+.footer-section ul {
+    font-size: 1em;
+    line-height: 1.8;
+    margin: 0;
+    padding: 0;
+}
+
+.footer-section ul {
+    list-style: none;
+}
+
+.footer-section ul li {
+    margin-bottom: 10px;
+}
+
+.footer-section ul li a {
+    color: #f8f8f8;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-section ul li a:hover {
+    color: #e0ccff;
+}
+
+.footer-section.contact p i {
+    margin-right: 12px;
+    color: #e0ccff;
+    font-size: 1.1em;
+}
+
+.social-links a {
+    color: #e0ccff;
+    font-size: 1.8em;
+    margin-right: 20px;
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.social-links a:hover {
+    color: #bb9ce9;
+    transform: translateY(-4px);
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 25px;
+    margin-top: 40px;
+    border-top: 1px solid rgba(248, 248, 248, 0.1);
+    font-size: 0.9em;
+    color: rgba(248, 248, 248, 0.7);
+}
+
+/* RESPONSIVIDADE (ADAPTADA PARA OS NOVOS ELEMENTOS) */
+
+/* Esconde o header desktop em telas menores que 992px e mostra o mobile */
+@media (max-width: 992px) {
+    /* Header (desktop oculto, mobile visível) */
+    .header-desktop {
+        display: none;
+    }
+    .header-mobile {
+        display: flex; /* Torna o header mobile visível neste breakpoint */
+        padding: 15px 20px;
+    }
+    /* O off-canvas-menu e o overlay são controlados por JS, então não precisam de display aqui */
+
+    /* Introdução */
+    .intro-artistic-section {
+        padding: 100px 20px 60px;
+        margin-bottom: 40px;
+    }
+    .intro-artistic-section .intro-title {
+        font-size: 3.5em;
+    }
+    .intro-artistic-section .intro-description {
+        font-size: 1.1em;
+        margin-bottom: 30px;
+    }
+    .scroll-down-hint {
+        margin-top: 30px;
+    }
+
+    /* Galeria de Serviços */
+    .services-gallery-artistic .section-subtitle {
+        font-size: 2.8em;
+        margin-bottom: 50px;
+    }
+    .galeria-servicos {
+        /* Garante 2 ou 3 colunas em telas de tablet, com mínimo de 220px por card */
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 30px;
+    }
+    .artistic-card .card-image-wrapper {
+        height: 160px;
+    }
+    .artistic-card .card-content {
+        padding: 20px;
+    }
+    .artistic-card .card-icon {
+        font-size: 2em;
+    }
+    .artistic-card h3 {
+        font-size: 1.5em;
+    }
+    .artistic-card p {
+        font-size: 0.9em;
+    }
+    .artistic-card .card-price {
+        font-size: 1.1em;
+    }
+    .artistic-card .btn-agendar-card {
+        padding: 10px 20px;
+        font-size: 0.9em;
+        width: 90%;
+    }
+
+    /* CTA */
+    .call-to-action-section {
+        padding: 60px 20px;
+        margin-top: 60px;
+    }
+    .call-to-action-section h2 {
+        font-size: 2.5em;
+    }
+    .call-to-action-section p {
+        font-size: 1em;
+        margin-bottom: 30px;
+    }
+    .call-to-action-section .cta-button {
+        padding: 15px 30px;
+        font-size: 1.2em;
+    }
+
+    /* Modal */
+    .modal {
+        padding: 30px;
+        width: 95%;
+    }
+    .modal h2 {
+        font-size: 1.8em;
+    }
+    .modal p {
+        font-size: 1em;
+    }
+    .modal-buttons button {
+        padding: 12px 25px;
+        font-size: 1em;
+    }
+
+    /* Footer */
+    footer {
+        margin: auto 0;
+        padding: 40px 0 20px;
+    }
+}
+
+
+/* Breakpoint para telas menores (smartphones grandes, tablets em retrato) */
+@media (max-width: 768px) {
+    /* Header mobile e off-canvas (já visíveis) */
+
+    /* Introdução */
+    .intro-artistic-section {
+        padding: 80px 15px 50px;
+        margin-bottom: 30px;
+    }
+    .intro-artistic-section .intro-title {
+        font-size: 2.8em;
+    }
+    .intro-artistic-section .intro-description {
+        font-size: 1em;
+        margin-bottom: 25px;
+    }
+    .scroll-down-hint {
+        margin-top: 25px;
+        font-size: 1em;
+    }
+    .scroll-down-hint i {
+        font-size: 1.3em;
+    }
+
+
+    /* Galeria de Serviços */
+    .services-gallery-artistic {
+        padding: 40px 15px;
+    }
+    .services-gallery-artistic .section-subtitle {
+        font-size: 2.2em;
+        margin-bottom: 40px;
+    }
+    .galeria-servicos {
+        /* Garante 2 colunas em telas de smartphone grandes, com mínimo de 180px por card */
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 20px;
+    }
+    .artistic-card .card-image-wrapper {
+        height: 140px;
+    }
+    .artistic-card .card-content {
+        padding: 18px;
+    }
+    .artistic-card .card-icon {
+        font-size: 2em;
+    }
+    .artistic-card h3 {
+        font-size: 1.3em;
+    }
+    .artistic-card p {
+        font-size: 0.85em;
+    }
+    .artistic-card .card-price {
+        font-size: 1em;
+    }
+    .artistic-card .btn-agendar-card {
+        padding: 9px 18px;
+        font-size: 0.85em;
+        width: 95%;
+    }
+
+    /* CTA */
+    .call-to-action-section {
+        padding: 50px 15px;
+        margin-top: 50px;
+    }
+    .call-to-action-section h2 {
+        font-size: 2em;
+    }
+    .call-to-action-section p {
+        font-size: 1em;
+        margin-bottom: 25px;
+    }
+    .call-to-action-section .cta-button {
+        padding: 12px 25px;
+        font-size: 1.1em;
+    }
+
+    /* Modal */
+    .modal {
+        padding: 25px;
+    }
+    .modal h2 {
+        font-size: 1.6em;
+    }
+    .modal p {
+        font-size: 0.9em;
+    }
+    .modal-buttons button {
+        padding: 10px 20px;
+        font-size: 0.9em;
+    }
+
+    /* Footer */
+    footer {
+        padding: 30px 0 15px;
+    }
+    .footer-content {
+        flex-direction: column;
+        gap: 20px;
+    }
+    .footer-section h3 {
+        font-size: 1.1em;
+        margin-bottom: 10px;
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+    .footer-section ul li, .footer-section p {
+        font-size: 0.9em;
+        line-height: 1.5;
+    }
+    .social-links {
+        justify-content: center;
+    }
+    .social-links a {
+        font-size: 1.4em;
+        margin: 0 8px;
+    }
+    .footer-bottom {
+        padding-top: 15px;
+        margin-top: 20px;
+        font-size: 0.75em;
+    }
+}
+
+/* Breakpoint para smartphones muito pequenos (abaixo de 576px) */
+@media (max-width: 576px) {
+    /* Header mobile e off-canvas (ainda mais compacto se necessário) */
+    .header-mobile {
+        padding: 8px 10px;
+    }
+    .hamburger-icon {
+        font-size: 1.3em;
+    }
+    .logo-mobile {
+        height: 45px;
+        width: 45px;
+    }
+    .profile-icon-mobile .foto-perfil-mobile {
+        height: 32px;
+        width: 32px;
+    }
+
+    /* Introdução */
+    .intro-artistic-section {
+        padding: 60px 10px 40px;
+        margin-bottom: 25px;
+    }
+    .intro-artistic-section .intro-title {
+        font-size: 2.2em;
+    }
+    .intro-artistic-section .intro-description {
+        font-size: 0.9em;
+        margin-bottom: 20px;
+    }
+    .scroll-down-hint {
+        margin-top: 20px;
+        font-size: 0.9em;
+    }
+    .scroll-down-hint i {
+        font-size: 1.2em;
+    }
+
+    /* Galeria de Serviços */
+    .services-gallery-artistic {
+        padding: 30px 10px;
+    }
+    .services-gallery-artistic .section-subtitle {
+        font-size: 1.8em;
+        margin-bottom: 30px;
+    }
+    .galeria-servicos {
+        grid-template-columns: 1fr; /* Força 1 coluna para telas muito estreitas */
+        gap: 15px;
+    }
+    .artistic-card {
+        max-width: 350px; /* Limita a largura dos cards em mobile para não ficarem gigantes */
+        margin: 0 auto; /* Centraliza o card individualmente se ele não preencher 100% da largura */
+    }
+    .artistic-card .card-image-wrapper {
+        height: 160px;
+    }
+    .artistic-card .card-content {
+        padding: 15px;
+    }
+    .artistic-card .card-icon {
+        font-size: 1.8em;
+    }
+    .artistic-card h3 {
+        font-size: 1.5em;
+    }
+    .artistic-card p {
+        font-size: 0.9em;
+    }
+    .artistic-card .card-price {
+        font-size: 1.1em;
+    }
+    .artistic-card .btn-agendar-card {
+        padding: 10px 20px;
+        font-size: 0.9em;
+        width: 100%;
+    }
+
+    /* CTA */
+    .call-to-action-section {
+        padding: 40px 10px;
+        margin-top: 40px;
+    }
+    .call-to-action-section h2 {
+        font-size: 1.8em;
+    }
+    .call-to-action-section p {
+        font-size: 0.9em;
+        margin-bottom: 20px;
+    }
+    .call-to-action-section .cta-button {
+        padding: 10px 20px;
+        font-size: 1em;
+    }
+
+    /* Modal */
+    .modal {
+        padding: 20px;
+    }
+    .modal h2 {
+        font-size: 1.4em;
+    }
+    .modal p {
+        font-size: 0.85em;
+    }
+    .modal-buttons button {
+        padding: 8px 15px;
+        font-size: 0.8em;
+    }
+
+    /* Footer */
+    footer {
+        padding: 25px 0 10px;
+    }
+    .footer-content {
+        gap: 15px;
+    }
+    .footer-section h3 {
+        font-size: 1em;
+        margin-bottom: 8px;
+    }
+    .footer-section ul li, .footer-section p {
+        font-size: 0.85em;
+    }
+    .social-links {
+        justify-content: center;
+    }
+    .social-links a {
+        font-size: 1.2em;
+        margin: 0 5px;
+    }
+    .footer-bottom {
+        padding-top: 10px;
+        margin-top: 15px;
+        font-size: 0.7em;
+    }
+}

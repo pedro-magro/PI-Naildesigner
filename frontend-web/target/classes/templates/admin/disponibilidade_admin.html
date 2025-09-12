@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Vinícius Roodrigues Xavier, Pedro Henrique Magro, Felipe Augusto Soares">
+    <meta name="description" content="Página de administração para gerenciar o bloqueio de horários específicos.">
+    <meta name="keywords" content="administração, bloqueio, horários, agendamentos, nail designer, agenda">
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <link rel="stylesheet" th:href="@{/css/style_disponibilidade_admin.css}" />
+
+    <title>Agenda Nail | Admin - Bloquear Horários</title>
+</head>
+
+<body>
+    <header>
+        <div class="container header-desktop">
+            <img th:src="@{/img/logo-preto-agende-nail.png}" class="logo" alt="Logo Agende Nail">
+            <nav class="menu" role="navigation">
+                <div class="menu-page active"><a th:href="@{/admin/dashboard}">Dashboard</a></div>
+                <div class="menu-page"><a th:href="@{/admin/agendamentos_admin}">Agendamentos</a></div>
+                <div class="menu-page"><a th:href="@{/admin/usuarios_admin}">Usuários</a></div>
+                <div class="menu-page"><a th:href="@{/admin/servicos_admin}">Serviços</a></div>
+                <div class="menu-page"><a th:href="@{/admin/disponibilidade_admin}">Disponibilidade</a></div>
+            </nav>
+            <a th:href="@{/perfil}" class="profile-icon-desktop">
+                <img th:src="@{/img/foto-perfil.png}" class="foto-perfil" alt="Foto de perfil do administrador">
+            </a>
+        </div>
+
+        <div class="header-mobile">
+            <i class="fas fa-bars hamburger-icon" id="hamburger-toggle"></i>
+            <img th:src="@{/img/logo-preto-agende-nail.png}" class="logo-mobile" alt="Logo Agende Nail Mobile">
+            <div class="profile-icon-mobile">
+                <a th:href="@{/perfil}">
+                    <img th:src="@{/img/foto-perfil.png}" class="foto-perfil-mobile"
+                        alt="Foto de perfil do administrador (Mobile)">
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="off-canvas-menu" id="off-canvas-menu">
+        <div class="off-canvas-header">
+            <img th:src="@{/img/logo-preto-agende-nail.png}" class="logo-off-canvas" alt="Logo Agende Nail Off-Canvas">
+            <i class="fas fa-times close-btn" id="off-canvas-close"></i>
+        </div>
+        <div class="off-canvas-profile-info">
+            <img th:src="@{/img/foto-perfil.png}" class="foto-perfil-off-canvas" alt="Foto de perfil Off-Canvas">
+            <span>Olá, Admin!</span>
+        </div>
+        <ul>
+            <li><a th:href="@{/admin/dashboard_admin}"><i class="fas fa-th-large"></i> Dashboard</a></li>
+            <li><a th:href="@{/admin/agendamentos_admin}"><i class="fas fa-calendar-alt"></i> Agendamentos</a></li>
+            <li><a th:href="@{/admin/usuarios_admin}"><i class="fas fa-users"></i> Usuários</a></li>
+            <li><a th:href="@{/admin/servicos_admin}"><i class="fas fa-cut"></i> Serviços</a></li>
+            <li><a th:href="@{/admin/disponibilidade_admin}"><i class="fas fa-clock"></i> Disponibilidade</a></li>
+            <li><a th:href="@{/admin/perfil}"><i class="fas fa-user-circle"></i> Meu Perfil</a></li>
+        </ul>
+    </div>
+
+    <div class="overlay" id="menu-overlay"></div>
+
+    <main class="admin-main">
+        <section class="disponibilidade-section">
+            <div class="container">
+                <h1 class="section-title">Bloquear Horários na Agenda</h1>
+                <p class="section-description">Use esta página para bloquear um dia inteiro ou um período específico da
+                    sua agenda padrão (8h às 18h). Os clientes não conseguirão agendar nesses horários.</p>
+
+                <div class="disponibilidade-form-card bloqueio-especifico-card">
+                    <h2>Bloquear Novo Período</h2>
+                    <p class="card-description">Marque datas ou horários específicos como indisponíveis. Se as horas
+                        forem deixadas em branco, o dia inteiro será bloqueado.</p>
+                    <form id="bloqueio-form">
+                        <div class="form-group">
+                            <label for="data-bloqueio">Data do Bloqueio</label>
+                            <input type="date" id="data-bloqueio" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="hora-inicio-bloqueio">Início do Bloqueio (opcional)</label>
+                            <input type="time" id="hora-inicio-bloqueio" />
+                        </div>
+                        <div class="form-group">
+                            <label for="hora-fim-bloqueio">Fim do Bloqueio (opcional)</label>
+                            <input type="time" id="hora-fim-bloqueio" />
+                        </div>
+                        <div class="form-group">
+                            <label for="motivo-bloqueio">Motivo do Bloqueio (opcional)</label>
+                            <input type="text" id="motivo-bloqueio"
+                                placeholder="Ex: Feriado, Consulta médica, Férias" />
+                        </div>
+                        <div class="form-group">
+                            <label for="bloqueio-profissional">Profissional</label>
+                            <select id="bloqueio-profissional" required>
+                                <option value="">Selecione a Profissional</option>
+                                <option value="1">Nail Designer A (ID 1)</option>
+                                <option value="2">Nail Designer B (ID 2)</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-block"><i class="fas fa-ban"></i> Bloquear Período</button>
+                    </form>
+                </div>
+
+                <div class="disponibilidade-lista-card">
+                    <h2>Períodos Bloqueados Atuais</h2>
+                    <div class="lista-bloqueios">
+                        <div class="disponibilidade-item bloqueio-item">
+                            <span>**25/12/2025:** Dia Inteiro - Feriado de Natal</span>
+                            <div class="item-actions">
+                                <button class="btn-delete"><i class="fas fa-trash-alt"></i></button>
+                            </div>
+                        </div>
+                        <div class="disponibilidade-item bloqueio-item">
+                            <span>**10/06/2025:** 14:00 - 17:00 - Consulta Médica</span>
+                            <div class="item-actions">
+                                <button class="btn-delete"><i class="fas fa-trash-alt"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <footer id="contact-footer">
+        <div class="container footer-content">
+            <div class="footer-section about">
+                <h3>Agende Nail</h3>
+                <p>Facilitando seu agendamento de unhas com praticidade e rapidez. Conecte-se com as melhores nail
+                    designers!</p>
+            </div>
+            <div class="footer-section links">
+                <h3>Links Rápidos</h3>
+                <ul>
+                    <li><a th:href="@{/}">Painel de clientes</a></li>
+                    <li><a th:href="@{/agendamentos_admin}">Gerenciar Agendamentos</a></li>
+                    <li><a th:href="@{/usuarios_admin}">Gerenciar Usuários</a></li>
+                    <li><a th:href="@{/servicos_admin}">Gerenciar Serviços</a></li>
+                    <li><a th:href="@{/disponibilidade_admin}">Gerenciar Disponibilidade</a></li>
+                </ul>
+            </div>
+            <div class="footer-section contact">
+                <h3>Contato</h3>
+                <p><i class="fas fa-phone"></i>+55 (11) 97816-8814</p>
+                <p><i class="fas fa-envelope"></i>contato@agendenail.com.br</p>
+                <p><i class="fas fa-map-marker-alt"></i> Itapecerica da Serra, SP/Brasil</p>
+            </div>
+            <div class="footer-section social">
+                <h3>Siga-nos</h3>
+                <div class="social-links">
+                    <a href="https://www.tiktok.com/@jessikaxaviier?_t=8e9KNyf8geU&_r=1&fbclid=PAZXh0bgNhZW0CMTEAAaeWMbwgZeRDFisthtCFqAp5x_KeXP-KGYNsEvf7R9koAGBVKo2IEVTE09QOOA_aem_sJLYFqPwHNheywHeLk88-Q"
+                        target="_blank" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://www.instagram.com/naildesignerjx/" target="_blank" aria-label="Instagram"><i
+                            class="fab fa-instagram"></i></a>
+                    <a href="https://api.whatsapp.com/send/?phone=5511978168814&text&type=phone_number&app_absent=0"
+                        target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Agende Nail. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script th:src="@{/js/menu.js}"></script>
+    <script th:src="@{/js/disponibilidade_admin.js}"></script>
+</body>
+
+</html>

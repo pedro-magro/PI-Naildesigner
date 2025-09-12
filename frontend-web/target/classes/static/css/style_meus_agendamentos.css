@@ -1,0 +1,951 @@
+/* style_agendamentos_cliente.css - Estilos para a Página de Meus Agendamentos */
+
+/* Reset Básico e Cores Base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to bottom, #e0ccff, #c9b6ff, #bb9ce9);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    color: #3c2c54; /* Cor de texto padrão para o corpo */
+}
+
+/* Container Global para Conteúdo */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* HEADER - Estilos Gerais (Copiados dos seus CSSs para consistência) */
+header {
+    background-color: transparent;
+    padding: 30px 0;
+    position: relative;
+    z-index: 10;
+}
+
+.header-desktop {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 20px;
+}
+
+.logo {
+    height: 90px;
+    width: 90px;
+    object-fit: contain;
+    margin-left: 0;
+}
+
+.menu {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-grow: 1;
+    flex-basis: auto;
+    padding: 0 40px;
+}
+
+.menu .menu-page {
+    display: flex;
+}
+
+.menu .menu-page a {
+    position: relative;
+    text-decoration: none;
+    font-size: 21px;
+    color: #3c2c54;
+    font-family: "Hedvig Letters Serif", serif;
+    transition: color 0.3s ease;
+    padding: 5px 0;
+    white-space: nowrap;
+}
+
+.menu .menu-page a:hover {
+    color: #875ea5;
+}
+
+.menu .menu-page a::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -5%;
+    background-color: #875ea5;
+    transition: width 0.3s ease;
+}
+
+.menu .menu-page a:hover::after {
+    width: 40%;
+}
+
+.profile-icon-desktop .foto-perfil {
+    height: 65px;
+    width: 65px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #875ea5;
+    transition: transform 0.5s ease;
+    margin-right: 0;
+}
+
+.profile-icon-desktop .foto-perfil:hover {
+    transform: scale(1.1);
+}
+
+.header-mobile {
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 15;
+}
+
+.hamburger-icon, .close-btn {
+    font-size: 1.8em;
+    color: #3c2c54;
+    cursor: pointer;
+    padding: 5px;
+    transition: color 0.3s ease;
+}
+
+.hamburger-icon:hover, .close-btn:hover {
+    color: #875ea5;
+}
+
+.logo-mobile {
+    height: 55px;
+    width: 55px;
+    object-fit: contain;
+}
+
+.profile-icon-mobile .foto-perfil-mobile {
+    height: 38px;
+    width: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #875ea5;
+}
+
+/* MENU OFF-CANVAS (Menu Lateral) */
+.off-canvas-menu {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 280px;
+    height: 100%;
+    background-color: #3c2c54;
+    color: #f8f8f8;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+    transition: left 0.3s ease-in-out;
+    z-index: 2000;
+    padding-top: 20px;
+    overflow-y: auto;
+}
+
+.off-canvas-menu.active {
+    left: 0;
+}
+
+.off-canvas-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 20px;
+}
+
+.logo-off-canvas {
+    height: 60px;
+    width: 60px;
+    object-fit: contain;
+}
+
+.close-btn {
+    font-size: 2em;
+    color: #e0ccff;
+}
+.close-btn:hover {
+    color: #bb9ce9;
+}
+
+.off-canvas-profile-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px 20px;
+    margin-bottom: 25px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.foto-perfil-off-canvas {
+    height: 80px;
+    width: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #e0ccff;
+    margin-bottom: 10px;
+}
+
+.off-canvas-profile-info span {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #e0ccff;
+}
+
+.off-canvas-menu ul {
+    list-style: none;
+    padding: 0;
+}
+
+.off-canvas-menu ul li a {
+    display: flex;
+    align-items: center;
+    padding: 15px 25px;
+    text-decoration: none;
+    color: #f8f8f8;
+    font-size: 1.1em;
+    font-family: 'Segoe UI', sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.off-canvas-menu ul li a i {
+    margin-right: 15px;
+    font-size: 1.2em;
+    color: #c9b6ff;
+}
+
+.off-canvas-menu ul li a:hover {
+    background-color: rgba(255,255,255,0.1);
+    color: #e0ccff;
+}
+
+/* OVERLAY ESCURO */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1500;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+.overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* CONTEÚDO PRINCIPAL (MAIN) - Agendamentos */
+.agendamentos-main {
+    flex-grow: 1;
+    padding: 60px 20px;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.agendamentos-section {
+    width: 100%;
+    max-width: 900px;
+    margin-bottom: 40px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    padding: 40px;
+    text-align: center;
+}
+
+.agendamentos-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5em;
+    font-weight: 700;
+    color: #5d3a8b;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+}
+
+.agendamentos-intro-text {
+    font-size: 1.1em;
+    line-height: 1.6;
+    color: #4a4a4a;
+    max-width: 700px;
+    margin: 0 auto 30px;
+}
+
+.agendamentos-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 25px; /* Espaçamento entre os cards de agendamento */
+    margin-top: 30px;
+}
+
+.agendamento-card {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    padding: 25px 30px;
+    text-align: left;
+    border: 1px solid #e0ccff; /* Uma leve borda para destacar */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.agendamento-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #c9b6ff;
+}
+
+.card-header h3 {
+    font-family: 'Hedvig Letters Serif', serif;
+    font-size: 1.6em;
+    color: #5d3a8b;
+    margin: 0;
+}
+
+.agendamento-status {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.9em;
+    color: #fff;
+}
+
+.status-confirmado {
+    background-color: #4CAF50; /* Verde */
+}
+
+.status-pendente {
+    background-color: #FFC107; /* Amarelo */
+    color: #333;
+}
+
+.status-cancelado {
+    background-color: #F44336; /* Vermelho */
+}
+
+.card-details p {
+    font-size: 1em;
+    color: #666;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+}
+
+.card-details p i {
+    margin-right: 10px;
+    color: #875ea5;
+    font-size: 1.1em;
+}
+
+.card-details p span {
+    font-weight: bold;
+    color: #3c2c54;
+}
+
+.card-actions {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px dashed #e0ccff;
+    text-align: right; /* Alinha o botão de cancelar à direita */
+}
+
+.btn-cancelar-agendamento {
+    background-color: #e65c5c; /* Tom de vermelho para cancelar */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    font-family: 'Segoe UI', sans-serif;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-cancelar-agendamento i {
+    font-size: 1.1em;
+}
+
+.btn-cancelar-agendamento:hover {
+    background-color: #d14646;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.agendamento-cancelado-info {
+    color: #F44336;
+    font-weight: bold;
+    font-size: 0.95em;
+    display: block; /* Para quebra de linha */
+    text-align: right;
+    margin-top: 10px;
+}
+
+
+/* Mensagem para quando não há agendamentos */
+.no-agendamentos {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    padding: 40px;
+    margin-top: 40px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    color: #5d3a8b;
+}
+
+.no-agendamentos p {
+    font-size: 1.3em;
+    margin-bottom: 20px;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+}
+
+.no-agendamentos p i {
+    margin-right: 10px;
+    color: #bb9ce9;
+}
+
+.cta-button-small {
+    background-color: #bb9ce9;
+    color: white;
+    text-decoration: none;
+    font-family: 'Hedvig Letters Serif', serif;
+    font-size: 1.1em;
+    padding: 12px 25px;
+    border-radius: 30px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    display: inline-block;
+}
+
+.cta-button-small:hover {
+    background-color: #a48ac2;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+}
+
+
+/* Call to Action Geral (Mantido e ajustado para a página) */
+.call-to-action-section {
+    background: linear-gradient(to right, #bb9ce9, #875ea5);
+    color: white;
+    padding: 60px 20px;
+    text-align: center;
+    border-radius: 20px;
+    margin-top: 50px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    width: 100%;
+    max-width: 900px; /* Para alinhar com o conteúdo principal */
+}
+
+.call-to-action-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8em;
+    margin-bottom: 20px;
+    font-weight: 700;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+}
+
+.call-to-action-section p {
+    font-size: 1.2em;
+    margin-bottom: 30px;
+    opacity: 0.9;
+}
+
+.cta-button {
+    background-color: #e0ccff; /* Cor de destaque */
+    color: #5d3a8b;
+    text-decoration: none;
+    font-family: 'Hedvig Letters Serif', serif;
+    font-size: 1.5em;
+    padding: 18px 40px;
+    border-radius: 50px;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    display: inline-block;
+    font-weight: bold;
+}
+
+.cta-button:hover {
+    background-color: #f8f8f8;
+    color: #3c2c54;
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.4);
+}
+
+/* FOOTER (Copiado dos seus CSSs para consistência) */
+footer {
+    background-color: #3c2c54;
+    color: #f8f8f8;
+    padding: 50px 0 25px;
+    margin-top: auto;
+    border-top: 5px solid #875ea5;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-shadow: 0 -5px 15px rgba(0,0,0,0.25);
+}
+
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 40px;
+    text-align: left;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.footer-section {
+    flex: 1;
+    min-width: 220px;
+    margin-bottom: 20px;
+}
+
+.footer-section h3 {
+    color: #e0ccff;
+    margin-bottom: 20px;
+    font-size: 1.6em;
+    border-bottom: 2px solid rgba(224, 204, 255, 0.15);
+    padding-bottom: 12px;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+}
+
+.footer-section p,
+.footer-section ul {
+    font-size: 1em;
+    line-height: 1.8;
+    margin: 0;
+    padding: 0;
+}
+
+.footer-section ul {
+    list-style: none;
+}
+
+.footer-section ul li {
+    margin-bottom: 10px;
+}
+
+.footer-section ul li a {
+    color: #f8f8f8;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-section ul li a:hover {
+    color: #e0ccff;
+}
+
+.footer-section.contact p i {
+    margin-right: 12px;
+    color: #e0ccff;
+    font-size: 1.1em;
+}
+
+.social-links a {
+    color: #e0ccff;
+    font-size: 1.8em;
+    margin-right: 20px;
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.social-links a:hover {
+    color: #bb9ce9;
+    transform: translateY(-4px);
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 25px;
+    margin-top: 40px;
+    border-top: 1px solid rgba(248, 248, 248, 0.1);
+    font-size: 0.9em;
+    color: rgba(248, 248, 248, 0.7);
+}
+
+/* ========================================= */
+/* Correção para a Visibilidade do Modal     */
+/* ========================================= */
+
+/* Garante que o fundo do modal cubra toda a tela e fique por cima de tudo. */
+.modal-overlay {
+    position: fixed; /* Garante que ele fique na mesma posição mesmo com scroll */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Fundo escuro semi-transparente */
+    
+    /* Propriedade mais importante: um z-index alto para ficar na frente. */
+    z-index: 1000; 
+    
+    /* Garante que ele seja exibido como flexbox quando o JS o ativar */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* O JavaScript no Canvas já tem a lógica para controlar a exibição, 
+   então podemos remover qualquer regra 'display: none;' que possa estar
+   a conflitar aqui, se houver. O JS cuidará disso. */
+
+.modal-overlay.active {
+    display: flex; /* Mostrar quando ativo */
+}
+
+.modal {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    max-width: 450px;
+    width: 90%;
+    transform: scale(0.9);
+    transition: transform 0.3s ease-out;
+}
+
+.modal-overlay.active .modal {
+    transform: scale(1);
+}
+
+.modal h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2em;
+    color: #5d3a8b;
+    margin-bottom: 20px;
+}
+
+.modal p {
+    font-size: 1.1em;
+    color: #4a4a4a;
+    margin-bottom: 30px;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.btn-cancelar, .btn-confirmar {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.btn-cancelar {
+    background-color: #bbb;
+    color: #333;
+}
+
+.btn-cancelar:hover {
+    background-color: #a0a0a0;
+    transform: translateY(-2px);
+}
+
+.btn-confirmar {
+    background-color: #bb9ce9;
+    color: white;
+}
+
+.btn-confirmar:hover {
+    background-color: #875ea5;
+    transform: translateY(-2px);
+}
+
+
+/* RESPONSIVIDADE (Ajustado com base nos seus CSSs) */
+
+/* Esconde o header mobile por padrão e mostra o desktop */
+.header-mobile, .off-canvas-menu, .overlay {
+    display: none;
+}
+
+/* Breakpoint para telas intermediárias (tablets, laptops menores) */
+@media (max-width: 992px) {
+    /* Esconde o header desktop */
+    .header-desktop {
+        display: none;
+    }
+
+    /* Mostra o header mobile e os elementos do menu off-canvas */
+    .header-mobile {
+        display: flex;
+        padding: 15px 20px;
+    }
+    /* O off-canvas-menu e o overlay são controlados por JS, então não precisam de display aqui */
+
+    /* Ajustes no Main e Agendamentos para telas intermediárias */
+    .agendamentos-main {
+        padding: 40px 20px;
+    }
+    .agendamentos-section {
+        padding: 30px;
+    }
+    .agendamentos-title {
+        font-size: 2.8em;
+    }
+    .agendamento-card {
+        padding: 20px 25px;
+    }
+    .card-header h3 {
+        font-size: 1.4em;
+    }
+    .card-details p {
+        font-size: 0.95em;
+    }
+    .btn-cancelar-agendamento {
+        padding: 10px 15px;
+        font-size: 0.9em;
+    }
+    .no-agendamentos {
+        padding: 30px;
+    }
+    .no-agendamentos p {
+        font-size: 1.1em;
+    }
+    .cta-button-small {
+        font-size: 1em;
+        padding: 10px 20px;
+    }
+    .call-to-action-section {
+        padding: 40px 20px;
+    }
+    .call-to-action-section h2 {
+        font-size: 2.2em;
+    }
+    .cta-button {
+        font-size: 1.2em;
+        padding: 15px 30px;
+    }
+}
+
+
+/* Breakpoint para telas menores (smartphones) */
+@media (max-width: 768px) {
+    /* Header (mobile já visível) */
+    header {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        background-color: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(8px);
+        padding: 15px 0;
+        z-index: 60;
+    }
+
+    .header-mobile {
+        padding: 10px 15px;
+    }
+
+    .hamburger-icon {
+        font-size: 1.5em;
+    }
+
+    .logo-mobile {
+        height: 55px;
+        width: 55px;
+    }
+
+    .profile-icon-mobile .foto-perfil-mobile {
+        height: 38px;
+        width: 38px;
+    }
+
+    /* Ajustes no Main e Agendamentos para smartphones */
+    .agendamentos-main {
+        padding: 25px 15px;
+    }
+    .agendamentos-section {
+        padding: 25px;
+    }
+    .agendamentos-title {
+        font-size: 2.2em;
+    }
+    .agendamento-card {
+        padding: 18px 20px;
+    }
+    .card-header h3 {
+        font-size: 1.2em;
+    }
+    .agendamento-status {
+        padding: 4px 10px;
+        font-size: 0.8em;
+    }
+    .card-details p {
+        font-size: 0.9em;
+        margin-bottom: 6px;
+    }
+    .btn-cancelar-agendamento {
+        padding: 8px 12px;
+        font-size: 0.85em;
+        gap: 5px;
+    }
+    .no-agendamentos {
+        padding: 25px;
+    }
+    .no-agendamentos p {
+        font-size: 1em;
+    }
+    .cta-button-small {
+        font-size: 0.9em;
+        padding: 8px 15px;
+    }
+    .call-to-action-section {
+        padding: 30px 15px;
+    }
+    .call-to-action-section h2 {
+        font-size: 1.8em;
+    }
+    .cta-button {
+        font-size: 1.1em;
+        padding: 12px 25px;
+    }
+
+    /* Footer - Ajustes para telas menores */
+    footer {
+        padding: 30px 0 15px;
+    }
+    .footer-content {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+    .footer-section {
+        min-width: unset;
+        width: 100%;
+    }
+    .footer-section h3 {
+        text-align: center;
+        border-bottom: none;
+        padding-bottom: 0;
+        margin-bottom: 10px;
+    }
+    .footer-section p, .footer-section ul {
+        text-align: center;
+    }
+    .social-links {
+        justify-content: center;
+        display: flex;
+    }
+    .footer-section h3 {
+        font-size: 1.4em;
+    }
+    .footer-section p, .footer-section ul li a {
+        font-size: 0.8em;
+    }
+    .social-links a {
+        font-size: 1.5em;
+        margin: 0 5px;
+    }
+    .footer-bottom {
+        font-size: 0.7em;
+    }
+
+    /* Modal */
+    .modal {
+        padding: 20px;
+    }
+    .modal h2 {
+        font-size: 1.8em;
+    }
+    .modal p {
+        font-size: 1em;
+    }
+    .modal-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .btn-cancelar, .btn-confirmar {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .agendamentos-title {
+        font-size: 1.8em;
+    }
+    .agendamento-card {
+        padding: 15px;
+    }
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+    .card-header h3 {
+        font-size: 1.1em;
+    }
+    .agendamento-status {
+        align-self: flex-end;
+    }
+    .card-details p {
+        font-size: 0.85em;
+    }
+    .btn-cancelar-agendamento {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
+    .agendamento-cancelado-info {
+        text-align: center;
+    }
+    .no-agendamentos p {
+        font-size: 0.9em;
+    }
+    .cta-button-small {
+        font-size: 0.85em;
+        padding: 8px 12px;
+    }
+    .call-to-action-section h2 {
+        font-size: 1.5em;
+    }
+    .cta-button {
+        font-size: 1em;
+        padding: 10px 20px;
+    }
+}

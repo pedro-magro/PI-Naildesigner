@@ -1,0 +1,752 @@
+/* sobre.css - Estilos para a Página "Sobre mim" (VERSÃO ARTÍSTICA) */
+
+/* Reset Básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to bottom, #e0ccff, #c9b6ff, #bb9ce9);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    color: #3c2c54; /* Cor de texto padrão para o corpo */
+}
+
+/* Container Global para Conteúdo (limita a largura principal do site) */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* HEADER - Estilos Gerais */
+header {
+    background-color: transparent;
+    padding: 30px 0;
+    position: relative;
+    z-index: 10;
+}
+
+/* Container para o Header DESKTOP (visível apenas em desktop) */
+.header-desktop {
+    display: flex; /* GARANTE QUE ESTEJA VISÍVEL POR PADRÃO EM TELAS GRANDES */
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 20px;
+}
+
+.logo {
+    height: 90px;
+    width: 90px;
+    object-fit: contain;
+    margin-left: 0;
+}
+
+.menu {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-grow: 1;
+    flex-basis: auto;
+    padding: 0 40px;
+}
+
+.menu .menu-page {
+    display: flex;
+}
+
+.menu .menu-page a {
+    position: relative;
+    text-decoration: none;
+    font-size: 21px;
+    color: #3c2c54;
+    font-family: "Hedvig Letters Serif", serif;
+    transition: color 0.3s ease;
+    padding: 5px 0;
+    white-space: nowrap;
+}
+
+.menu .menu-page a:hover {
+    color: #875ea5;
+}
+
+.menu .menu-page a::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -5%;
+    background-color: #875ea5;
+    transition: width 0.3s ease;
+}
+
+.menu .menu-page a:hover::after {
+    width: 40%;
+}
+
+.profile-icon-desktop .foto-perfil { /* Adicionado a classe para o perfil desktop */
+    height: 65px;
+    width: 65px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #875ea5;
+    transition: transform 0.5s ease;
+    margin-right: 0;
+}
+
+.profile-icon-desktop .foto-perfil:hover {
+    transform: scale(1.1);
+}
+
+/* HEADER MOBILE (Elementos do Hamburguer) */
+.header-mobile {
+    display: none; /* ESCONDIDO POR PADRÃO EM TELAS GRANDES */
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 15;
+}
+
+.hamburger-icon, .close-btn {
+    font-size: 1.8em;
+    color: #3c2c54;
+    cursor: pointer;
+    padding: 5px;
+    transition: color 0.3s ease;
+}
+
+.hamburger-icon:hover, .close-btn:hover {
+    color: #875ea5;
+}
+
+.logo-mobile {
+    height: 55px;
+    width: 55px;
+    object-fit: contain;
+}
+
+.profile-icon-mobile .foto-perfil-mobile {
+    height: 38px;
+    width: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #875ea5;
+}
+
+/* MENU OFF-CANVAS (Menu Lateral) */
+.off-canvas-menu {
+    position: fixed;
+    top: 0;
+    left: -280px; /* Escondido por padrão */
+    width: 280px;
+    height: 100%;
+    background-color: #3c2c54;
+    color: #f8f8f8;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+    transition: left 0.3s ease-in-out;
+    z-index: 2000;
+    padding-top: 20px;
+    overflow-y: auto;
+}
+
+.off-canvas-menu.active {
+    left: 0; /* Visível quando ativo via JS */
+}
+
+.off-canvas-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 20px;
+}
+
+.logo-off-canvas {
+    height: 60px;
+    width: 60px;
+    object-fit: contain;
+}
+
+.close-btn {
+    font-size: 2em;
+    color: #e0ccff;
+}
+.close-btn:hover {
+    color: #bb9ce9;
+}
+
+.off-canvas-profile-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* ALINHA ITENS (FOTO E SPAN) AO CENTRO DA COLUNA */
+    padding: 15px 20px;
+    margin-bottom: 25px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    text-align: center; /* CENTRALIZA O TEXTO DENTRO DO SPAN */
+}
+
+.foto-perfil-off-canvas {
+    height: 80px;
+    width: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #e0ccff;
+    margin-bottom: 10px;
+}
+
+.off-canvas-profile-info span {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #e0ccff;
+}
+
+.off-canvas-menu ul {
+    list-style: none;
+    padding: 0;
+}
+
+.off-canvas-menu ul li a {
+    display: flex;
+    align-items: center;
+    padding: 15px 25px;
+    text-decoration: none;
+    color: #f8f8f8;
+    font-size: 1.1em;
+    font-family: 'Segoe UI', sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.off-canvas-menu ul li a i {
+    margin-right: 15px;
+    font-size: 1.2em;
+    color: #c9b6ff;
+}
+
+.off-canvas-menu ul li a:hover {
+    background-color: rgba(255,255,255,0.1);
+    color: #e0ccff;
+}
+
+/* OVERLAY ESCURO (para o menu lateral) */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1500;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+.overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+/* MAIN - Conteúdo "Sobre Mim" */
+.sobre-container {
+    flex-grow: 1;
+    padding: 60px 20px 80px; /* Ajuste do padding */
+    max-width: 900px; /* Centraliza o conteúdo e limita a largura */
+    margin: 40px auto; /* Adiciona margem superior para afastar do header */
+    background: rgba(255, 255, 255, 0.9); /* Fundo branco semitransparente para o conteúdo */
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); /* Sombra suave */
+    display: flex; /* Para flexbox no conteúdo geral do main */
+    flex-direction: column;
+    align-items: center;
+}
+
+.sobre-conteudo {
+    text-align: center;
+    padding: 0 40px; /* Padding interno */
+}
+
+.sobre-imagem {
+    width: 200px; /* Tamanho da imagem do logo no topo */
+    height: 200px;
+    margin: 0 auto 30px auto; /* Adicione '0 auto' aqui para centralizar o bloco horizontalmente */
+    border-radius: 50%; /* Torna a imagem circular */
+    overflow: hidden; /* Garante que a imagem não vaze do círculo */
+    border: 5px solid #bb9ce9; /* Borda elegante */
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sobre-imagem img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ajusta a foto de perfil dentro do círculo */
+    transition: transform 0.3s ease;
+}
+
+.sobre-imagem img:hover {
+    transform: scale(1.05);
+}
+
+.sobre-conteudo h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5em;
+    font-weight: 700;
+    color: #5d3a8b;
+    margin-bottom: 25px;
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+}
+
+.sobre-conteudo p {
+    font-size: 1.1em;
+    line-height: 1.7;
+    color: #4a4a4a;
+    max-width: 700px;
+    margin: 0 auto 15px; /* Margem entre parágrafos */
+}
+
+.sobre-conteudo p strong {
+    color: #5d3a8b; /* Destaca palavras-chave */
+    font-weight: bold;
+}
+
+.sobre-conteudo br {
+    display: block; /* Para garantir que o <br> funcione */
+    content: "";
+    margin-bottom: 1em; /* Adiciona mais espaço entre os parágrafos se desejar */
+}
+
+/* Seções de Diferenciais, Missão e CTA */
+section {
+    width: 100%;
+    padding: 40px 40px; /* Padding para as seções internas */
+    text-align: center;
+    margin-top: 30px; /* Espaço entre as seções */
+    background: rgba(255, 255, 255, 0.95); /* Um pouco mais opaco para seções internas */
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+section:not(:last-child) {
+    margin-bottom: 30px; /* Margem entre seções, exceto a última */
+}
+
+section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5em;
+    font-weight: 700;
+    color: #875ea5;
+    margin-bottom: 25px;
+    position: relative;
+    display: inline-block;
+}
+
+section h2::after {
+    content: '';
+    position: absolute;
+    width: 50%;
+    height: 3px;
+    background: linear-gradient(to right, #e0ccff, #bb9ce9);
+    bottom: -10px;
+    left: 25%;
+    border-radius: 5px;
+}
+
+/* Diferenciais (Lista) */
+.sobre-valores ul {
+    list-style: none;
+    padding: 0;
+    text-align: left; /* Alinha o texto da lista à esquerda */
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.sobre-valores ul li {
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    position: relative;
+    padding-left: 30px; /* Espaço para o ícone */
+    color: #4a4a4a;
+}
+
+.sobre-valores ul li::before {
+    content: "\2728"; /* Caractere de estrela ou use um ícone de fonte incrível se tiver */
+    /* Se estiver usando Font Awesome, descomente as linhas abaixo e use o ícone desejado */
+    /* font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    content: "\f00c"; /* Exemplo: ícone de check-mark */ 
+    color: #bb9ce9; /* Cor do ícone */
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-size: 1.3em;
+}
+
+/* Missão, Visão, Propósito */
+.sobre-missao p {
+    font-size: 1.1em;
+    line-height: 1.7;
+    margin-bottom: 15px;
+    color: #4a4a4a;
+}
+.sobre-missao p strong {
+    color: #5d3a8b;
+}
+
+/* Call to Action */
+.sobre-cta p {
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    color: #4a4a4a;
+}
+
+.btn {
+    margin-top: 20px;
+}
+
+.botao-agendar {
+    background-color: #bb9ce9; /* Cor principal */
+    color: white;
+    text-decoration: none;
+    font-family: 'Hedvig Letters Serif', serif;
+    font-size: 1.4em;
+    padding: 18px 40px;
+    border-radius: 50px; /* Botão em formato de pílula */
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    display: inline-block; /* Para aplicar padding e transform */
+    font-weight: bold;
+}
+
+.botao-agendar:hover {
+    background-color: #a48ac2; /* Tom mais escuro no hover */
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.4);
+}
+
+/* FOOTER */
+footer {
+    background-color: #3c2c54;
+    color: #f8f8f8;
+    padding: 50px 0 25px;
+    margin-top: auto;
+    border-top: 5px solid #875ea5;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-shadow: 0 -5px 15px rgba(0,0,0,0.25);
+}
+
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 40px;
+    text-align: left;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.footer-section {
+    flex: 1;
+    min-width: 220px;
+    margin-bottom: 20px;
+}
+
+.footer-section h3 {
+    color: #e0ccff;
+    margin-bottom: 20px;
+    font-size: 1.6em;
+    border-bottom: 2px solid rgba(224, 204, 255, 0.15);
+    padding-bottom: 12px;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+}
+
+.footer-section p,
+.footer-section ul {
+    font-size: 1em;
+    line-height: 1.8;
+    margin: 0;
+    padding: 0;
+}
+
+.footer-section ul {
+    list-style: none;
+}
+
+.footer-section ul li {
+    margin-bottom: 10px;
+}
+
+.footer-section ul li a {
+    color: #f8f8f8;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-section ul li a:hover {
+    color: #e0ccff;
+}
+
+.footer-section.contact p i {
+    margin-right: 12px;
+    color: #e0ccff;
+    font-size: 1.1em;
+}
+
+.social-links a {
+    color: #e0ccff;
+    font-size: 1.8em;
+    margin-right: 20px;
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.social-links a:hover {
+    color: #bb9ce9;
+    transform: translateY(-4px);
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 25px;
+    margin-top: 40px;
+    border-top: 1px solid rgba(248, 248, 248, 0.1);
+    font-size: 0.9em;
+    color: rgba(248, 248, 248, 0.7);
+}
+
+/* RESPONSIVIDADE */
+
+/* Esconde o header desktop em telas menores que 992px e mostra o mobile */
+@media (max-width: 992px) {
+    /* Header (desktop oculto, mobile visível) */
+    .header-desktop {
+        display: none; /* ESCONDE O HEADER DESKTOP */
+    }
+    .header-mobile {
+        display: flex; /* MOSTRA O HEADER MOBILE */
+        padding: 15px 20px;
+    }
+    /* O off-canvas-menu e o overlay são controlados por JS, então não precisam de display aqui */
+    /* ... Seu CSS existente para 992px ... */
+
+    .sobre-container {
+        margin: 30px auto;
+        padding: 40px 20px 60px;
+    }
+    .sobre-imagem {
+        width: 150px;
+        height: 150px;
+        margin-bottom: 25px;
+    }
+    .sobre-conteudo h1 {
+        font-size: 2.8em;
+        margin-bottom: 20px;
+    }
+    .sobre-conteudo p {
+        font-size: 1em;
+    }
+
+    section {
+        padding: 30px 20px;
+        margin-top: 25px;
+    }
+    section h2 {
+        font-size: 2em;
+        margin-bottom: 20px;
+    }
+    .sobre-valores ul li {
+        font-size: 1em;
+    }
+    .sobre-valores ul li::before {
+        font-size: 1.2em;
+    }
+    .sobre-missao p {
+        font-size: 1em;
+    }
+    .sobre-cta p {
+        font-size: 1em;
+        margin-bottom: 25px;
+    }
+    .botao-agendar {
+        font-size: 1.2em;
+        padding: 15px 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Header (mobile já visível) */
+    .sobre-container {
+        margin: 20px auto;
+        padding: 30px 15px 50px;
+    }
+    .sobre-imagem {
+        width: 120px;
+        height: 120px;
+        margin-bottom: 20px;
+    }
+    .sobre-conteudo h1 {
+        font-size: 2.2em;
+        margin-bottom: 15px;
+    }
+    .sobre-conteudo p {
+        font-size: 0.95em;
+    }
+
+    section {
+        padding: 25px 15px;
+        margin-top: 20px;
+    }
+    section h2 {
+        font-size: 1.8em;
+        margin-bottom: 15px;
+    }
+    .sobre-valores ul li {
+        font-size: 0.95em;
+        padding-left: 25px;
+    }
+    .sobre-valores ul li::before {
+        font-size: 1.1em;
+    }
+    .sobre-missao p {
+        font-size: 0.95em;
+    }
+    .sobre-cta p {
+        font-size: 0.95em;
+        margin-bottom: 20px;
+    }
+    .botao-agendar {
+        font-size: 1.1em;
+        padding: 12px 25px;
+    }
+
+    /* Footer - Ajustes para telas menores */
+    .footer-content {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center; /* Centraliza o texto do footer em mobile */
+    }
+    .footer-section {
+        min-width: unset; /* Remove o min-width para mobile */
+        width: 100%; /* Ocupa a largura total */
+    }
+    .footer-section h3 {
+        text-align: center;
+        border-bottom: none;
+        padding-bottom: 0;
+        margin-bottom: 10px;
+    }
+    .footer-section p, .footer-section ul {
+        text-align: center;
+    }
+    .social-links {
+        justify-content: center; /* Centraliza os ícones sociais */
+        display: flex; /* Adiciona display flex para centralizar */
+    }
+}
+
+@media (max-width: 576px) {
+    .logo {
+        height: 60px;
+        width: 60px;
+    }
+    .menu {
+        padding: 0 10px;
+        gap: 5px;
+    }
+    .menu .menu-page a {
+        font-size: 16px;
+    }
+    .foto-perfil {
+        height: 40px;
+        width: 40px;
+    }
+
+    .sobre-container {
+        margin: 15px auto;
+        padding: 25px 10px 40px;
+        border-radius: 15px;
+    }
+    .sobre-imagem {
+        width: 100px;
+        height: 100px;
+        margin-bottom: 15px;
+    }
+    .sobre-conteudo h1 {
+        font-size: 1.8em;
+    }
+    .sobre-conteudo p {
+        font-size: 0.9em;
+    }
+
+    section {
+        padding: 20px 10px;
+        margin-top: 15px;
+        border-radius: 10px;
+    }
+    section h2 {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+    }
+    section h2::after {
+        bottom: -5px;
+        height: 2px;
+    }
+    .sobre-valores ul li {
+        font-size: 0.85em;
+        padding-left: 20px;
+    }
+    .sobre-valores ul li::before {
+        font-size: 1em;
+    }
+    .sobre-missao p {
+        font-size: 0.85em;
+    }
+    .sobre-cta p {
+        font-size: 0.85em;
+        margin-bottom: 15px;
+    }
+    .botao-agendar {
+        font-size: 1em;
+        padding: 10px 20px;
+    }
+
+    .footer-section h3 {
+        font-size: 1.4em;
+    }
+    .footer-section p, .footer-section ul li a {
+        font-size: 0.8em;
+    }
+    .social-links a {
+        font-size: 1.5em;
+        margin: 0 5px;
+    }
+    .footer-bottom {
+        font-size: 0.7em;
+    }
+}

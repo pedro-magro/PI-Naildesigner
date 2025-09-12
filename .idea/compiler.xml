@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="frontend-web" />
+        <module name="auth-service" />
+        <module name="messaging-service" />
+        <module name="auth-service-api" />
+        <module name="api-gateway" />
+        <module name="eureka-server" />
+        <module name="messaging-service-api" />
+        <module name="agendamento-service" />
+      </profile>
+      <profile name="Annotation profile for PI-Naildesigner Monorepo" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.32/lombok-1.18.32.jar" />
+        </processorPath>
+        <module name="servico-service" />
+      </profile>
+    </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="agendamento-service" options="-parameters" />
+      <module name="api-gateway" options="-parameters" />
+      <module name="auth-service" options="-parameters" />
+      <module name="auth-service-api" options="-parameters" />
+      <module name="eureka-server" options="-parameters" />
+      <module name="frontend-web" options="-parameters" />
+      <module name="messaging-service" options="-parameters" />
+      <module name="messaging-service-api" options="-parameters" />
+      <module name="servico-service" options="-parameters" />
+    </option>
+  </component>
+</project>

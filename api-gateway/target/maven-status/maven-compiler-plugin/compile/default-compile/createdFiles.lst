@@ -1,0 +1,3 @@
+br\com\naildesigner\api_gateway\ApiGatewayApplication.class
+br\com\naildesigner\api_gateway\config\CorsConfig.class
+br\com\naildesigner\api_gateway\config\GatewaySecurityConfig.class

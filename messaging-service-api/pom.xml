@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- ================================================================== -->
+    <!-- ALTERAÇÃO 1: Aponta para o seu POM pai para herdar as configurações -->
+    <!-- ================================================================== -->
+    <parent>
+        <groupId>br.com.pi.naildesigner</groupId>
+        <artifactId>pi-naildesigner-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <!-- ================================================================== -->
+    <!-- ALTERAÇÃO 2: Simplifica as coordenadas do artefato.                -->
+    <!-- ================================================================== -->
+    <artifactId>messaging-service-api</artifactId>
+    <name>Messaging Service API</name>
+    <description>API (DTOs e interfaces) para o Messaging Service</description>
+
+    <!-- 
+        REMOÇÃO: As seções <properties> e <build> foram removidas.
+        A configuração de compilação do Java e outras propriedades são
+        agora gerenciadas centralmente pelo pom.xml pai.
+    -->
+
+    <!-- As dependências, se houver, seriam adicionadas aqui -->
+
+</project>

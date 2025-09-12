@@ -1,0 +1,738 @@
+/* agendamento.css - Estilos completos para a Página de Agendamento */
+
+/* Reset Básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to bottom, #e0ccff, #c9b6ff, #bb9ce9);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+/* Container Global para Conteúdo (limita a largura principal do site) */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* HEADER - Estilos Gerais */
+header {
+    background-color: transparent;
+    padding: 30px 0;
+    position: relative;
+    z-index: 10;
+}
+
+/* Container para o Header DESKTOP (visível apenas em desktop) */
+.header-desktop {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 20px;
+}
+
+.logo {
+    height: 90px;
+    width: 90px;
+    object-fit: contain;
+    margin-left: 0;
+}
+
+.menu-desktop {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-grow: 1;
+    flex-basis: auto;
+    padding: 0 40px;
+}
+
+.menu-desktop .menu-page {
+    display: flex;
+}
+
+.menu-desktop .menu-page a {
+    position: relative;
+    text-decoration: none;
+    font-size: 21px;
+    color: #3c2c54;
+    font-family: "Hedvig Letters Serif", serif;
+    transition: color 0.3s ease;
+    padding: 5px 0;
+    white-space: nowrap;
+}
+
+.menu-desktop .menu-page a:hover {
+    color: #875ea5;
+}
+
+.menu-desktop .menu-page a::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -5%;
+    background-color: #875ea5;
+    transition: width 0.3s ease;
+}
+
+.menu-desktop .menu-page a:hover::after {
+    width: 40%;
+}
+
+.profile-icon-desktop .foto-perfil {
+    height: 65px;
+    width: 65px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #875ea5;
+    transition: transform 0.5s ease;
+    margin-right: 0;
+}
+
+.profile-icon-desktop .foto-perfil:hover {
+    transform: scale(1.1);
+}
+
+/* HEADER MOBILE (Elementos do Hamburguer) - Escondido por padrão */
+.header-mobile {
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 15;
+}
+
+.hamburger-icon, .close-btn {
+    font-size: 1.8em;
+    color: #3c2c54;
+    cursor: pointer;
+    padding: 5px;
+    transition: color 0.3s ease;
+}
+
+.hamburger-icon:hover, .close-btn:hover {
+    color: #875ea5;
+}
+
+.logo-mobile {
+    height: 55px;
+    width: 55px;
+    object-fit: contain;
+}
+
+.profile-icon-mobile .foto-perfil-mobile {
+    height: 38px;
+    width: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #875ea5;
+}
+
+/* MENU OFF-CANVAS (Menu Lateral) */
+.off-canvas-menu {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 280px;
+    height: 100%;
+    background-color: #3c2c54;
+    color: #f8f8f8;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+    transition: left 0.3s ease-in-out;
+    z-index: 2000;
+    padding-top: 20px;
+    overflow-y: auto;
+}
+
+.off-canvas-menu.active {
+    left: 0;
+}
+
+.off-canvas-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 20px;
+}
+
+.logo-off-canvas {
+    height: 60px;
+    width: 60px;
+    object-fit: contain;
+}
+
+.close-btn {
+    font-size: 2em;
+    color: #e0ccff;
+}
+.close-btn:hover {
+    color: #bb9ce9;
+}
+
+.off-canvas-profile-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px 20px;
+    margin-bottom: 25px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.foto-perfil-off-canvas {
+    height: 80px;
+    width: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #e0ccff;
+    margin-bottom: 10px;
+}
+
+.off-canvas-profile-info span {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #e0ccff;
+}
+
+.off-canvas-menu ul {
+    list-style: none;
+    padding: 0;
+}
+
+.off-canvas-menu ul li a {
+    display: flex;
+    align-items: center;
+    padding: 15px 25px;
+    text-decoration: none;
+    color: #f8f8f8;
+    font-size: 1.1em;
+    font-family: 'Segoe UI', sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.off-canvas-menu ul li a i {
+    margin-right: 15px;
+    font-size: 1.2em;
+    color: #c9b6ff;
+}
+
+.off-canvas-menu ul li a:hover {
+    background-color: rgba(255,255,255,0.1);
+    color: #e0ccff;
+}
+
+/* OVERLAY ESCURO */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1500;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+.overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+/* CONTEÚDO PRINCIPAL (MAIN) */
+main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 20px;
+    z-index: 1;
+}
+
+/* Seção de Introdução para Mobile (visível apenas em telas menores via CSS) */
+.intro-section-mobile {
+    display: none;
+    text-align: center;
+    margin-bottom: 40px;
+    color: #3c2c54;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5em;
+    line-height: 1.4;
+    max-width: 400px;
+}
+.intro-section-mobile p {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 0.9em;
+    margin-top: 10px;
+    opacity: 0.8;
+}
+
+/* FORMULÁRIO DE AGENDAMENTO - Estilos Específicos para Agendamento */
+.container-form { /* Usado aqui como o contêiner principal do formulário */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 450px;
+    margin-top: 0;
+}
+
+.container-form h1 {
+    font-size: 55px;
+    font-family: 'Playfair Display', serif;
+    margin-bottom: 35px; /* Ajustado para agendamento */
+    color: #3c2c54;
+    font-weight: 700;
+    text-align: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 25px; /* Ajustado para agendamento */
+    width: 100%;
+    max-width: 380px;
+}
+
+.form-container { /* Nome da classe para agrupar label e input neste formulário */
+    text-align: left;
+    width: 100%;
+}
+
+label {
+    font-size: 19px;
+    color: #3c2c54;
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    font-family: 'Playfair Display', serif;
+}
+
+input[type="text"],
+input[type="tel"],
+input[type="email"],
+input[type="password"],
+input[type="date"],
+input[type="time"],
+select {
+    padding: 14px;
+    font-size: 17px;
+    border: 1px solid #c9b6ff;
+    border-radius: 10px;
+    background-color: #fff;
+    color: #333;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+    width: 100%;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: #875ea5;
+    box-shadow: 0 0 0 3px rgba(135, 94, 165, 0.2);
+}
+
+input::placeholder {
+    color: #aaa;
+}
+
+.btn-container {
+    text-align: center;
+    margin-top: 30px; /* Ajustado para agendamento */
+    width: 100%;
+}
+
+button {
+    padding: 16px 30px;
+    font-size: 22px;
+    background-color: #5d3a8b;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    font-family: "Hedvig Letters Serif", serif;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+    width: 100%;
+    max-width: 320px;
+}
+
+button:hover {
+    background-color: #875ea5;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+
+/* FOOTER */
+footer {
+    background-color: #3c2c54;
+    color: #f8f8f8;
+    padding: 50px 0 25px;
+    margin-top: auto;
+    border-top: 5px solid #875ea5;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-shadow: 0 -5px 15px rgba(0,0,0,0.25);
+}
+
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 40px;
+    text-align: left;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.footer-section {
+    flex: 1;
+    min-width: 220px;
+    margin-bottom: 20px;
+}
+
+.footer-section h3 {
+    color: #e0ccff;
+    margin-bottom: 20px;
+    font-size: 1.6em;
+    border-bottom: 2px solid rgba(224, 204, 255, 0.15);
+    padding-bottom: 12px;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+}
+
+.footer-section p,
+.footer-section ul {
+    font-size: 1em;
+    line-height: 1.8;
+    margin: 0;
+    padding: 0;
+}
+
+.footer-section ul {
+    list-style: none;
+}
+
+.footer-section ul li {
+    margin-bottom: 10px;
+}
+
+.footer-section ul li a {
+    color: #f8f8f8;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-section ul li a:hover {
+    color: #e0ccff;
+}
+
+.footer-section.contact p i {
+    margin-right: 12px;
+    color: #e0ccff;
+    font-size: 1.1em;
+}
+
+.social-links a {
+    color: #e0ccff;
+    font-size: 1.8em;
+    margin-right: 20px;
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.social-links a:hover {
+    color: #bb9ce9;
+    transform: translateY(-4px);
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 25px;
+    margin-top: 40px;
+    border-top: 1px solid rgba(248, 248, 248, 0.1);
+    font-size: 0.9em;
+    color: rgba(248, 248, 248, 0.7);
+}
+
+/* RESPONSIVIDADE (Específica para Agendamento) */
+
+/* Esconde o header mobile por padrão e mostra o desktop */
+.header-mobile, .off-canvas-menu, .overlay {
+    display: none;
+}
+
+/* Breakpoint para telas intermediárias (tablets, laptops menores) */
+@media (max-width: 992px) {
+    /* Esconde o header desktop */
+    .header-desktop {
+        display: none;
+    }
+
+    /* Mostra o header mobile e os elementos do menu off-canvas */
+    .header-mobile {
+        display: flex;
+        padding: 15px 20px;
+    }
+    .off-canvas-menu, .overlay {
+        display: block;
+    }
+
+    /* Ajustes no Main e Formulário para telas intermediárias */
+    main {
+        padding: 40px 20px;
+    }
+    .container-form {
+        max-width: 90%;
+    }
+}
+
+/* Container dos horários disponíveis */
+#horarios-disponiveis-lista {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(5px);
+    border-radius: 10px;
+    border: 1px solid rgba(135, 94, 165, 0.3);
+    box-shadow: inset 0 0 5px rgba(135, 94, 165, 0.1), 0 2px 5px rgba(0,0,0,0.1);
+    min-height: 80px;
+}
+
+/* Estilo para cada item de radio button (o contêiner do input e label) */
+.radio-item {
+    flex: 0 0 calc(33.333% - 12px);
+    max-width: calc(33.333% - 12px);
+    text-align: center;
+    /* Remove padding e background daqui, eles vão para o label */
+    /* background: rgba(255, 255, 255, 0.7); <- REMOVER */
+    /* border: 1px solid #c9b6ff; <- REMOVER */
+    border-radius: 8px; /* Mantém o border-radius no container */
+    cursor: pointer;
+    overflow: hidden; /* Garante que o label não vaze */
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* Estilo geral dos radio buttons e LABELS (o elemento que será clicado e estilizado) */
+.radio-item input[type="radio"] {
+    display: none; /* Esconde o radio button nativo */
+}
+
+.radio-item label {
+    display: block; /* Faz o label preencher o espaço */
+    width: 100%;
+    cursor: pointer;
+    padding: 12px 0; /* O padding que estava no .radio-item vem para o label */
+    background-color: rgba(255, 255, 255, 0.7); /* Fundo padrão do label */
+    border: 1px solid #c9b6ff; /* Borda padrão do label */
+    border-radius: 8px; /* Arredonda o label */
+    color: #3c2c54;
+    font-size: 17px;
+    font-weight: bold;
+    font-family: 'Hedvig Letters Serif', serif;
+    transition: all 0.3s ease; /* Para suavizar a mudança de cor */
+}
+
+/* Estilo AO PASSAR O MOUSE (aplicado ao label dentro do item) */
+.radio-item label:hover {
+    background-color: rgba(135, 94, 165, 0.2); /* Tom de roxo mais claro transparente no hover */
+    border-color: #875ea5; /* Borda mais escura no hover */
+}
+
+/* Estilo quando um radio button é SELECIONADO (aplicado ao label associado) */
+.radio-item input[type="radio"]:checked + label {
+    background-color: #5d3a8b; /* Fundo do selecionado mais escuro (como o botão Agendar) */
+    color: white; /* Texto branco */
+    border-color: #5d3a8b; /* Borda igual ao fundo */
+    transform: scale(1.05); /* Pequeno zoom no selecionado */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2); /* Sombra mais forte */
+}
+
+
+/* Adaptação para telas menores */
+@media (max-width: 768px) {
+    #horarios-disponiveis-lista {
+        padding: 10px;
+        gap: 8px;
+    }
+    .radio-item {
+        flex: 0 0 calc(50% - 8px);
+        max-width: calc(50% - 8px);
+        /* Removido padding daqui, agora está no label */
+    }
+    .radio-item label {
+        padding: 10px 0; /* Ajuste padding para mobile */
+    }
+}
+
+@media (max-width: 480px) {
+    #horarios-disponiveis-lista {
+        gap: 6px;
+    }
+    .radio-item {
+        flex: 0 0 calc(100% - 6px);
+        max-width: calc(100% - 6px);
+    }
+    .radio-item label {
+        font-size: 16px;
+        padding: 8px 0;
+    }
+}
+
+/* Breakpoint para telas menores (smartphones) */
+@media (max-width: 350px) { /* Este é o breakpoint original de 768px */
+    header {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        background-color: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(8px);
+        padding: 15px 0;
+        z-index: 60;
+    }
+
+    .header-mobile {
+        padding: 10px 15px;
+    }
+
+    .hamburger-icon {
+        font-size: 1.5em;
+    }
+
+    .logo-mobile {
+        height: 55px;
+        width: 55px;
+    }
+
+    .profile-icon-mobile .foto-perfil-mobile {
+        height: 38px;
+        width: 38px;
+    }
+
+    /* Torna a seção de introdução visível em mobile */
+    .intro-section-mobile {
+        display: block;
+        max-width: 95%;
+        font-size: 1.2em;
+        margin-bottom: 25px;
+    }
+    .intro-section-mobile h2 {
+        font-size: 1.5em;
+    }
+    .intro-section-mobile p {
+        font-size: 0.8em;
+        margin-top: 5px;
+    }
+
+    /* Ajustes no Main e Formulário para smartphones */
+    main {
+        padding: 25px 15px;
+    }
+
+    .container-form {
+        padding: 20px;
+        max-width: 98%;
+    }
+
+    .container-form h1 {
+        font-size: 38px;
+        margin-bottom: 20px; /* Ajuste para mobile no agendamento */
+    }
+
+    form {
+        gap: 15px; /* Ajuste para mobile no agendamento */
+    }
+
+    label {
+        font-size: 16px;
+    }
+
+    input[type="text"],
+    input[type="tel"],
+    input[type="email"],
+    input[type="password"],
+    input[type="date"],
+    input[type="time"],
+    select {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .btn-container {
+        margin-top: 20px; /* Ajuste para mobile no agendamento */
+    }
+
+    button {
+        padding: 10px 15px;
+        font-size: 16px;
+    }
+
+    footer {
+        padding: 30px 0 15px;
+    }
+    .footer-content {
+        flex-direction: column;
+        gap: 20px;
+    }
+    .footer-section {
+        min-width: unset;
+        text-align: center;
+    }
+    .footer-section h3 {
+        font-size: 1.1em;
+        margin-bottom: 10px;
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+    .footer-section ul li, .footer-section p {
+        font-size: 0.9em;
+        line-height: 1.5;
+    }
+    .social-links {
+        justify-content: center;
+    }
+    .social-links a {
+        font-size: 1.4em;
+        margin: 0 8px;
+    }
+    .footer-bottom {
+        padding-top: 15px;
+        margin-top: 20px;
+        font-size: 0.75em;
+    }
+}

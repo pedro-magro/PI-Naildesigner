@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Importa o gerenciamento de dependências do Spring Boot -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.3.0</version> <!-- Mantendo a versão 3.3.0 que estava nos projetos originais -->
+        <relativePath/>
+    </parent>
+
+    <groupId>br.com.pi.naildesigner</groupId>
+    <artifactId>pi-naildesigner-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging> <!-- MUITO IMPORTANTE! -->
+    <name>PI-Naildesigner Monorepo</name>
+    <description>Projeto Integrador - Agendamento para Nail Designers</description>
+
+    <!-- ================================================================== -->
+    <!-- CORREÇÃO 1: Adicionados os módulos de API que estavam faltando.   -->
+    <!-- ================================================================== -->
+    <modules>
+        <module>eureka-server</module>
+        <module>api-gateway</module>
+        <module>auth-service-api</module> <!-- Adicionado -->
+        <module>auth-service</module>
+        <module>agendamento-service</module>
+        <module>servico-service</module>
+        <module>messaging-service-api</module> <!-- Adicionado -->
+        <module>messaging-service</module>
+        <module>frontend-web</module>
+    </modules>
+
+    <!-- ================================================================== -->
+    <!-- CORREÇÃO 2: Adicionadas propriedades para centralizar versões.     -->
+    <!-- ================================================================== -->
+    <properties>
+        <java.version>17</java.version>
+        <spring-cloud.version>2023.0.2</spring-cloud.version>
+        <jjwt.version>0.11.5</jjwt.version>
+        <!-- A versão do lombok é gerenciada pelo spring-boot-starter-parent -->
+    </properties>
+
+    <!-- ================================================================== -->
+    <!-- CORREÇÃO 3: Adicionado o gerenciamento centralizado de versões.    -->
+    <!-- ================================================================== -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- Importa o Bill of Materials (BOM) do Spring Cloud -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Centraliza as versões do JWT -->
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-api</artifactId>
+                <version>${jjwt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-impl</artifactId>
+                <version>${jjwt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-jackson</artifactId>
+                <version>${jjwt.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>

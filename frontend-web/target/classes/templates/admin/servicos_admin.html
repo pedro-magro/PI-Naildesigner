@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Vinícius Roodrigues Xavier, Pedro Henrique Magro, Felipe Augusto Soares">
+    <meta name="description" content="Página de administração para gerenciar os serviços oferecidos.">
+    <meta name="keywords" content="administração, serviços, CRUD, agendamentos, nail designer">
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <link rel="stylesheet" th:href="@{/css/style_servicos_admin.css}" />
+
+    <title>Agenda Nail | Admin - Serviços</title>
+</head>
+
+<body>
+    <header>
+        <div class="container header-desktop">
+            <img th:src="@{/img/logo-preto-agende-nail.png}" class="logo" alt="Logo Agende Nail">
+            <nav class="menu" role="navigation">
+               <div class="menu-page active"><a th:href="@{/admin/admin_dashboard}">Dashboard</a></div>
+                <div class="menu-page"><a th:href="@{/admin/agendamentos_admin}">Agendamentos</a></div>
+                <div class="menu-page"><a th:href="@{/admin/usuarios_admin}">Usuários</a></div>
+                <div class="menu-page"><a th:href="@{/admin/servicos_admin}">Serviços</a></div>
+                <div class="menu-page"><a th:href="@{/admin/disponibilidade_admin}">Disponibilidade</a></div>
+            </nav>
+            <a th:href="@{/perfil}" class="profile-icon-desktop">
+                <img th:src="@{/img/foto-perfil.png}" class="foto-perfil" alt="Foto de perfil do administrador">
+            </a>
+        </div>
+
+        <div class="header-mobile">
+            <i class="fas fa-bars hamburger-icon" id="hamburger-toggle"></i>
+            <img th:src="@{/img/logo-preto-agende-nail.png}" class="logo-mobile" alt="Logo Agende Nail Mobile">
+            <div class="profile-icon-mobile">
+                <a th:href="@{/perfil}">
+                    <img th:src="@{/img/foto-perfil.png}" class="foto-perfil-mobile" alt="Foto de perfil do administrador (Mobile)">
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="off-canvas-menu" id="off-canvas-menu">
+        <div class="off-canvas-header">
+            <img th:src="@{/img/logo-preto-agende-nail.png}" class="logo-off-canvas" alt="Logo Agende Nail Off-Canvas">
+            <i class="fas fa-times close-btn" id="off-canvas-close"></i>
+        </div>
+        <div class="off-canvas-profile-info">
+            <img th:src="@{/img/foto-perfil.png}" class="foto-perfil-off-canvas" alt="Foto de perfil Off-Canvas">
+            <span>Olá, Admin!</span>
+        </div>
+        <ul>
+           <li><a th:href="@{/admin/dashboard_admin}"><i class="fas fa-th-large"></i> Dashboard</a></li>
+            <li><a th:href="@{/admin/agendamentos_admin}"><i class="fas fa-calendar-alt"></i> Agendamentos</a></li>
+            <li><a th:href="@{/admin/usuarios_admin}"><i class="fas fa-users"></i> Usuários</a></li>
+            <li><a th:href="@{/admin/servicos_admin}"><i class="fas fa-cut"></i> Serviços</a></li>
+            <li><a th:href="@{/admin/disponibilidade_admin}"><i class="fas fa-clock"></i> Disponibilidade</a></li>
+            <li><a th:href="@{/admin/perfil}"><i class="fas fa-user-circle"></i> Meu Perfil</a></li>
+        </ul>
+    </div>
+
+    <div class="overlay" id="menu-overlay"></div>
+
+    <main class="admin-main">
+        <section class="servicos-admin-section">
+            <div class="container">
+                <h1 class="section-title">Gerenciar Serviços</h1>
+                <p class="section-description">Adicione, edite ou remova os serviços oferecidos aos clientes.</p>
+
+                <div class="servico-form-card">
+                    <h2>Adicionar / Editar Serviço</h2>
+                    <form id="servico-form">
+                        <input type="hidden" id="servico-id" value=""> <div class="form-group">
+                            <label for="servico-nome">Nome do Serviço</label>
+                            <input type="text" id="servico-nome" placeholder="Ex: Unhas em Gel (Tips)" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="servico-descricao">Descrição</label>
+                            <textarea id="servico-descricao" rows="3" placeholder="Pequena descrição do serviço." required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="servico-valor">Valor (R$)</label>
+                            <input type="number" id="servico-valor" step="0.01" min="0" placeholder="0.00" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="servico-duracao">Duração (minutos)</label>
+                            <input type="number" id="servico-duracao" min="15" step="5" placeholder="60" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="servico-imagem-url">URL da Imagem (opcional)</label>
+                            <input type="text" id="servico-imagem-url" placeholder="Ex: /img/unhas-gel.jpg" />
+                        </div>
+                        <button type="submit" class="btn-primary" id="btn-salvar-servico"><i class="fas fa-save"></i> Salvar Serviço</button>
+                        <button type="button" class="btn-secondary" id="btn-limpar-form" style="display: none;"><i class="fas fa-eraser"></i> Limpar Formulário</button>
+                    </form>
+                </div>
+
+                <div class="servico-lista-card">
+                    <h2>Serviços Cadastrados</h2>
+                    <div class="lista-servicos">
+                        
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="contact-footer">
+        <div class="container footer-content">
+            <div class="footer-section about">
+                <h3>Agende Nail</h3>
+                <p>Facilitando seu agendamento de unhas com praticidade e rapidez. Conecte-se com as melhores nail designers!</p>
+            </div>
+            <div class="footer-section links">
+                <h3>Links Rápidos</h3>
+                <ul>
+                    <li><a th:href="@{/}">Painel de clientes</a></li>
+                    <li><a th:href="@{/agendamentos_admin}">Gerenciar Agendamentos</a></li>
+                    <li><a th:href="@{/usuarios_admin}">Gerenciar Usuários</a></li>
+                    <li><a th:href="@{/servicos_admin}">Gerenciar Serviços</a></li>
+                    <li><a th:href="@{/disponibilidade_admin}">Gerenciar Disponibilidade</a></li>
+                </ul>
+            </div>
+            <div class="footer-section contact">
+                <h3>Contato</h3>
+                <p><i class="fas fa-phone"></i>+55 (11) 97816-8814</p>
+                <p><i class="fas fa-envelope"></i>contato@agendenail.com.br</p>
+                <p><i class="fas fa-map-marker-alt"></i> Itapecerica da Serra, SP/Brasil</p>
+            </div>
+            <div class="footer-section social">
+                <h3>Siga-nos</h3>
+                <div class="social-links">
+                    <a href="https://www.tiktok.com/@jessikaxaviier?_t=8e9KNyf8geU&_r=1&fbclid=PAZXh0bgNhZW0CMTEAAaeWMbwgZeRDFisthtCFqAp5x_KeXP-KGYNsEvf7R9koAGBVKo2IEVTE09QOOA_aem_sJLYFqPwHNheywHeLk88-Q" target="_blank" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://www.instagram.com/naildesignerjx/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://api.whatsapp.com/send/?phone=5511978168814&text&type=phone_number&app_absent=0" target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Agende Nail. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script th:src="@{/js/menu.js}"></script>
+    <script th:src="@{/js/servicos_admin.js}"></script>
+</body>
+
+</html>

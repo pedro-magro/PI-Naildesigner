@@ -1,0 +1,6 @@
+br\com\messaging\messaging\Services\EmailService.class
+br\com\messaging\messaging\Controllers\EmailController.class
+br\com\messaging\messaging\Config\JwtAuthFilter.class
+br\com\messaging\messaging\MessagingApplication.class
+br\com\messaging\messaging\Services\JwtService.class
+br\com\messaging\messaging\Config\SecurityConfig.class

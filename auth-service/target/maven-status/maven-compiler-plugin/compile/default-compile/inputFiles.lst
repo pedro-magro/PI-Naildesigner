@@ -1,0 +1,10 @@
+C:\Users\pedro\devProjetos\PI-Naildesigner\auth-service\src\main\java\br\com\nailDesigner\auth_service\AuthServiceApplication.java
+C:\Users\pedro\devProjetos\PI-Naildesigner\auth-service\src\main\java\br\com\nailDesigner\auth_service\Configs\DataInitializer.java
+C:\Users\pedro\devProjetos\PI-Naildesigner\auth-service\src\main\java\br\com\nailDesigner\auth_service\Configs\JwtAuthFilter.java
+C:\Users\pedro\devProjetos\PI-Naildesigner\auth-service\src\main\java\br\com\nailDesigner\auth_service\Configs\SecurityConfig.java
+C:\Users\pedro\devProjetos\PI-Naildesigner\auth-service\src\main\java\br\com\nailDesigner\auth_service\Controllers\AuthController.java
+C:\Users\pedro\devProjetos\PI-Naildesigner\auth-service\src\main\java\br\com\nailDesigner\auth_service\Models\Role.java
+C:\Users\pedro\devProjetos\PI-Naildesigner\auth-service\src\main\java\br\com\nailDesigner\auth_service\Models\User.java
+C:\Users\pedro\devProjetos\PI-Naildesigner\auth-service\src\main\java\br\com\nailDesigner\auth_service\Repositories\UserRepository.java
+C:\Users\pedro\devProjetos\PI-Naildesigner\auth-service\src\main\java\br\com\nailDesigner\auth_service\Services\JwtService.java
+C:\Users\pedro\devProjetos\PI-Naildesigner\auth-service\src\main\java\br\com\nailDesigner\auth_service\Services\UserDetailsServiceImpl.java
