@@ -4,6 +4,8 @@ import io.jsonwebtoken.io.Decoders; // Import para JJWT
 import static org.springframework.security.config.Customizer.withDefaults;
 import javax.crypto.SecretKey; // Import para SecretKey
 import javax.crypto.spec.SecretKeySpec; // Import para SecretKeySpec
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value; // Import para @Value
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,12 +20,14 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @EnableWebFluxSecurity
 public class GatewaySecurityConfig {
 
+    private static final Logger logger = LoggerFactory.getLogger(GatewaySecurityConfig.class);
+
     @Value("${jwt.secret.key}") // Pega a chave do application.yml
     private String jwtSecretKeyString;
 
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-        System.out.println(">>>> CARREGANDO GatewaySecurityConfig COM VALIDAÇÃO JWT <<<<");
+        logger.info("Carregando segurança do API Gateway com validação JWT.");
 
         http
         	.cors(withDefaults()) // Diz ao Spring Security para usar a configuração CORS definida em outro lugar (seu bean)

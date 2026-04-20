@@ -11,7 +11,7 @@ spring:
     password:
   h2:
     console:
-      enabled: true
+      enabled: ${H2_CONSOLE_ENABLED:false}
       path: /h2-console-servicos # Caminho único para o console H2 deste serviço
   jpa:
     hibernate:
@@ -25,7 +25,7 @@ spring:
 # Chave secreta para validação do JWT (mesma dos outros serviços)
 jwt:
   secret:
-    key: NDAzZjU5YTgtYmI4YS00YjU5LTg5ODYtZGIxYzg4Y2E4N2ZlCg== # Use a SUA chave secreta aqui
+    key: ${JWT_SECRET:YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXoxMjM0NTY=} # Substitua por uma chave segura fora do código-fonte
 
 eureka:
   client:

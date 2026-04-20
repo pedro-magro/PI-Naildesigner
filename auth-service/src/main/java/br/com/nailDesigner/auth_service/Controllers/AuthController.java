@@ -13,7 +13,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.UUID; 
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +22,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,7 +33,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.security.core.userdetails.UserDetails;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -57,6 +55,17 @@ public class AuthController {
         @NotBlank @Size(min = 6) String password,
         @NotBlank (message = "Telefone é obrigatório") String phone
     ) {}
+    public record AdminUserResponse(UUID id, String username, String email, String phone, String role) {}
+
+    private AdminUserResponse toAdminUserResponse(User user) {
+        return new AdminUserResponse(
+            user.getId(),
+            user.getUsername(),
+            user.getEmail(),
+            user.getPhone(),
+            user.getRole().name()
+        );
+    }
 
  // Dentro da sua classe AuthController.java
 
@@ -95,6 +104,9 @@ public class AuthController {
     public ResponseEntity<String> register(@Valid @RequestBody RegisterRequest request) {
         if (userRepository.findByUsername(request.username()).isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Username já existe.");
+        }
+        if (userRepository.findByEmail(request.email()).isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Email já existe.");
         }
         User newUser = new User();
         newUser.setUsername(request.username());
@@ -200,8 +212,10 @@ public class AuthController {
     
     @GetMapping("/users")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<List<User>> getAllUsers() {
-        return ResponseEntity.ok(userRepository.findAll());
+    public ResponseEntity<List<AdminUserResponse>> getAllUsers() {
+        return ResponseEntity.ok(
+            userRepository.findAll().stream().map(this::toAdminUserResponse).toList()
+        );
     }
 
     /**
@@ -209,15 +223,16 @@ public class AuthController {
      */
     @GetMapping("/users/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<User> getUserById(@PathVariable UUID id) {
+    public ResponseEntity<AdminUserResponse> getUserById(@PathVariable UUID id) {
         return userRepository.findById(id)
+            .map(this::toAdminUserResponse)
             .map(ResponseEntity::ok)
             .orElse(ResponseEntity.notFound().build());
     }
     
     @PostMapping("/users")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<?> createUser(@Valid @RequestBody User user) { // Use um DTO aqui se preferir
+    public ResponseEntity<?> createUser(@Valid @RequestBody User user) {
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Username já existe.");
         }
@@ -226,7 +241,7 @@ public class AuthController {
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = userRepository.save(user);
-        return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
+        return new ResponseEntity<>(toAdminUserResponse(savedUser), HttpStatus.CREATED);
     }
 
     /**
@@ -234,8 +249,16 @@ public class AuthController {
      */
     @PutMapping("/users/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<User> updateUser(@PathVariable UUID id, @RequestBody User userDetails) {
+    public ResponseEntity<?> updateUser(@PathVariable UUID id, @RequestBody User userDetails) {
         return userRepository.findById(id).map(user -> {
+            if (!user.getUsername().equals(userDetails.getUsername())
+                && userRepository.findByUsername(userDetails.getUsername()).isPresent()) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Username já existe.");
+            }
+            if (!user.getEmail().equals(userDetails.getEmail())
+                && userRepository.findByEmail(userDetails.getEmail()).isPresent()) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Email já existe.");
+            }
             user.setUsername(userDetails.getUsername());
             user.setEmail(userDetails.getEmail());
             user.setPhone(userDetails.getPhone());
@@ -244,7 +267,7 @@ public class AuthController {
             if (userDetails.getPassword() != null && !userDetails.getPassword().isEmpty()) {
                 user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
             }
-            return ResponseEntity.ok(userRepository.save(user));
+            return ResponseEntity.ok(toAdminUserResponse(userRepository.save(user)));
         }).orElse(ResponseEntity.notFound().build());
     }
 

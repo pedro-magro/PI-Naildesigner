@@ -38,7 +38,7 @@ spring:
 
 jwt:
   secret:
-    key: NDAzZjU5YTgtYmI4YS00YjU5LTg5ODYtZGIxYzg4Y2E4N2ZlCg== # Sua chave secreta em Base64
+    key: ${JWT_SECRET:YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXoxMjM0NTY=} # Defina uma chave segura via ambiente
 
 eureka:
   client:

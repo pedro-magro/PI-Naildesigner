@@ -31,9 +31,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.security.oauth2.jwt.Jwt;
-import jakarta.persistence.EntityNotFoundException;
-import java.util.UUID;
-import java.nio.file.AccessDeniedException;
 
 @Service
 public class AgendamentoService {
@@ -60,7 +57,7 @@ public class AgendamentoService {
         String token = jwt.getTokenValue();
         
         ServicoDTOForAgendamento servico = buscarServico(dto.servicoId(), token);
-        LocalDateTime dataHoraFim = dto.dataHoraInicio().plusMinutes(servico.getDuracao());
+        LocalDateTime dataHoraFim = calcularHorarioFim(dto.dataHoraInicio(),servico.getDuracao());
 
         // 2. Validações e criação do agendamento
         validarConflitos(dto.profissionalId(), dto.dataHoraInicio(), dataHoraFim, null);
@@ -115,9 +112,7 @@ public class AgendamentoService {
         return new AgendamentoDTO(salvo);
     }
 
-    public List<AgendamentoDTO> listarAgendamentosPorCliente(UUID clienteId2) {
-        String token = getBearerTokenFromRequest();
-        UUID clienteId = jwtService.extractUserId(token);
+    public List<AgendamentoDTO> listarAgendamentosPorCliente(UUID clienteId) {
         return agendamentoRepository.findByClienteId(clienteId)
                 .stream()
                 .map(AgendamentoDTO::new)
@@ -185,7 +180,7 @@ public class AgendamentoService {
 
         String token = getBearerTokenFromRequest();
         ServicoDTOForAgendamento servico = buscarServico(dto.getServicoId(), token);
-        LocalDateTime dataHoraFim = dto.getDataHoraInicio().plusMinutes(servico.getDuracao());
+        LocalDateTime dataHoraFim = calcularHorarioFim(dto.getDataHoraInicio(), servico.getDuracao());
 
         validarConflitos(dto.getProfissionalId(), dto.getDataHoraInicio(), dataHoraFim, id);
 
@@ -220,7 +215,7 @@ public class AgendamentoService {
         List<String> horariosDisponiveis = todosOsSlotsPotenciais.stream()
             .filter(slot -> {
                 LocalDateTime tentativaInicio = data.atTime(slot);
-                LocalDateTime tentativaFim = tentativaInicio.plusMinutes(duracaoServicoMinutos);
+                LocalDateTime tentativaFim = calcularHorarioFim(tentativaInicio, duracaoServicoMinutos);
                 boolean conflitoAgendamento = agendamentosNoDia.stream()
                     .anyMatch(a -> tentativaInicio.isBefore(a.getDataHoraFim()) && tentativaFim.isAfter(a.getDataHoraInicio()));
                 boolean conflitoBloqueio = !bloqueioHorarioService.isPeriodoDisponivelParaAgendamento(profissionalId, tentativaInicio, tentativaFim, null);
@@ -258,13 +253,17 @@ public class AgendamentoService {
     }
 
     private void validarConflitos(UUID profissionalId, LocalDateTime inicio, LocalDateTime fim, Long agendamentoIdExcluido) {
+       if(!validarDisponibilidade(profissionalId, inicio, fim, agendamentoIdExcluido)){
+           throw new IllegalArgumentException("Horário inválido, conflita com outro atendimento.");
+       }
+    }
+    public boolean validarDisponibilidade(UUID profissional, LocalDateTime inicio, LocalDateTime fim, Long agendamentoIdExcluido){
         List<Agendamento> conflitos = (agendamentoIdExcluido == null)
-            ? agendamentoRepository.findByProfissionalIdAndDataHoraFimAfterAndDataHoraInicioBeforeAndStatusNot(profissionalId, inicio, fim, AgendamentoStatus.CANCELADO)
-            : agendamentoRepository.findByProfissionalIdAndDataHoraFimAfterAndDataHoraInicioBeforeAndIdNotAndStatusNot(profissionalId, inicio, fim, agendamentoIdExcluido, AgendamentoStatus.CANCELADO);
-
-        if (!conflitos.isEmpty()) {
-            throw new IllegalArgumentException("Horário conflitante com outro agendamento já existente.");
-        }
+                ? agendamentoRepository.findByProfissionalIdAndDataHoraFimAfterAndDataHoraInicioBeforeAndStatusNot(profissional, inicio, fim, AgendamentoStatus.CANCELADO)
+                : agendamentoRepository.findByProfissionalIdAndDataHoraFimAfterAndDataHoraInicioBeforeAndIdNotAndStatusNot(profissional, inicio, fim, agendamentoIdExcluido, AgendamentoStatus.CANCELADO);
+        return conflitos.isEmpty();
+        
+                
     }
     
     private List<LocalTime> gerarSlotsPotenciais(int duracaoServicoMinutos) {
@@ -297,7 +296,7 @@ public class AgendamentoService {
         String bearerToken = "Bearer " + jwt.getTokenValue();
 
         ServicoDTOForAgendamento servico = buscarServico(dto.getServicoId(), bearerToken);
-        LocalDateTime dataHoraFim = dto.getDataHoraInicio().plusMinutes(servico.getDuracao());
+        LocalDateTime dataHoraFim = calcularHorarioFim(dto.getDataHoraInicio(),servico.getDuracao());
 
         // --- VALIDAÇÃO DE CONFLITOS ANTES DE SALVAR ---
         validarConflitos(dto.getProfissionalId(), dto.getDataHoraInicio(), dataHoraFim, null);
@@ -329,7 +328,7 @@ public class AgendamentoService {
 
         // A chamada agora passa o token, que é o segundo argumento esperado.
         ServicoDTOForAgendamento servico = buscarServico(dto.getServicoId(), bearerToken);
-        LocalDateTime dataHoraFim = dto.getDataHoraInicio().plusMinutes(servico.getDuracao());
+        LocalDateTime dataHoraFim = calcularHorarioFim(dto.getDataHoraInicio(), servico.getDuracao());
         
         validarConflitos(dto.getProfissionalId(), dto.getDataHoraInicio(), dataHoraFim, id);
 
@@ -345,6 +344,9 @@ public class AgendamentoService {
         logger.info("Admin atualizou o agendamento ID {}", salvo.getId());
 
         return new AgendamentoDTO(salvo);
+    }
+    public LocalDateTime calcularHorarioFim(LocalDateTime inicio, int duracaoMinutos){
+        return inicio.plusMinutes(duracaoMinutos);
     }
     private void enviarEmailDeConfirmacao(Agendamento agendamento, ServicoDTOForAgendamento servico, Authentication authentication) {
         try {

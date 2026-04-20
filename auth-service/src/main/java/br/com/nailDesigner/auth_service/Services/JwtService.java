@@ -6,6 +6,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,15 +21,17 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
-public class JwtService {
+public class    JwtService {
+
+    private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
 
     @Value("${jwt.secret.key}")
     private String SECRET_KEY;
 
-    
+
     private long jwtExpiration = 1000 * 60 * 60 * 24; // 24 horas em milissegundos
 
-    public String extractUsername(String token) {
+    public String extractUserId(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
@@ -51,28 +55,28 @@ public class JwtService {
                 .collect(Collectors.toList());
         claims.put("roles", roles);
 
-       
+
         if (userDetails instanceof User) {
             claims.put("userId", ((User) userDetails).getId());
-            
+
         }
-        
+
         String subjectId = ((User) userDetails).getId().toString();
-        
-        System.out.println(">>> [AUTH-DEBUG] Gerando token com Subject (sub): " + subjectId);
+        logger.debug("Gerando token JWT para o usuário {}", subjectId);
 
         return Jwts.builder()
                 .setClaims(claims) // Define todas as claims (incluindo as customizadas)
-                .setSubject(subjectId) 
+                .setSubject(subjectId)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
+
     public boolean isTokenValid(String token, UserDetails userDetails) {
         // Extrai o ID (que está no campo 'subject') do token
-        final String userIdFromToken = extractUsername(token); 
+        final String userIdFromToken = extractUserId(token);
 
         // Pega o ID do objeto UserDetails (fazendo o cast)
         final String userIdFromUserDetails = ((User) userDetails).getId().toString();

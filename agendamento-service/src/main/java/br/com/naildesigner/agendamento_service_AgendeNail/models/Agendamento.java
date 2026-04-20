@@ -1,11 +1,11 @@
+
 package br.com.naildesigner.agendamento_service_AgendeNail.models;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import org.antlr.v4.runtime.misc.NotNull;
-
 import br.com.naildesigner.agendamento_service_AgendeNail.enums.*;
+import jakarta.validation.constraints.NotNull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
