@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AgendamentoService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Agendamento Service</a> &gt; <a href="index.source.html" class="el_package">br.com.naildesigner.agendamento_service_AgendeNail.services</a> &gt; <span class="el_source">AgendamentoService.java</span></div><h1>AgendamentoService.java</h1><pre class="source lang-java linenums">package br.com.naildesigner.agendamento_service_AgendeNail.services;
+
+import br.com.naildesigner.agendamento_service_AgendeNail.clients.MessagingServiceClient;
+import br.com.naildesigner.agendamento_service_AgendeNail.clients.EmailRequestDto;
+import br.com.naildesigner.agendamento_service_AgendeNail.clients.ServicoClient;
+import br.com.naildesigner.agendamento_service_AgendeNail.dtos.*;
+import br.com.naildesigner.agendamento_service_AgendeNail.enums.AgendamentoStatus;
+import br.com.naildesigner.agendamento_service_AgendeNail.models.Agendamento;
+import br.com.naildesigner.agendamento_service_AgendeNail.repositories.AgendamentoRepository;
+import br.com.naildesigner.agendamento_service_AgendeNail.clients.ServicoDTOForAgendamento;
+import br.com.naildesigner.agendamento_service_AgendeNail.clients.AuthServiceClient;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.springframework.security.oauth2.jwt.Jwt;
+
+@Service
+<span class="fc" id="L36">public class AgendamentoService {</span>
+
+<span class="fc" id="L38">    private static final Logger logger = LoggerFactory.getLogger(AgendamentoService.class);</span>
+
+    @Autowired private AgendamentoRepository agendamentoRepository;
+    @Autowired private BloqueioHorarioService bloqueioHorarioService;
+    @Autowired private ServicoClient servicoClient;
+    @Autowired private MessagingServiceClient messagingServiceClient;
+    @Autowired private JwtService jwtService;
+    @Autowired private AuthServiceClient authServiceClient;
+
+<span class="fc" id="L47">    private static final LocalTime HORA_INICIO_TRABALHO = LocalTime.of(9, 0);</span>
+<span class="fc" id="L48">    private static final LocalTime HORA_FIM_TRABALHO = LocalTime.of(18, 0);</span>
+    private static final int INTERVALO_SLOT_MINUTOS = 30;
+
+    
+    @Transactional
+    public AgendamentoDTO salvarAgendamento(AgendamentoRequestDTO dto, Authentication authentication) {
+        // 1. Extração de dados do utilizador e do serviço
+<span class="nc" id="L55">        Jwt jwt = (Jwt) authentication.getPrincipal();</span>
+<span class="nc" id="L56">        UUID clienteId = UUID.fromString(jwt.getSubject());</span>
+<span class="nc" id="L57">        String token = jwt.getTokenValue();</span>
+        
+<span class="nc" id="L59">        ServicoDTOForAgendamento servico = buscarServico(dto.servicoId(), token);</span>
+<span class="nc" id="L60">        LocalDateTime dataHoraFim = calcularHorarioFim(dto.dataHoraInicio(),servico.getDuracao());</span>
+
+        // 2. Validações e criação do agendamento
+<span class="nc" id="L63">        validarConflitos(dto.profissionalId(), dto.dataHoraInicio(), dataHoraFim, null);</span>
+
+<span class="nc" id="L65">        Agendamento agendamento = new Agendamento();</span>
+<span class="nc" id="L66">        agendamento.setClienteId(clienteId);</span>
+<span class="nc" id="L67">        agendamento.setProfissionalId(dto.profissionalId());</span>
+<span class="nc" id="L68">        agendamento.setServicoId(dto.servicoId());</span>
+<span class="nc" id="L69">        agendamento.setDataHoraInicio(dto.dataHoraInicio());</span>
+<span class="nc" id="L70">        agendamento.setDataHoraFim(dataHoraFim);</span>
+<span class="nc" id="L71">        agendamento.setStatus(AgendamentoStatus.CONFIRMADO);</span>
+<span class="nc" id="L72">        agendamento.setObservacoes(dto.observacoes());</span>
+
+<span class="nc" id="L74">        Agendamento salvo = agendamentoRepository.save(agendamento);</span>
+<span class="nc" id="L75">        logger.info(&quot;Agendamento ID {} criado para o cliente {}&quot;, salvo.getId(), clienteId);</span>
+        
+        // 3. Lógica de envio de email
+        try {
+            // Busca os emails do cliente e do profissional
+<span class="nc" id="L80">            String emailCliente = authServiceClient.getEmailPorId(clienteId); </span>
+<span class="nc" id="L81">            String emailProfissional = authServiceClient.getEmailPorId(dto.profissionalId());</span>
+
+<span class="nc" id="L83">            List&lt;String&gt; destinatarios = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L84" title="All 4 branches missed.">            if (emailCliente != null &amp;&amp; !emailCliente.isBlank()) destinatarios.add(emailCliente);</span>
+<span class="nc bnc" id="L85" title="All 4 branches missed.">            if (emailProfissional != null &amp;&amp; !emailProfissional.isBlank()) destinatarios.add(emailProfissional);</span>
+
+<span class="nc bnc" id="L87" title="All 2 branches missed.">            if (!destinatarios.isEmpty()) {</span>
+<span class="nc" id="L88">                String assunto = &quot;Confirmação de Agendamento - Agende Nail&quot;;</span>
+<span class="nc" id="L89">                String corpo = String.format(</span>
+                    &quot;Olá! O seu agendamento para o serviço '%s' foi confirmado para o dia %s às %s.&quot;,
+<span class="nc" id="L91">                    servico.getNome(),</span>
+<span class="nc" id="L92">                    salvo.getDataHoraInicio().toLocalDate().format(java.time.format.DateTimeFormatter.ofPattern(&quot;dd/MM/yyyy&quot;)),</span>
+<span class="nc" id="L93">                    salvo.getDataHoraInicio().toLocalTime()</span>
+                );
+                
+<span class="nc" id="L96">                EmailRequestDto emailRequest = new EmailRequestDto(destinatarios, assunto, corpo);</span>
+                
+                // Constrói o cabeçalho de autorização completo
+<span class="nc" id="L99">                String bearerToken = &quot;Bearer &quot; + token;</span>
+
+                // CHAMA O MÉTODO CORRETO (&quot;sendEmail&quot;) com os parâmetros corretos
+<span class="nc" id="L102">                messagingServiceClient.sendEmail(emailRequest, bearerToken);</span>
+
+<span class="nc" id="L104">                logger.info(&quot;Pedido de envio de email para o agendamento ID {}.&quot;, salvo.getId());</span>
+<span class="nc" id="L105">            } else {</span>
+<span class="nc" id="L106">                 logger.warn(&quot;Nenhum email de destinatário válido encontrado para o agendamento ID {}.&quot;, salvo.getId());</span>
+            }
+<span class="nc" id="L108">        } catch (Exception e) {</span>
+<span class="nc" id="L109">            logger.error(&quot;Falha ao tentar enviar email para o agendamento ID {}: {}&quot;, salvo.getId(), e.getMessage());</span>
+<span class="nc" id="L110">        }</span>
+        
+<span class="nc" id="L112">        return new AgendamentoDTO(salvo);</span>
+    }
+
+    public List&lt;AgendamentoDTO&gt; listarAgendamentosPorCliente(UUID clienteId) {
+<span class="nc" id="L116">        return agendamentoRepository.findByClienteId(clienteId)</span>
+<span class="nc" id="L117">                .stream()</span>
+<span class="nc" id="L118">                .map(AgendamentoDTO::new)</span>
+<span class="nc" id="L119">                .collect(Collectors.toList());</span>
+    }
+
+    /**
+     * Cancela um agendamento, validando se o usuário autenticado é o dono.
+     * VERSÃO FINAL E CORRETA
+     * * @param id O ID do agendamento a ser cancelado.
+     * @param authentication O objeto de autenticação do usuário logado.
+     * @return O DTO do agendamento atualizado com o status &quot;CANCELADO&quot;.
+     * @throws EntityNotFoundException se o agendamento não for encontrado.
+     * @throws IllegalAccessException se o usuário tentar cancelar um agendamento que não é seu.
+     * @throws IllegalArgumentException se o agendamento já estiver concluído ou cancelado.
+     */
+    @Transactional
+    public AgendamentoDTO cancelarAgendamento(Long id, Authentication authentication) throws IllegalAccessException {
+        
+        // 1. Extrai o ID do usuário (UUID) do token JWT.
+<span class="nc bnc" id="L136" title="All 4 branches missed.">        if (authentication == null || !(authentication.getPrincipal() instanceof Jwt)) {</span>
+<span class="nc" id="L137">            throw new IllegalAccessException(&quot;Acesso negado: informações de autenticação inválidas.&quot;);</span>
+        }
+<span class="nc" id="L139">        Jwt jwt = (Jwt) authentication.getPrincipal();</span>
+<span class="nc" id="L140">        UUID clienteIdAutenticado = UUID.fromString(jwt.getSubject());</span>
+
+        // 2. Busca o agendamento no banco de dados.
+<span class="nc" id="L143">        Agendamento agendamento = agendamentoRepository.findById(id)</span>
+<span class="nc" id="L144">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Agendamento não encontrado com o ID: &quot; + id));</span>
+
+        // 3. Validação de Segurança: Verifica se o usuário autenticado é o dono do agendamento.
+<span class="nc bnc" id="L147" title="All 2 branches missed.">        if (!agendamento.getClienteId().equals(clienteIdAutenticado)) {</span>
+<span class="nc" id="L148">            throw new IllegalAccessException(&quot;Você não tem permissão para cancelar este agendamento.&quot;);</span>
+        }
+
+        // 4. Validação de Regra de Negócio: Não permite cancelar agendamentos já finalizados.
+<span class="nc bnc" id="L152" title="All 4 branches missed.">        if (agendamento.getStatus() == AgendamentoStatus.CONCLUIDO || agendamento.getStatus() == AgendamentoStatus.CANCELADO) {</span>
+<span class="nc" id="L153">            throw new IllegalArgumentException(&quot;Este agendamento não pode mais ser cancelado pois já foi &quot; + agendamento.getStatus().toString().toLowerCase());</span>
+        }
+
+        // 5. Altera o status e salva no banco.
+<span class="nc" id="L157">        agendamento.setStatus(AgendamentoStatus.CANCELADO);</span>
+<span class="nc" id="L158">        Agendamento agendamentoSalvo = agendamentoRepository.save(agendamento);</span>
+
+        // 6. Retorna o DTO com os dados atualizados.
+<span class="nc" id="L161">        return new AgendamentoDTO(agendamentoSalvo); // Assumindo que você tem um construtor que aceita a entidade.</span>
+    }
+    
+    public List&lt;AgendamentoDTO&gt; listarTodosAgendamentos() {
+<span class="nc" id="L165">        return agendamentoRepository.findAll().stream()</span>
+<span class="nc" id="L166">                .map(AgendamentoDTO::new)</span>
+<span class="nc" id="L167">                .collect(Collectors.toList());</span>
+    }
+
+    public AgendamentoDTO buscarAgendamentoPorId(Long id) {
+<span class="nc" id="L171">        return agendamentoRepository.findById(id)</span>
+<span class="nc" id="L172">                .map(AgendamentoDTO::new)</span>
+<span class="nc" id="L173">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Agendamento não encontrado com ID: &quot; + id));</span>
+    }
+    
+    @Transactional
+    public AgendamentoDTO atualizarAgendamento(Long id, AgendamentoDTO dto, Authentication authentication) {
+<span class="nc" id="L178">        Agendamento agendamento = agendamentoRepository.findById(id)</span>
+<span class="nc" id="L179">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Agendamento não encontrado com ID: &quot; + id));</span>
+
+<span class="nc" id="L181">        String token = getBearerTokenFromRequest();</span>
+<span class="nc" id="L182">        ServicoDTOForAgendamento servico = buscarServico(dto.getServicoId(), token);</span>
+<span class="nc" id="L183">        LocalDateTime dataHoraFim = calcularHorarioFim(dto.getDataHoraInicio(), servico.getDuracao());</span>
+
+<span class="nc" id="L185">        validarConflitos(dto.getProfissionalId(), dto.getDataHoraInicio(), dataHoraFim, id);</span>
+
+<span class="nc" id="L187">        agendamento.setClienteId(dto.getClienteId());</span>
+<span class="nc" id="L188">        agendamento.setProfissionalId(dto.getProfissionalId());</span>
+<span class="nc" id="L189">        agendamento.setServicoId(dto.getServicoId());</span>
+<span class="nc" id="L190">        agendamento.setDataHoraInicio(dto.getDataHoraInicio());</span>
+<span class="nc" id="L191">        agendamento.setDataHoraFim(dataHoraFim);</span>
+<span class="nc" id="L192">        agendamento.setStatus(dto.getStatus());</span>
+<span class="nc" id="L193">        agendamento.setObservacoes(dto.getObservacoes());</span>
+
+<span class="nc" id="L195">        return new AgendamentoDTO(agendamentoRepository.save(agendamento));</span>
+    }
+
+    @Transactional
+    public void excluirAgendamento(Long id) {
+<span class="nc bnc" id="L200" title="All 2 branches missed.">        if (!agendamentoRepository.existsById(id)) {</span>
+<span class="nc" id="L201">            throw new EntityNotFoundException(&quot;Agendamento não encontrado com ID: &quot; + id);</span>
+        }
+<span class="nc" id="L203">        agendamentoRepository.deleteById(id);</span>
+<span class="nc" id="L204">    }</span>
+
+    public DisponibilidadeDTO buscarHorariosDisponiveis(LocalDate data, Long servicoId, UUID profissionalId, Authentication authentication) {
+<span class="nc" id="L207">        String token = getBearerTokenFromRequest();</span>
+<span class="nc" id="L208">        ServicoDTOForAgendamento servico = buscarServico(servicoId, token);</span>
+<span class="nc" id="L209">        int duracaoServicoMinutos = servico.getDuracao();</span>
+
+<span class="nc" id="L211">        List&lt;LocalTime&gt; todosOsSlotsPotenciais = gerarSlotsPotenciais(duracaoServicoMinutos);</span>
+<span class="nc" id="L212">        List&lt;Agendamento&gt; agendamentosNoDia = agendamentoRepository.findByProfissionalIdAndDataHoraInicioBetweenAndStatusNot(</span>
+<span class="nc" id="L213">            profissionalId, data.atStartOfDay(), data.atTime(23, 59, 59), AgendamentoStatus.CANCELADO);</span>
+        
+<span class="nc" id="L215">        List&lt;String&gt; horariosDisponiveis = todosOsSlotsPotenciais.stream()</span>
+<span class="nc" id="L216">            .filter(slot -&gt; {</span>
+<span class="nc" id="L217">                LocalDateTime tentativaInicio = data.atTime(slot);</span>
+<span class="nc" id="L218">                LocalDateTime tentativaFim = calcularHorarioFim(tentativaInicio, duracaoServicoMinutos);</span>
+<span class="nc" id="L219">                boolean conflitoAgendamento = agendamentosNoDia.stream()</span>
+<span class="nc bnc" id="L220" title="All 4 branches missed.">                    .anyMatch(a -&gt; tentativaInicio.isBefore(a.getDataHoraFim()) &amp;&amp; tentativaFim.isAfter(a.getDataHoraInicio()));</span>
+<span class="nc bnc" id="L221" title="All 2 branches missed.">                boolean conflitoBloqueio = !bloqueioHorarioService.isPeriodoDisponivelParaAgendamento(profissionalId, tentativaInicio, tentativaFim, null);</span>
+<span class="nc bnc" id="L222" title="All 4 branches missed.">                return !conflitoAgendamento &amp;&amp; !conflitoBloqueio;</span>
+            })
+<span class="nc" id="L224">            .map(slot -&gt; slot.format(DateTimeFormatter.ofPattern(&quot;HH:mm&quot;)))</span>
+<span class="nc" id="L225">            .collect(Collectors.toList());</span>
+
+<span class="nc" id="L227">        return new DisponibilidadeDTO(data, horariosDisponiveis);</span>
+    }
+
+    private String getBearerTokenFromRequest() {
+<span class="nc" id="L231">        ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();</span>
+<span class="nc bnc" id="L232" title="All 2 branches missed.">        if (sra != null) {</span>
+<span class="nc" id="L233">            HttpServletRequest request = sra.getRequest();</span>
+<span class="nc" id="L234">            String header = request.getHeader(&quot;Authorization&quot;);</span>
+<span class="nc bnc" id="L235" title="All 4 branches missed.">            if (header != null &amp;&amp; header.startsWith(&quot;Bearer &quot;)) {</span>
+<span class="nc" id="L236">                return header.substring(7);</span>
+            }
+        }
+<span class="nc" id="L239">        throw new IllegalStateException(&quot;Token de autorização não encontrado na requisição.&quot;);</span>
+    }
+    
+    private ServicoDTOForAgendamento buscarServico(Long servicoId, String bearerToken) {
+        try {
+            // A chamada agora está correta, passando os dois argumentos que o ServicoClient espera.
+<span class="nc" id="L245">            ResponseEntity&lt;ServicoDTOForAgendamento&gt; respostaServico = servicoClient.getServicoById(servicoId, bearerToken);</span>
+<span class="nc bnc" id="L246" title="All 4 branches missed.">            if (respostaServico.getStatusCode().is2xxSuccessful() &amp;&amp; respostaServico.getBody() != null) {</span>
+<span class="nc" id="L247">                return respostaServico.getBody();</span>
+            }
+<span class="nc" id="L249">        } catch (Exception e) {</span>
+<span class="nc" id="L250">            logger.error(&quot;Falha na comunicação com servico-service para ID {}: {}&quot;, servicoId, e.getMessage());</span>
+<span class="nc" id="L251">        }</span>
+<span class="nc" id="L252">        throw new EntityNotFoundException(&quot;Serviço não encontrado ou inacessível com ID: &quot; + servicoId);</span>
+    }
+
+    private void validarConflitos(UUID profissionalId, LocalDateTime inicio, LocalDateTime fim, Long agendamentoIdExcluido) {
+<span class="nc bnc" id="L256" title="All 2 branches missed.">       if(!validarDisponibilidade(profissionalId, inicio, fim, agendamentoIdExcluido)){</span>
+<span class="nc" id="L257">           throw new IllegalArgumentException(&quot;Horário inválido, conflita com outro atendimento.&quot;);</span>
+       }
+<span class="nc" id="L259">    }</span>
+    public boolean validarDisponibilidade(UUID profissional, LocalDateTime inicio, LocalDateTime fim, Long agendamentoIdExcluido){
+<span class="pc bpc" id="L261" title="1 of 2 branches missed.">        List&lt;Agendamento&gt; conflitos = (agendamentoIdExcluido == null)</span>
+<span class="nc" id="L262">                ? agendamentoRepository.findByProfissionalIdAndDataHoraFimAfterAndDataHoraInicioBeforeAndStatusNot(profissional, inicio, fim, AgendamentoStatus.CANCELADO)</span>
+<span class="fc" id="L263">                : agendamentoRepository.findByProfissionalIdAndDataHoraFimAfterAndDataHoraInicioBeforeAndIdNotAndStatusNot(profissional, inicio, fim, agendamentoIdExcluido, AgendamentoStatus.CANCELADO);</span>
+<span class="fc" id="L264">        return conflitos.isEmpty();</span>
+        
+                
+    }
+    
+    private List&lt;LocalTime&gt; gerarSlotsPotenciais(int duracaoServicoMinutos) {
+<span class="nc" id="L270">        List&lt;LocalTime&gt; slots = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L271">        LocalTime slot = HORA_INICIO_TRABALHO;</span>
+<span class="nc bnc" id="L272" title="All 2 branches missed.">        while (!slot.plusMinutes(duracaoServicoMinutos).isAfter(HORA_FIM_TRABALHO)) {</span>
+<span class="nc" id="L273">            slots.add(slot);</span>
+<span class="nc" id="L274">            slot = slot.plusMinutes(INTERVALO_SLOT_MINUTOS);</span>
+        }
+<span class="nc" id="L276">        return slots;</span>
+    }
+    
+    public List&lt;AgendamentoDTO&gt; listarAgendamentosPorCliente(Authentication authentication) {
+        // 1. Extrai o ID do cliente de forma segura a partir do token
+<span class="nc" id="L281">        String token = getBearerTokenFromRequest(); // Usa o método auxiliar que já temos</span>
+<span class="nc" id="L282">        UUID clienteId = jwtService.extractUserId(token);</span>
+
+        // 2. Busca os agendamentos no repositório
+<span class="nc" id="L285">        List&lt;Agendamento&gt; agendamentos = agendamentoRepository.findByClienteId(clienteId);</span>
+
+        // 3. Converte as entidades para DTOs e retorna
+<span class="nc" id="L288">        return agendamentos.stream()</span>
+<span class="nc" id="L289">                .map(AgendamentoDTO::new) // Usa o construtor do DTO que criámos</span>
+<span class="nc" id="L290">                .collect(Collectors.toList());</span>
+    }
+    
+    @Transactional
+    public AgendamentoDTO salvarAgendamentoPeloAdmin(AgendamentoDTO dto, Authentication authentication) {
+<span class="nc" id="L295">        Jwt jwt = (Jwt) authentication.getPrincipal();</span>
+<span class="nc" id="L296">        String bearerToken = &quot;Bearer &quot; + jwt.getTokenValue();</span>
+
+<span class="nc" id="L298">        ServicoDTOForAgendamento servico = buscarServico(dto.getServicoId(), bearerToken);</span>
+<span class="nc" id="L299">        LocalDateTime dataHoraFim = calcularHorarioFim(dto.getDataHoraInicio(),servico.getDuracao());</span>
+
+        // --- VALIDAÇÃO DE CONFLITOS ANTES DE SALVAR ---
+<span class="nc" id="L302">        validarConflitos(dto.getProfissionalId(), dto.getDataHoraInicio(), dataHoraFim, null);</span>
+        
+<span class="nc" id="L304">        Agendamento agendamento = new Agendamento();</span>
+        // ... (preenchimento dos campos do agendamento)
+<span class="nc" id="L306">        agendamento.setClienteId(dto.getClienteId());</span>
+<span class="nc" id="L307">        agendamento.setProfissionalId(dto.getProfissionalId());</span>
+<span class="nc" id="L308">        agendamento.setServicoId(dto.getServicoId());</span>
+<span class="nc" id="L309">        agendamento.setDataHoraInicio(dto.getDataHoraInicio());</span>
+<span class="nc" id="L310">        agendamento.setDataHoraFim(dataHoraFim);</span>
+<span class="nc" id="L311">        agendamento.setStatus(dto.getStatus());</span>
+<span class="nc" id="L312">        agendamento.setObservacoes(dto.getObservacoes());</span>
+
+<span class="nc" id="L314">        Agendamento salvo = agendamentoRepository.save(agendamento);</span>
+<span class="nc" id="L315">        logger.info(&quot;Admin criou/salvou o agendamento ID {}&quot;, salvo.getId());</span>
+        
+<span class="nc" id="L317">        enviarEmailDeConfirmacao(salvo, servico, authentication);</span>
+<span class="nc" id="L318">        return new AgendamentoDTO(salvo);</span>
+    }
+    
+    @Transactional
+    public AgendamentoDTO atualizarAgendamentoPeloAdmin(Long id, AgendamentoDTO dto, Authentication authentication) {
+<span class="nc" id="L323">        Agendamento agendamento = agendamentoRepository.findById(id)</span>
+<span class="nc" id="L324">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Agendamento não encontrado com ID: &quot; + id));</span>
+        
+<span class="nc" id="L326">        Jwt jwt = (Jwt) authentication.getPrincipal();</span>
+<span class="nc" id="L327">        String bearerToken = &quot;Bearer &quot; + jwt.getTokenValue();</span>
+
+        // A chamada agora passa o token, que é o segundo argumento esperado.
+<span class="nc" id="L330">        ServicoDTOForAgendamento servico = buscarServico(dto.getServicoId(), bearerToken);</span>
+<span class="nc" id="L331">        LocalDateTime dataHoraFim = calcularHorarioFim(dto.getDataHoraInicio(), servico.getDuracao());</span>
+        
+<span class="nc" id="L333">        validarConflitos(dto.getProfissionalId(), dto.getDataHoraInicio(), dataHoraFim, id);</span>
+
+<span class="nc" id="L335">        agendamento.setClienteId(dto.getClienteId());</span>
+<span class="nc" id="L336">        agendamento.setProfissionalId(dto.getProfissionalId());</span>
+<span class="nc" id="L337">        agendamento.setServicoId(dto.getServicoId());</span>
+<span class="nc" id="L338">        agendamento.setDataHoraInicio(dto.getDataHoraInicio());</span>
+<span class="nc" id="L339">        agendamento.setDataHoraFim(dataHoraFim);</span>
+<span class="nc" id="L340">        agendamento.setStatus(dto.getStatus());</span>
+<span class="nc" id="L341">        agendamento.setObservacoes(dto.getObservacoes());</span>
+
+<span class="nc" id="L343">        Agendamento salvo = agendamentoRepository.save(agendamento);</span>
+<span class="nc" id="L344">        logger.info(&quot;Admin atualizou o agendamento ID {}&quot;, salvo.getId());</span>
+
+<span class="nc" id="L346">        return new AgendamentoDTO(salvo);</span>
+    }
+    public LocalDateTime calcularHorarioFim(LocalDateTime inicio, int duracaoMinutos){
+<span class="fc" id="L349">        return inicio.plusMinutes(duracaoMinutos);</span>
+    }
+    private void enviarEmailDeConfirmacao(Agendamento agendamento, ServicoDTOForAgendamento servico, Authentication authentication) {
+        try {
+            // Extrai o token para a chamada ao messaging-service.
+<span class="nc" id="L354">            Jwt jwt = (Jwt) authentication.getPrincipal();</span>
+<span class="nc" id="L355">            String bearerToken = &quot;Bearer &quot; + jwt.getTokenValue();</span>
+
+            // Busca os emails do cliente e do profissional no auth-service.
+<span class="nc" id="L358">            String emailCliente = authServiceClient.getEmailPorId(agendamento.getClienteId()); </span>
+<span class="nc" id="L359">            String emailProfissional = authServiceClient.getEmailPorId(agendamento.getProfissionalId());</span>
+
+<span class="nc" id="L361">            List&lt;String&gt; destinatarios = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L362" title="All 4 branches missed.">            if (emailCliente != null &amp;&amp; !emailCliente.isBlank()) destinatarios.add(emailCliente);</span>
+<span class="nc bnc" id="L363" title="All 4 branches missed.">            if (emailProfissional != null &amp;&amp; !emailProfissional.isBlank()) destinatarios.add(emailProfissional);</span>
+
+<span class="nc bnc" id="L365" title="All 2 branches missed.">            if (!destinatarios.isEmpty()) {</span>
+<span class="nc" id="L366">                String assunto = &quot;Confirmação de Agendamento - Agende Nail&quot;;</span>
+<span class="nc" id="L367">                String corpo = String.format(</span>
+                    &quot;Olá!\n\nUm agendamento para o serviço '%s' foi confirmado.\n\nData: %s\nHora: %s\n\nAté breve!&quot;,
+<span class="nc" id="L369">                    servico.getNome(),</span>
+<span class="nc" id="L370">                    agendamento.getDataHoraInicio().toLocalDate().format(java.time.format.DateTimeFormatter.ofPattern(&quot;dd/MM/yyyy&quot;)),</span>
+<span class="nc" id="L371">                    agendamento.getDataHoraInicio().toLocalTime()</span>
+                );
+                
+<span class="nc" id="L374">                EmailRequestDto emailRequest = new EmailRequestDto(destinatarios, assunto, corpo);</span>
+                
+                // Chama o messaging-service para enviar o email.
+<span class="nc" id="L377">                messagingServiceClient.sendEmail(emailRequest, bearerToken);</span>
+<span class="nc" id="L378">                logger.info(&quot;Pedido de envio de email para o agendamento ID {}.&quot;, agendamento.getId());</span>
+            }
+<span class="nc" id="L380">        } catch (Exception e) {</span>
+            // Uma falha aqui não deve quebrar a operação principal de agendamento.
+<span class="nc" id="L382">            logger.error(&quot;Falha ao tentar enviar email para o agendamento ID {}: {}&quot;, agendamento.getId(), e.getMessage());</span>
+<span class="nc" id="L383">        }</span>
+<span class="nc" id="L384">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

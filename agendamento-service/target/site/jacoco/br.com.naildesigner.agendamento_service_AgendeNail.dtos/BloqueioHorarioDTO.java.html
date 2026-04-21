@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BloqueioHorarioDTO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Agendamento Service</a> &gt; <a href="index.source.html" class="el_package">br.com.naildesigner.agendamento_service_AgendeNail.dtos</a> &gt; <span class="el_source">BloqueioHorarioDTO.java</span></div><h1>BloqueioHorarioDTO.java</h1><pre class="source lang-java linenums">package br.com.naildesigner.agendamento_service_AgendeNail.dtos;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.UUID;
+
+// Se estiver usando Lombok, adicione:
+// import lombok.Data;
+// import lombok.NoArgsConstructor;
+// import lombok.AllArgsConstructor;
+
+//@Data // Se estiver usando Lombok
+//@NoArgsConstructor // Se estiver usando Lombok
+//@AllArgsConstructor // Se estiver usando Lombok
+<span class="nc" id="L15">public class BloqueioHorarioDTO {</span>
+    private Long id;
+    private LocalDate dataBloqueio;
+    private LocalTime horaInicio;
+    private LocalTime horaFim;
+    private UUID profissionalId; // NOVO CAMPO NO DTO
+    private String motivo;
+
+    // Construtores (se não usar Lombok, adicione manualmente)
+    // Getters e Setters (se não usar Lombok, adicione manualmente)
+    // ... inclua os getters e setters para profissionalId ...
+<span class="nc" id="L26">    public Long getId() { return id; }</span>
+<span class="nc" id="L27">    public void setId(Long id) { this.id = id; }</span>
+<span class="nc" id="L28">    public LocalDate getDataBloqueio() { return dataBloqueio; }</span>
+<span class="nc" id="L29">    public void setDataBloqueio(LocalDate dataBloqueio) { this.dataBloqueio = dataBloqueio; }</span>
+<span class="nc" id="L30">    public LocalTime getHoraInicio() { return horaInicio; }</span>
+<span class="nc" id="L31">    public void setHoraInicio(LocalTime horaInicio) { this.horaInicio = horaInicio; }</span>
+<span class="nc" id="L32">    public LocalTime getHoraFim() { return horaFim; }</span>
+<span class="nc" id="L33">    public void setHoraFim(LocalTime horaFim) { this.horaFim = horaFim; }</span>
+<span class="nc" id="L34">    public UUID getProfissionalId() { return profissionalId; } // NOVO GETTER</span>
+<span class="nc" id="L35">    public void setProfissionalId(UUID profissionalId) { this.profissionalId = profissionalId; } // NOVO SETTER</span>
+<span class="nc" id="L36">    public String getMotivo() { return motivo; }</span>
+<span class="nc" id="L37">    public void setMotivo(String motivo) { this.motivo = motivo; }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

@@ -1,0 +1,148 @@
+@startuml
+class br.com.nailDesigner.auth_service.AuthServiceApplication {
++ {static} void main(String[])
+}
+
+class br.com.nailDesigner.auth_service.Configs.DataInitializer {
+- UserRepository userRepository
+- PasswordEncoder passwordEncoder
++ void run(String)
+}
+
+
+class br.com.nailDesigner.auth_service.Services.UserDetailsServiceImpl {
+- UserRepository userRepository
++ UserDetails loadUserByUsername(String)
+}
+
+
+interface br.com.nailDesigner.auth_service.Repositories.UserRepository {
+~ Optional<User> findByUsername(String)
+~ List<User> findByRole(Role)
+~ Optional<User> findByEmail(String)
+}
+
+class br.com.nailDesigner.auth_service.Models.User {
+- UUID id
+- String username
+- String password
+- String email
+- String phone
+- Role role
++ Collection<? extends GrantedAuthority> getAuthorities()
++ String getPhone()
++ void setPhone(String)
++ String getEmail()
++ void setEmail(String)
++ Role getRole()
++ void setRole(Role)
++ void setId(UUID)
++ void setUsername(String)
++ void setPassword(String)
++ String getPassword()
++ String getUsername()
++ boolean isAccountNonExpired()
++ boolean isAccountNonLocked()
++ boolean isCredentialsNonExpired()
++ boolean isEnabled()
++ UUID getId()
+}
+
+
+class br.com.nailDesigner.auth_service.Services.JwtService {
+- String SECRET_KEY
+- long jwtExpiration
++ String extractUsername(String)
++ T extractClaim(String,Function<Claims,T>)
++ String generateToken(UserDetails)
++ String generateToken(Map<String,Object>,UserDetails)
++ boolean isTokenValid(String,UserDetails)
+- boolean isTokenExpired(String)
+- Date extractExpiration(String)
+- Claims extractAllClaims(String)
+- Key getSignInKey()
+}
+
+
+class br.com.nailDesigner.auth_service.Configs.JwtAuthFilter {
+- JwtService jwtService
+- UserDetailsService userDetailsService
+# void doFilterInternal(HttpServletRequest,HttpServletResponse,FilterChain)
+}
+
+
+class br.com.nailDesigner.auth_service.Controllers.AuthController {
+- AuthenticationManager authenticationManager
+- UserRepository userRepository
+- PasswordEncoder passwordEncoder
+- JwtService jwtService
++ ResponseEntity<LoginResponse> login(LoginRequest)
++ ResponseEntity<String> register(RegisterRequest)
++ ResponseEntity<UserProfileDto> getCurrentUser(Authentication)
++ ResponseEntity<String> updateCurrentUser(Authentication,UpdateProfileRequestDto)
++ ResponseEntity<List<ProfissionalDto>> getProfissionais()
++ ResponseEntity<String> getUserEmailById(UUID,Authentication)
++ ResponseEntity<List<User>> getAllUsers()
++ ResponseEntity<User> getUserById(UUID)
++ ResponseEntity<?> createUser(User)
++ ResponseEntity<User> updateUser(UUID,User)
++ ResponseEntity<Void> deleteUser(UUID)
+}
+
+
+class br.com.nailDesigner.auth_service.Controllers.AuthController$LoginRequest {
+- String username
+- String password
++ String password()
++ String username()
+}
+
+
+class br.com.nailDesigner.auth_service.Controllers.AuthController$LoginResponse {
+- String token
++ String token()
+}
+
+
+class br.com.nailDesigner.auth_service.Controllers.AuthController$RegisterRequest {
+- String username
+- String email
+- String password
+- String phone
++ String email()
++ String password()
++ String username()
++ String phone()
+}
+
+
+class br.com.nailDesigner.auth_service.Configs.SecurityConfig {
+- JwtAuthFilter jwtAuthFilter
+- UserDetailsService userDetailsService
++ SecurityFilterChain securityFilterChain(HttpSecurity)
++ AuthenticationProvider authenticationProvider()
++ PasswordEncoder passwordEncoder()
++ AuthenticationManager authenticationManager(AuthenticationConfiguration)
+}
+
+
+class br.com.nailDesigner.auth_service.AuthServiceApplicationTests {
+~ void contextLoads()
+}
+
+enum br.com.nailDesigner.auth_service.Models.Role {
++  USER
++  ADMIN
+}
+
+
+
+org.springframework.boot.CommandLineRunner <|.. br.com.nailDesigner.auth_service.Configs.DataInitializer
+org.springframework.security.core.userdetails.UserDetailsService <|.. br.com.nailDesigner.auth_service.Services.UserDetailsServiceImpl
+org.springframework.data.jpa.repository.JpaRepository <|-- br.com.nailDesigner.auth_service.Repositories.UserRepository
+org.springframework.security.core.userdetails.UserDetails <|.. br.com.nailDesigner.auth_service.Models.User
+org.springframework.web.filter.OncePerRequestFilter <|-- br.com.nailDesigner.auth_service.Configs.JwtAuthFilter
+br.com.nailDesigner.auth_service.Controllers.AuthController +.. br.com.nailDesigner.auth_service.Controllers.AuthController$LoginRequest
+br.com.nailDesigner.auth_service.Controllers.AuthController +.. br.com.nailDesigner.auth_service.Controllers.AuthController$LoginResponse
+br.com.nailDesigner.auth_service.Controllers.AuthController +.. br.com.nailDesigner.auth_service.Controllers.AuthController$RegisterRequest
+@enduml

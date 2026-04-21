@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ServicoDataInitializer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Servico Service</a> &gt; <a href="index.source.html" class="el_package">br.com.naildesigner.servico_service.config</a> &gt; <span class="el_source">ServicoDataInitializer.java</span></div><h1>ServicoDataInitializer.java</h1><pre class="source lang-java linenums">package br.com.naildesigner.servico_service.config;
+
+import br.com.naildesigner.servico_service.models.Servico;
+import br.com.naildesigner.servico_service.repositories.ServicoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+@Component
+<span class="fc" id="L16">public class ServicoDataInitializer implements CommandLineRunner {</span>
+
+<span class="fc" id="L18">    private static final Logger logger = LoggerFactory.getLogger(ServicoDataInitializer.class);</span>
+
+    @Autowired
+    private ServicoRepository servicoRepository;
+
+    @Override
+    public void run(String... args) throws Exception {
+<span class="pc bpc" id="L25" title="1 of 2 branches missed.">        if (servicoRepository.count() == 0) {</span>
+<span class="fc" id="L26">            logger.info(&quot;Banco de dados de serviços vazio. A popular com dados iniciais e imagens corretas...&quot;);</span>
+
+<span class="fc" id="L28">            List&lt;Servico&gt; servicosParaSalvar = new ArrayList&lt;&gt;();</span>
+
+            // Cada serviço agora tem o seu caminho de imagem correto, como no HTML original.
+            
+<span class="fc" id="L32">            Servico s1 = new Servico();</span>
+<span class="fc" id="L33">            s1.setNome(&quot;Unhas em Gel (Tips)&quot;);</span>
+<span class="fc" id="L34">            s1.setDescricao(&quot;Alongamento com tips para um acabamento duradouro e natural.&quot;);</span>
+<span class="fc" id="L35">            s1.setPreco(100.00);</span>
+<span class="fc" id="L36">            s1.setDuracao(120);</span>
+<span class="fc" id="L37">            s1.setImagens(Arrays.asList(&quot;img/close-up-manicurist-using-nail-polish.jpg&quot;));</span>
+<span class="fc" id="L38">            servicosParaSalvar.add(s1);</span>
+
+<span class="fc" id="L40">            Servico s2 = new Servico();</span>
+<span class="fc" id="L41">            s2.setNome(&quot;Unhas de Fibra de Vidro&quot;);</span>
+<span class="fc" id="L42">            s2.setDescricao(&quot;Técnica de alongamento que usa fios de fibra para um resultado resistente e fino.&quot;);</span>
+<span class="fc" id="L43">            s2.setPreco(140.00);</span>
+<span class="fc" id="L44">            s2.setDuracao(180);</span>
+<span class="fc" id="L45">            s2.setImagens(Arrays.asList(&quot;/img/unha-2.jpg&quot;));</span>
+<span class="fc" id="L46">            servicosParaSalvar.add(s2);</span>
+            
+<span class="fc" id="L48">            Servico s3 = new Servico();</span>
+<span class="fc" id="L49">            s3.setNome(&quot;Banho de Gel&quot;);</span>
+<span class="fc" id="L50">            s3.setDescricao(&quot;Aplicação de gel sobre as unhas naturais para fortalecimento e brilho.&quot;);</span>
+<span class="fc" id="L51">            s3.setPreco(80.00);</span>
+<span class="fc" id="L52">            s3.setDuracao(90);</span>
+<span class="fc" id="L53">            s3.setImagens(Arrays.asList(&quot;/img/unha-3.jpg&quot;));</span>
+<span class="fc" id="L54">            servicosParaSalvar.add(s3);</span>
+            
+<span class="fc" id="L56">            Servico s4 = new Servico();</span>
+<span class="fc" id="L57">            s4.setNome(&quot;Blindagem de Unhas&quot;);</span>
+<span class="fc" id="L58">            s4.setDescricao(&quot;Cria uma camada protetora sobre as unhas naturais para evitar quebras e lascas.&quot;);</span>
+<span class="fc" id="L59">            s4.setPreco(50.00);</span>
+<span class="fc" id="L60">            s4.setDuracao(60);</span>
+<span class="fc" id="L61">            s4.setImagens(Arrays.asList(&quot;/img/unha-4.jpg&quot;));</span>
+<span class="fc" id="L62">            servicosParaSalvar.add(s4);</span>
+
+<span class="fc" id="L64">            Servico s5 = new Servico();</span>
+<span class="fc" id="L65">            s5.setNome(&quot;Manutenção de Unha de Gel&quot;);</span>
+<span class="fc" id="L66">            s5.setDescricao(&quot;Manutenção do alongamento em gel para garantir a durabilidade e aparência.&quot;);</span>
+<span class="fc" id="L67">            s5.setPreco(80.00);</span>
+<span class="fc" id="L68">            s5.setDuracao(100);</span>
+<span class="fc" id="L69">            s5.setImagens(Arrays.asList(&quot;/img/unha-5.jpg&quot;));</span>
+<span class="fc" id="L70">            servicosParaSalvar.add(s5);</span>
+
+<span class="fc" id="L72">            Servico s6 = new Servico();</span>
+<span class="fc" id="L73">            s6.setNome(&quot;Manutenção de Banho de Gel&quot;);</span>
+<span class="fc" id="L74">            s6.setDescricao(&quot;Manutenção da camada de gel sobre as unhas naturais.&quot;);</span>
+<span class="fc" id="L75">            s6.setPreco(60.00);</span>
+<span class="fc" id="L76">            s6.setDuracao(75);</span>
+<span class="fc" id="L77">            s6.setImagens(Arrays.asList(&quot;/img/unha-5.jpg&quot;)); // Imagem repetida, como no original</span>
+<span class="fc" id="L78">            servicosParaSalvar.add(s6);</span>
+            
+<span class="fc" id="L80">            Servico s7 = new Servico();</span>
+<span class="fc" id="L81">            s7.setNome(&quot;Francesa Reversa (Adicional)&quot;);</span>
+<span class="fc" id="L82">            s7.setDescricao(&quot;Decoração avançada para um efeito de francesinha estrutural e marcante.&quot;);</span>
+<span class="fc" id="L83">            s7.setPreco(10.00);</span>
+<span class="fc" id="L84">            s7.setDuracao(30);</span>
+<span class="fc" id="L85">            s7.setImagens(Arrays.asList(&quot;/img/unha-6.jpg&quot;));</span>
+<span class="fc" id="L86">            servicosParaSalvar.add(s7);</span>
+
+<span class="fc" id="L88">            Servico s8 = new Servico();</span>
+<span class="fc" id="L89">            s8.setNome(&quot;Decoração 3D (Adicional por unha)&quot;);</span>
+<span class="fc" id="L90">            s8.setDescricao(&quot;Aplicação de elementos decorativos em relevo para um design único.&quot;);</span>
+<span class="fc" id="L91">            s8.setPreco(15.00);</span>
+<span class="fc" id="L92">            s8.setDuracao(20);</span>
+<span class="fc" id="L93">            s8.setImagens(Arrays.asList(&quot;/img/unha-6.jpg&quot;)); // Imagem repetida</span>
+<span class="fc" id="L94">            servicosParaSalvar.add(s8);</span>
+            
+<span class="fc" id="L96">            Servico s9 = new Servico();</span>
+<span class="fc" id="L97">            s9.setNome(&quot;Esmaltação em Gel&quot;);</span>
+<span class="fc" id="L98">            s9.setDescricao(&quot;Esmaltação de longa duração com secagem imediata e brilho intenso.&quot;);</span>
+<span class="fc" id="L99">            s9.setPreco(50.00);</span>
+<span class="fc" id="L100">            s9.setDuracao(45);</span>
+<span class="fc" id="L101">            s9.setImagens(Arrays.asList(&quot;/img/unha-6.jpg&quot;)); // Imagem repetida</span>
+<span class="fc" id="L102">            servicosParaSalvar.add(s9);</span>
+
+<span class="fc" id="L104">            Servico s10 = new Servico();</span>
+<span class="fc" id="L105">            s10.setNome(&quot;Mão (Cutilagem e Esmaltação)&quot;);</span>
+<span class="fc" id="L106">            s10.setDescricao(&quot;Cuidado tradicional com cutilagem e esmaltação para as mãos.&quot;);</span>
+<span class="fc" id="L107">            s10.setPreco(25.00);</span>
+<span class="fc" id="L108">            s10.setDuracao(40);</span>
+<span class="fc" id="L109">            s10.setImagens(Arrays.asList(&quot;/img/unha-6.jpg&quot;)); // Imagem repetida</span>
+<span class="fc" id="L110">            servicosParaSalvar.add(s10);</span>
+
+<span class="fc" id="L112">            Servico s11 = new Servico();</span>
+<span class="fc" id="L113">            s11.setNome(&quot;Pé (Cutilagem e Esmaltação)&quot;);</span>
+<span class="fc" id="L114">            s11.setDescricao(&quot;Cuidado tradicional com cutilagem e esmaltação para os pés.&quot;);</span>
+<span class="fc" id="L115">            s11.setPreco(30.00);</span>
+<span class="fc" id="L116">            s11.setDuracao(50);</span>
+<span class="fc" id="L117">            s11.setImagens(Arrays.asList(&quot;/img/unha-6.jpg&quot;)); // Imagem repetida</span>
+<span class="fc" id="L118">            servicosParaSalvar.add(s11);</span>
+            
+<span class="fc" id="L120">            Servico s12 = new Servico();</span>
+<span class="fc" id="L121">            s12.setNome(&quot;Mão e Pé&quot;);</span>
+<span class="fc" id="L122">            s12.setDescricao(&quot;Pacote completo de cuidado tradicional para mãos e pés.&quot;);</span>
+<span class="fc" id="L123">            s12.setPreco(50.00);</span>
+<span class="fc" id="L124">            s12.setDuracao(90);</span>
+<span class="fc" id="L125">            s12.setImagens(Arrays.asList(&quot;/img/unha-6.jpg&quot;)); // Imagem repetida</span>
+<span class="fc" id="L126">            servicosParaSalvar.add(s12);</span>
+
+<span class="fc" id="L128">            servicoRepository.saveAll(servicosParaSalvar);</span>
+<span class="fc" id="L129">            logger.info(&quot;&gt;&gt; {} serviços foram guardados na base de dados.&quot;, servicosParaSalvar.size());</span>
+<span class="fc" id="L130">        } else {</span>
+<span class="nc" id="L131">            logger.info(&quot;A base de dados de serviços já contém dados. Nenhuma ação necessária.&quot;);</span>
+        }
+<span class="fc" id="L133">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

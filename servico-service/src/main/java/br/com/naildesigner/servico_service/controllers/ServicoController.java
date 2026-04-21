@@ -2,6 +2,7 @@ package br.com.naildesigner.servico_service.controllers;
 
 import java.util.List;
 
+import br.com.naildesigner.servico_service.dtos.RequestServicoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.access.prepost.PreAuthorize;
-import br.com.naildesigner.servico_service.dtos.ServicoDTO;
+import br.com.naildesigner.servico_service.dtos.ResponseServicoDTO;
 import br.com.naildesigner.servico_service.services.ServicoService;
 
 @RestController
@@ -24,25 +25,24 @@ public class ServicoController {
 
     @PostMapping
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ServicoDTO salvar(@RequestBody ServicoDTO dto) {
+    public ResponseServicoDTO salvar(@RequestBody RequestServicoDTO dto) {
         return servicoService.salvar(dto);
     }
 
     @GetMapping
-    public List<ServicoDTO> listar() {
+    public List<ResponseServicoDTO> listar() {
         return servicoService.listarTodos();
     }
 
     @GetMapping("/{id}")
-    public ServicoDTO buscarPorId(@PathVariable Long id) {
+    public ResponseServicoDTO buscarPorId(@PathVariable Long id) {
         return servicoService.buscarPorId(id);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ServicoDTO atualizar(@PathVariable Long id, @RequestBody ServicoDTO dto) {
-        dto.setId(id);
-        return servicoService.atualizar(dto);
+    public ResponseServicoDTO atualizar(@PathVariable Long id, @RequestBody RequestServicoDTO dto) {
+        return servicoService.atualizar(id, dto);
     }
 
     @DeleteMapping("/{id}")

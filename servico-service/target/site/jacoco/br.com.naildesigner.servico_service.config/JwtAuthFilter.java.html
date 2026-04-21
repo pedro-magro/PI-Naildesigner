@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JwtAuthFilter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Servico Service</a> &gt; <a href="index.source.html" class="el_package">br.com.naildesigner.servico_service.config</a> &gt; <span class="el_source">JwtAuthFilter.java</span></div><h1>JwtAuthFilter.java</h1><pre class="source lang-java linenums">package br.com.naildesigner.servico_service.config;
+
+import br.com.naildesigner.servico_service.services.JwtService;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Component
+<span class="fc" id="L22">public class JwtAuthFilter extends OncePerRequestFilter {</span>
+
+    @Autowired
+    private JwtService jwtService;
+    // NÃO PRECISAMOS MAIS DO UserDetailsService AQUI
+
+    @Override
+    protected void doFilterInternal(
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain
+    ) throws ServletException, IOException {
+
+<span class="nc" id="L35">        final String authHeader = request.getHeader(&quot;Authorization&quot;);</span>
+        final String jwt;
+        final String username;
+
+        // Se não há token, ou não é Bearer, passa para o próximo filtro.
+        // Endpoints públicos (permitAll) serão liberados pelo Spring Security mais adiante.
+<span class="nc bnc" id="L41" title="All 4 branches missed.">        if (authHeader == null || !authHeader.startsWith(&quot;Bearer &quot;)) {</span>
+<span class="nc" id="L42">            filterChain.doFilter(request, response);</span>
+<span class="nc" id="L43">            return;</span>
+        }
+
+<span class="nc" id="L46">        jwt = authHeader.substring(7);</span>
+        try {
+<span class="nc" id="L48">            username = jwtService.extractUsername(jwt);</span>
+
+<span class="nc bnc" id="L50" title="All 4 branches missed.">            if (username != null &amp;&amp; SecurityContextHolder.getContext().getAuthentication() == null) {</span>
+                // Valida a assinatura e expiração do token
+<span class="nc bnc" id="L52" title="All 2 branches missed.">                if (jwtService.isTokenSignatureAndExpirationValid(jwt)) {</span>
+                    // Extrai as roles diretamente do token
+<span class="nc" id="L54">                    List&lt;String&gt; roles = jwtService.extractRoles(jwt);</span>
+<span class="nc bnc" id="L55" title="All 2 branches missed.">                    List&lt;SimpleGrantedAuthority&gt; authorities = roles != null</span>
+<span class="nc" id="L56">                            ? roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())</span>
+<span class="nc" id="L57">                            : java.util.Collections.emptyList();</span>
+
+                    // O 'principal' agora é o username (String), ou um objeto UserDetails customizado
+                    // que você pode criar aqui apenas com username e authorities se precisar de um objeto UserDetails.
+                    // Para a maioria dos casos, o username é suficiente como principal.
+<span class="nc" id="L62">                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(</span>
+                            username, // Principal é o username
+                            null,     // Credenciais são nulas para autenticação baseada em token
+                            authorities // Autoridades extraídas do token
+                    );
+<span class="nc" id="L67">                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));</span>
+<span class="nc" id="L68">                    SecurityContextHolder.getContext().setAuthentication(authToken);</span>
+                }
+            }
+<span class="nc" id="L71">        } catch (Exception e) {</span>
+            // logger.warn(&quot;Erro ao processar token JWT no messaging-service: {}&quot;, e.getMessage());
+<span class="nc" id="L73">            SecurityContextHolder.clearContext(); // Limpa o contexto em caso de erro no token</span>
+<span class="nc" id="L74">        }</span>
+
+<span class="nc" id="L76">        filterChain.doFilter(request, response);</span>
+<span class="nc" id="L77">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

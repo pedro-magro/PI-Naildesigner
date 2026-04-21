@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AgendamentoDTO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Agendamento Service</a> &gt; <a href="index.source.html" class="el_package">br.com.naildesigner.agendamento_service_AgendeNail.dtos</a> &gt; <span class="el_source">AgendamentoDTO.java</span></div><h1>AgendamentoDTO.java</h1><pre class="source lang-java linenums">package br.com.naildesigner.agendamento_service_AgendeNail.dtos;
+
+import br.com.naildesigner.agendamento_service_AgendeNail.enums.AgendamentoStatus;
+import br.com.naildesigner.agendamento_service_AgendeNail.models.Agendamento;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.UUID;
+
+/**
+ * Data Transfer Object (DTO) para representar um Agendamento.
+ * É usado para transferir dados entre o backend e o frontend de forma segura.
+ */
+public class AgendamentoDTO {
+
+    private Long id;
+    private UUID clienteId;
+    private String clienteNome;
+    private Long servicoId;
+    private String servicoNome;
+    private Double servicoPreco;
+    private Integer servicoDuracao;
+    private UUID profissionalId;
+    private String data;
+    private String hora;
+    private LocalDateTime dataHoraInicio;
+    private LocalDateTime dataHoraFim;
+    private AgendamentoStatus status;
+    private String observacoes;
+
+    // Construtor padrão - necessário para o Jackson (conversor JSON)
+<span class="nc" id="L31">    public AgendamentoDTO() {}</span>
+
+    // Construtor que converte uma Entidade 'Agendamento' em um 'AgendamentoDTO'.
+    // Esta é a forma recomendada de fazer a conversão no seu service.
+<span class="nc" id="L35">    public AgendamentoDTO(Agendamento agendamento) {</span>
+<span class="nc" id="L36">        this.id = agendamento.getId();</span>
+<span class="nc" id="L37">        this.clienteId = agendamento.getClienteId();</span>
+<span class="nc" id="L38">        this.profissionalId = agendamento.getProfissionalId();</span>
+<span class="nc" id="L39">        this.servicoId = agendamento.getServicoId();</span>
+<span class="nc" id="L40">        this.dataHoraInicio = agendamento.getDataHoraInicio();</span>
+<span class="nc" id="L41">        this.dataHoraFim = agendamento.getDataHoraFim();</span>
+<span class="nc" id="L42">        this.status = agendamento.getStatus();</span>
+<span class="nc" id="L43">        this.observacoes = agendamento.getObservacoes();</span>
+
+        // Formata a data e a hora para serem exibidas facilmente no front-end
+<span class="nc bnc" id="L46" title="All 2 branches missed.">        if (agendamento.getDataHoraInicio() != null) {</span>
+<span class="nc" id="L47">            this.data = agendamento.getDataHoraInicio().format(DateTimeFormatter.ISO_LOCAL_DATE); // ex: &quot;2025-06-09&quot;</span>
+<span class="nc" id="L48">            this.hora = agendamento.getDataHoraInicio().format(DateTimeFormatter.ofPattern(&quot;HH:mm&quot;)); // ex: &quot;14:30&quot;</span>
+        }
+<span class="nc" id="L50">    }</span>
+
+    // --- Getters e Setters para todos os campos ---
+
+<span class="nc" id="L54">    public Long getId() { return id; }</span>
+<span class="nc" id="L55">    public void setId(Long id) { this.id = id; }</span>
+<span class="nc" id="L56">    public UUID getClienteId() { return clienteId; }</span>
+<span class="nc" id="L57">    public void setClienteId(UUID clienteId) { this.clienteId = clienteId; }</span>
+<span class="nc" id="L58">    public String getClienteNome() { return clienteNome; }</span>
+<span class="nc" id="L59">    public void setClienteNome(String clienteNome) { this.clienteNome = clienteNome; }</span>
+<span class="nc" id="L60">    public Long getServicoId() { return servicoId; }</span>
+<span class="nc" id="L61">    public void setServicoId(Long servicoId) { this.servicoId = servicoId; }</span>
+<span class="nc" id="L62">    public String getServicoNome() { return servicoNome; }</span>
+<span class="nc" id="L63">    public void setServicoNome(String servicoNome) { this.servicoNome = servicoNome; }</span>
+<span class="nc" id="L64">    public Double getServicoPreco() { return servicoPreco; }</span>
+<span class="nc" id="L65">    public void setServicoPreco(Double servicoPreco) { this.servicoPreco = servicoPreco; }</span>
+<span class="nc" id="L66">    public Integer getServicoDuracao() { return servicoDuracao; }</span>
+<span class="nc" id="L67">    public void setServicoDuracao(Integer servicoDuracao) { this.servicoDuracao = servicoDuracao; }</span>
+<span class="nc" id="L68">    public UUID getProfissionalId() { return profissionalId; }</span>
+<span class="nc" id="L69">    public void setProfissionalId(UUID profissionalId) { this.profissionalId = profissionalId; }</span>
+<span class="nc" id="L70">    public String getData() { return data; }</span>
+<span class="nc" id="L71">    public void setData(String data) { this.data = data; }</span>
+<span class="nc" id="L72">    public String getHora() { return hora; }</span>
+<span class="nc" id="L73">    public void setHora(String hora) { this.hora = hora; }</span>
+<span class="nc" id="L74">    public LocalDateTime getDataHoraInicio() { return dataHoraInicio; }</span>
+<span class="nc" id="L75">    public void setDataHoraInicio(LocalDateTime dataHoraInicio) { this.dataHoraInicio = dataHoraInicio; }</span>
+<span class="nc" id="L76">    public LocalDateTime getDataHoraFim() { return dataHoraFim; }</span>
+<span class="nc" id="L77">    public void setDataHoraFim(LocalDateTime dataHoraFim) { this.dataHoraFim = dataHoraFim; }</span>
+<span class="nc" id="L78">    public AgendamentoStatus getStatus() { return status; }</span>
+<span class="nc" id="L79">    public void setStatus(AgendamentoStatus status) { this.status = status; }</span>
+<span class="nc" id="L80">    public String getObservacoes() { return observacoes; }</span>
+<span class="nc" id="L81">    public void setObservacoes(String observacoes) { this.observacoes = observacoes; }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

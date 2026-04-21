@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JwtService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Agendamento Service</a> &gt; <a href="index.source.html" class="el_package">br.com.naildesigner.agendamento_service_AgendeNail.services</a> &gt; <span class="el_source">JwtService.java</span></div><h1>JwtService.java</h1><pre class="source lang-java linenums">package br.com.naildesigner.agendamento_service_AgendeNail.services;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties.Jwt;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Service;
+
+import java.security.Key;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+import java.util.function.Function;
+
+@Service
+<span class="fc" id="L19">public class JwtService {</span>
+
+    @Value(&quot;${jwt.secret.key}&quot;) // DEVE SER A MESMA CHAVE DO AUTH-SERVICE
+    private String SECRET_KEY;
+
+    public String extractUsername(String token) {
+<span class="nc" id="L25">        return extractClaim(token, Claims::getSubject);</span>
+    }
+
+    public List&lt;String&gt; extractRoles(String token) {
+<span class="nc" id="L29">        final Claims claims = extractAllClaims(token);</span>
+        // Supondo que &quot;roles&quot; foi armazenado como uma List&lt;String&gt; no token
+<span class="nc" id="L31">        return claims.get(&quot;roles&quot;, List.class);</span>
+    }
+
+ // Extrai o userId da claim &quot;userId&quot; do token.
+    public UUID extractUserId(String token) {
+<span class="nc" id="L36">        String userIdAsString = extractClaim(token, claims -&gt; claims.get(&quot;userId&quot;, String.class));</span>
+<span class="nc bnc" id="L37" title="All 2 branches missed.">        if (userIdAsString != null) {</span>
+<span class="nc" id="L38">            return UUID.fromString(userIdAsString);</span>
+        }
+<span class="nc" id="L40">        throw new IllegalArgumentException(&quot;Claim 'userId' não encontrada ou nula no token JWT.&quot;);</span>
+    }
+
+    public &lt;T&gt; T extractClaim(String token, Function&lt;Claims, T&gt; claimsResolver) {
+<span class="nc" id="L44">        final Claims claims = extractAllClaims(token);</span>
+<span class="nc" id="L45">        return claimsResolver.apply(claims);</span>
+    }
+
+    // Valida assinatura e expiração. Não precisa de UserDetails aqui.
+    public boolean isTokenSignatureAndExpirationValid(String token) {
+        try {
+            // A tentativa de parsear o token já valida a assinatura.
+            // Se a assinatura for inválida ou o token malformado, Jwts.parserBuilder()... lançará uma exceção.
+            // Se o token estiver expirado, isTokenExpired() retornará true.
+<span class="nc" id="L54">            extractAllClaims(token); // Valida a assinatura ao tentar parsear</span>
+<span class="nc bnc" id="L55" title="All 2 branches missed.">            return !isTokenExpired(token);</span>
+<span class="nc" id="L56">        } catch (Exception e) {</span>
+            // io.jsonwebtoken.ExpiredJwtException, io.jsonwebtoken.security.SignatureException, etc.
+<span class="nc" id="L58">            return false;</span>
+        }
+    }
+
+    private boolean isTokenExpired(String token) {
+<span class="nc" id="L63">        return extractExpiration(token).before(new Date());</span>
+    }
+
+    private Date extractExpiration(String token) {
+<span class="nc" id="L67">        return extractClaim(token, Claims::getExpiration);</span>
+    }
+
+    private Claims extractAllClaims(String token) {
+<span class="nc" id="L71">        return Jwts.parserBuilder()</span>
+<span class="nc" id="L72">                .setSigningKey(getSignInKey())</span>
+<span class="nc" id="L73">                .build()</span>
+<span class="nc" id="L74">                .parseClaimsJws(token) // Esta chamada valida a assinatura</span>
+<span class="nc" id="L75">                .getBody();</span>
+    }
+
+    private Key getSignInKey() {
+<span class="nc" id="L79">        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);</span>
+<span class="nc" id="L80">        return Keys.hmacShaKeyFor(keyBytes);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

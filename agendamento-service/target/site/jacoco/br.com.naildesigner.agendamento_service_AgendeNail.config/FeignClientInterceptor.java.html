@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FeignClientInterceptor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Agendamento Service</a> &gt; <a href="index.source.html" class="el_package">br.com.naildesigner.agendamento_service_AgendeNail.config</a> &gt; <span class="el_source">FeignClientInterceptor.java</span></div><h1>FeignClientInterceptor.java</h1><pre class="source lang-java linenums">package br.com.naildesigner.agendamento_service_AgendeNail.config;
+
+import feign.RequestInterceptor;
+import feign.RequestTemplate;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.stereotype.Component;
+
+@Component
+<span class="fc" id="L11">public class FeignClientInterceptor implements RequestInterceptor {</span>
+
+    private static final String AUTHORIZATION_HEADER = &quot;Authorization&quot;;
+    private static final String BEARER_TOKEN_TYPE = &quot;Bearer&quot;;
+
+    @Override
+    public void apply(RequestTemplate requestTemplate) {
+<span class="nc" id="L18">        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();</span>
+
+<span class="nc bnc" id="L20" title="All 4 branches missed.">        if (authentication != null &amp;&amp; authentication.getPrincipal() instanceof Jwt) {</span>
+<span class="nc" id="L21">            Jwt jwt = (Jwt) authentication.getPrincipal();</span>
+<span class="nc" id="L22">            String tokenValue = jwt.getTokenValue();</span>
+<span class="nc" id="L23">            requestTemplate.header(AUTHORIZATION_HEADER, String.format(&quot;%s %s&quot;, BEARER_TOKEN_TYPE, tokenValue));</span>
+        }
+<span class="nc" id="L25">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

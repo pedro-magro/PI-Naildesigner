@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DisponibilidadeDTO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Agendamento Service</a> &gt; <a href="index.source.html" class="el_package">br.com.naildesigner.agendamento_service_AgendeNail.dtos</a> &gt; <span class="el_source">DisponibilidadeDTO.java</span></div><h1>DisponibilidadeDTO.java</h1><pre class="source lang-java linenums">package br.com.naildesigner.agendamento_service_AgendeNail.dtos;
+
+import java.time.LocalDate;
+import java.util.List;
+
+public class DisponibilidadeDTO {
+    private LocalDate data;
+    private List&lt;String&gt; horariosDisponiveis; // Variável está correta
+
+    // Construtor padrão
+<span class="nc" id="L11">    public DisponibilidadeDTO() {}</span>
+
+    // Construtor completo
+<span class="nc" id="L14">    public DisponibilidadeDTO(LocalDate data, List&lt;String&gt; horariosDisponiveis) {</span>
+<span class="nc" id="L15">        this.data = data;</span>
+<span class="nc" id="L16">        this.horariosDisponiveis = horariosDisponiveis;</span>
+<span class="nc" id="L17">    }</span>
+
+    // Getters e Setters CORRIGIDOS
+<span class="nc" id="L20">    public LocalDate getData() { return data; }</span>
+<span class="nc" id="L21">    public void setData(LocalDate data) { this.data = data; }</span>
+
+    // Corrigido: getHorariosDisponiveis (sem 'á' e com 'd' minúsculo)
+<span class="nc" id="L24">    public List&lt;String&gt; getHorariosDisponiveis() { return horariosDisponiveis; }</span>
+    // Corrigido: setHorariosDisponiveis (sem 'á' e com 'd' minúsculo)
+<span class="nc" id="L26">    public void setHorariosDisponiveis(List&lt;String&gt; horariosDisponiveis) { this.horariosDisponiveis = horariosDisponiveis; }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

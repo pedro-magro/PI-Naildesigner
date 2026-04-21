@@ -1,0 +1,117 @@
+@startuml
+class br.com.naildesigner.servico_service.ServicoServiceApplicationTests {
+~ void contextLoads()
+}
+
+class br.com.naildesigner.servico_service.controllers.ServicoController {
+- ServicoService servicoService
++ ServicoDTO salvar(ServicoDTO)
++ List<ServicoDTO> listar()
++ ServicoDTO buscarPorId(Long)
++ ServicoDTO atualizar(Long,ServicoDTO)
++ void excluir(Long)
++ String hello()
+}
+
+
+class br.com.naildesigner.servico_service.dtos.ServicoDTO {
+- Long id
+- String nome
+- String descricao
+- Double preco
+- Integer duracao
+- List<String> imagens
++ Long getId()
++ void setId(Long)
++ String getNome()
++ void setNome(String)
++ String getDescricao()
++ void setDescricao(String)
++ Double getPreco()
++ void setPreco(Double)
++ Integer getDuracao()
++ void setDuracao(Integer)
++ List<String> getImagens()
++ void setImagens(List<String>)
+}
+
+
+class br.com.naildesigner.servico_service.ServicoTest {
+}
+class br.com.naildesigner.servico_service.config.ServicoDataInitializer {
+- {static} Logger logger
+- ServicoRepository servicoRepository
++ void run(String)
+}
+
+
+class br.com.naildesigner.servico_service.services.ServicoService {
+- ServicoRepository servicoRepo
++ ServicoDTO salvar(ServicoDTO)
++ List<ServicoDTO> listarTodos()
++ ServicoDTO buscarPorId(Long)
++ ServicoDTO atualizar(ServicoDTO)
++ void excluir(Long)
+- ServicoDTO toDTO(Servico)
+}
+
+
+class br.com.naildesigner.servico_service.config.JwtAuthFilter {
+- JwtService jwtService
+# void doFilterInternal(HttpServletRequest,HttpServletResponse,FilterChain)
+}
+
+
+class br.com.naildesigner.servico_service.models.Servico {
+- long id
+- String nome
+- String descricao
+- Double preco
+- Integer duracao
+- List<String> imagens
++ long getId()
++ void setId(long)
++ String getNome()
++ void setNome(String)
++ String getDescricao()
++ void setDescricao(String)
++ Double getPreco()
++ void setPreco(Double)
++ Integer getDuracao()
++ void setDuracao(Integer)
++ List<String> getImagens()
++ void setImagens(List<String>)
+}
+
+
+class br.com.naildesigner.servico_service.config.SecurityConfig {
+- JwtAuthFilter jwtAuthFilter
++ SecurityFilterChain securityFilterChain(HttpSecurity)
+}
+
+
+class br.com.naildesigner.servico_service.ServicoServiceApplication {
++ {static} void main(String[])
+}
+
+interface br.com.naildesigner.servico_service.repositories.ServicoRepository {
+}
+class br.com.naildesigner.servico_service.services.JwtService {
+- String SECRET_KEY
++ String extractUsername(String)
++ List<String> extractRoles(String)
++ T extractClaim(String,Function<Claims,T>)
++ boolean isTokenSignatureAndExpirationValid(String)
+- boolean isTokenExpired(String)
+- Date extractExpiration(String)
+- Claims extractAllClaims(String)
+- Key getSignInKey()
+}
+
+
+
+
+org.springframework.boot.CommandLineRunner <|.. br.com.naildesigner.servico_service.config.ServicoDataInitializer
+org.springframework.web.filter.OncePerRequestFilter <|-- br.com.naildesigner.servico_service.config.JwtAuthFilter
+org.springframework.data.jpa.repository.JpaRepository <|-- br.com.naildesigner.servico_service.repositories.ServicoRepository
+@enduml

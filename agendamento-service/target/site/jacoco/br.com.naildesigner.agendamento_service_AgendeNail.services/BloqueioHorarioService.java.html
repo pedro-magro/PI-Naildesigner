@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BloqueioHorarioService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Agendamento Service</a> &gt; <a href="index.source.html" class="el_package">br.com.naildesigner.agendamento_service_AgendeNail.services</a> &gt; <span class="el_source">BloqueioHorarioService.java</span></div><h1>BloqueioHorarioService.java</h1><pre class="source lang-java linenums">package br.com.naildesigner.agendamento_service_AgendeNail.services;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime; // Adicionar import para LocalDateTime
+import java.time.LocalTime;    // Adicionar import para LocalTime
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import br.com.naildesigner.agendamento_service_AgendeNail.dtos.BloqueioHorarioDTO;
+import br.com.naildesigner.agendamento_service_AgendeNail.models.BloqueioHorario;
+import br.com.naildesigner.agendamento_service_AgendeNail.repositories.BloqueioHorarioRepository;
+import jakarta.persistence.EntityNotFoundException;
+
+@Service
+<span class="fc" id="L21">public class BloqueioHorarioService {</span>
+
+    @Autowired
+    private BloqueioHorarioRepository bloqueioHorarioRepository;
+
+    // --- Métodos CRUD para Bloqueio de Horários (EXISTENTES) ---
+    @Transactional
+    public BloqueioHorarioDTO salvarBloqueioHorario(BloqueioHorarioDTO dto) {
+<span class="nc bnc" id="L29" title="All 6 branches missed.">        if (dto.getHoraInicio() != null &amp;&amp; dto.getHoraFim() != null &amp;&amp; dto.getHoraInicio().isAfter(dto.getHoraFim())) {</span>
+<span class="nc" id="L30">            throw new IllegalArgumentException(&quot;A hora de fim do bloqueio não pode ser anterior à hora de início.&quot;);</span>
+        }
+<span class="nc bnc" id="L32" title="All 4 branches missed.">        if (dto.getHoraInicio() != null &amp;&amp; dto.getHoraFim() != null) {</span>
+<span class="nc" id="L33">            List&lt;BloqueioHorario&gt; conflitos = bloqueioHorarioRepository.findByProfissionalIdAndDataBloqueioAndHoraFimAfterAndHoraInicioBefore(</span>
+<span class="nc" id="L34">                dto.getProfissionalId(),</span>
+<span class="nc" id="L35">                dto.getDataBloqueio(),</span>
+<span class="nc" id="L36">                dto.getHoraInicio(),</span>
+<span class="nc" id="L37">                dto.getHoraFim()</span>
+            );
+<span class="nc bnc" id="L39" title="All 2 branches missed.">            if (!conflitos.isEmpty()) {</span>
+<span class="nc" id="L40">                throw new IllegalArgumentException(&quot;Já existe um bloqueio para esta profissional neste período.&quot;);</span>
+            }
+        }
+<span class="nc" id="L43">        BloqueioHorario bloqueio = new BloqueioHorario();</span>
+<span class="nc" id="L44">        BeanUtils.copyProperties(dto, bloqueio, &quot;id&quot;);</span>
+<span class="nc" id="L45">        bloqueio = bloqueioHorarioRepository.save(bloqueio);</span>
+<span class="nc" id="L46">        return toDTO(bloqueio);</span>
+    }
+
+    public List&lt;BloqueioHorarioDTO&gt; listarTodosBloqueiosHorarios() {
+<span class="nc" id="L50">        return bloqueioHorarioRepository.findAll().stream()</span>
+<span class="nc" id="L51">                .map(this::toDTO)</span>
+<span class="nc" id="L52">                .collect(Collectors.toList());</span>
+    }
+
+    public BloqueioHorarioDTO buscarBloqueioHorarioPorId(Long id) {
+<span class="nc" id="L56">        BloqueioHorario bloqueio = bloqueioHorarioRepository.findById(id)</span>
+<span class="nc" id="L57">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Bloqueio de horário não encontrado com ID: &quot; + id));</span>
+<span class="nc" id="L58">        return toDTO(bloqueio);</span>
+    }
+
+    @Transactional
+    public BloqueioHorarioDTO atualizarBloqueioHorario(Long id, BloqueioHorarioDTO dto) {
+<span class="nc" id="L63">        BloqueioHorario bloqueioExistente = bloqueioHorarioRepository.findById(id)</span>
+<span class="nc" id="L64">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Bloqueio de horário não encontrado com ID: &quot; + id));</span>
+<span class="nc bnc" id="L65" title="All 6 branches missed.">        if (dto.getHoraInicio() != null &amp;&amp; dto.getHoraFim() != null &amp;&amp; dto.getHoraInicio().isAfter(dto.getHoraFim())) {</span>
+<span class="nc" id="L66">            throw new IllegalArgumentException(&quot;A hora de fim do bloqueio não pode ser anterior à hora de início.&quot;);</span>
+        }
+<span class="nc bnc" id="L68" title="All 4 branches missed.">        if (dto.getHoraInicio() != null &amp;&amp; dto.getHoraFim() != null) {</span>
+<span class="nc" id="L69">            List&lt;BloqueioHorario&gt; conflitos = bloqueioHorarioRepository.findByProfissionalIdAndDataBloqueioAndHoraFimAfterAndHoraInicioBeforeAndIdIsNot(</span>
+<span class="nc" id="L70">                dto.getProfissionalId(),</span>
+<span class="nc" id="L71">                dto.getDataBloqueio(),</span>
+<span class="nc" id="L72">                dto.getHoraInicio(),</span>
+<span class="nc" id="L73">                dto.getHoraFim(),</span>
+                id
+            );
+<span class="nc bnc" id="L76" title="All 2 branches missed.">            if (!conflitos.isEmpty()) {</span>
+<span class="nc" id="L77">                throw new IllegalArgumentException(&quot;Já existe outro bloqueio para esta profissional neste novo período.&quot;);</span>
+            }
+        }
+<span class="nc" id="L80">        BeanUtils.copyProperties(dto, bloqueioExistente, &quot;id&quot;);</span>
+<span class="nc" id="L81">        return toDTO(bloqueioHorarioRepository.save(bloqueioExistente));</span>
+    }
+
+    @Transactional
+    public void excluirBloqueioHorario(Long id) {
+<span class="nc bnc" id="L86" title="All 2 branches missed.">        if (!bloqueioHorarioRepository.existsById(id)) {</span>
+<span class="nc" id="L87">            throw new EntityNotFoundException(&quot;Bloqueio de horário não encontrado com ID: &quot; + id);</span>
+        }
+<span class="nc" id="L89">        bloqueioHorarioRepository.deleteById(id);</span>
+<span class="nc" id="L90">    }</span>
+
+    public List&lt;BloqueioHorarioDTO&gt; buscarBloqueiosPorProfissionalEData(UUID profissionalId, LocalDate data) {
+<span class="nc" id="L93">        return bloqueioHorarioRepository.findByProfissionalIdAndDataBloqueio(profissionalId, data).stream()</span>
+<span class="nc" id="L94">                .map(this::toDTO)</span>
+<span class="nc" id="L95">                .collect(Collectors.toList());</span>
+    }
+
+    // ######################################################################################
+    // ## MÉTODO NOVO E CRUCIAL: isPeriodoDisponivelParaAgendamento                       ##
+    // ## Este método é chamado pelo AgendamentoService para verificar bloqueios          ##
+    // ## ANTES de um agendamento ser salvo.                                              ##
+    // ######################################################################################
+    public boolean isPeriodoDisponivelParaAgendamento(UUID profissionalId, LocalDateTime inicioAgendamento, LocalDateTime fimAgendamento, Long agendamentoIdParaExcluir) {
+<span class="nc" id="L104">        LocalDate dataAgendamento = inicioAgendamento.toLocalDate();</span>
+<span class="nc" id="L105">        LocalTime horaInicioAgendamento = inicioAgendamento.toLocalTime();</span>
+<span class="nc" id="L106">        LocalTime horaFimAgendamento = fimAgendamento.toLocalTime();</span>
+
+        List&lt;BloqueioHorario&gt; bloqueiosNoDia;
+        // Na prática, agendamentoIdParaExcluir não é usado aqui para BLOQUEIOS,
+        // pois a lógica de &quot;excluir&quot; é para o próprio agendamento sendo atualizado.
+        // Bloqueios são verificados de forma absoluta.
+<span class="nc" id="L112">        bloqueiosNoDia = bloqueioHorarioRepository.findByProfissionalIdAndDataBloqueio(profissionalId, dataAgendamento);</span>
+
+
+<span class="nc" id="L115">        boolean conflitoComBloqueio = bloqueiosNoDia.stream()</span>
+<span class="nc" id="L116">            .anyMatch(b -&gt; {</span>
+                LocalDateTime bloqueioInicioReal;
+                LocalDateTime bloqueioFimReal;
+
+                // Lidar com bloqueios de dia inteiro (horaInicio e horaFim nulos)
+<span class="nc bnc" id="L121" title="All 4 branches missed.">                if (b.getHoraInicio() == null || b.getHoraFim() == null) {</span>
+<span class="nc" id="L122">                    bloqueioInicioReal = dataAgendamento.atStartOfDay(); // Início do dia</span>
+<span class="nc" id="L123">                    bloqueioFimReal = dataAgendamento.atTime(23, 59, 59); // Fim do dia</span>
+                } else {
+<span class="nc" id="L125">                    bloqueioInicioReal = dataAgendamento.atTime(b.getHoraInicio());</span>
+<span class="nc" id="L126">                    bloqueioFimReal = dataAgendamento.atTime(b.getHoraFim());</span>
+                }
+
+                // Critério de sobreposição: (Início do NOVO antes do Fim do EXISTENTE) E (Fim do NOVO depois do Início do EXISTENTE)
+<span class="nc bnc" id="L130" title="All 4 branches missed.">                return (inicioAgendamento.isBefore(bloqueioFimReal) &amp;&amp; fimAgendamento.isAfter(bloqueioInicioReal));</span>
+            });
+
+<span class="nc bnc" id="L133" title="All 2 branches missed.">        return !conflitoComBloqueio; // Retorna true se NÃO houver conflito, false se houver</span>
+    }
+
+    // --- Métodos de Conversão (Entity para DTO) ---
+    private BloqueioHorarioDTO toDTO(BloqueioHorario bloqueio) {
+<span class="nc" id="L138">        BloqueioHorarioDTO dto = new BloqueioHorarioDTO();</span>
+<span class="nc" id="L139">        BeanUtils.copyProperties(bloqueio, dto);</span>
+<span class="nc" id="L140">        return dto;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

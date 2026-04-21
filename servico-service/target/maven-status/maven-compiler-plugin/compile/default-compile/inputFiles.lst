@@ -2,7 +2,8 @@ C:\Users\pedro\devProjetos\PI-Naildesigner\servico-service\src\main\java\br\com\
 C:\Users\pedro\devProjetos\PI-Naildesigner\servico-service\src\main\java\br\com\naildesigner\servico_service\config\SecurityConfig.java
 C:\Users\pedro\devProjetos\PI-Naildesigner\servico-service\src\main\java\br\com\naildesigner\servico_service\config\ServicoDataInitializer.java
 C:\Users\pedro\devProjetos\PI-Naildesigner\servico-service\src\main\java\br\com\naildesigner\servico_service\controllers\ServicoController.java
-C:\Users\pedro\devProjetos\PI-Naildesigner\servico-service\src\main\java\br\com\naildesigner\servico_service\dtos\ServicoDTO.java
+C:\Users\pedro\devProjetos\PI-Naildesigner\servico-service\src\main\java\br\com\naildesigner\servico_service\dtos\RequestServicoDTO.java
+C:\Users\pedro\devProjetos\PI-Naildesigner\servico-service\src\main\java\br\com\naildesigner\servico_service\dtos\ResponseServicoDTO.java
 C:\Users\pedro\devProjetos\PI-Naildesigner\servico-service\src\main\java\br\com\naildesigner\servico_service\models\Servico.java
 C:\Users\pedro\devProjetos\PI-Naildesigner\servico-service\src\main\java\br\com\naildesigner\servico_service\repositories\ServicoRepository.java
 C:\Users\pedro\devProjetos\PI-Naildesigner\servico-service\src\main\java\br\com\naildesigner\servico_service\services\JwtService.java

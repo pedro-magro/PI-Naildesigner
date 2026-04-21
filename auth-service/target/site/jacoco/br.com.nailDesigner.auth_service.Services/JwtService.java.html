@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JwtService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Authentication Service</a> &gt; <a href="index.source.html" class="el_package">br.com.nailDesigner.auth_service.Services</a> &gt; <span class="el_source">JwtService.java</span></div><h1>JwtService.java</h1><pre class="source lang-java linenums">package br.com.nailDesigner.auth_service.Services;
+
+import br.com.nailDesigner.auth_service.Models.User; 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
+import java.security.Key;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+@Service
+<span class="fc" id="L24">public class    JwtService {</span>
+
+<span class="fc" id="L26">    private static final Logger logger = LoggerFactory.getLogger(JwtService.class);</span>
+
+    @Value(&quot;${jwt.secret.key}&quot;)
+    private String SECRET_KEY;
+
+
+<span class="fc" id="L32">    private long jwtExpiration = 1000 * 60 * 60 * 24; // 24 horas em milissegundos</span>
+
+    public String extractUserId(String token) {
+<span class="fc" id="L35">        return extractClaim(token, Claims::getSubject);</span>
+    }
+
+    public &lt;T&gt; T extractClaim(String token, Function&lt;Claims, T&gt; claimsResolver) {
+<span class="fc" id="L39">        final Claims claims = extractAllClaims(token);</span>
+<span class="fc" id="L40">        return claimsResolver.apply(claims);</span>
+    }
+
+    // Método para gerar token apenas com UserDetails (mantido para compatibilidade)
+    public String generateToken(UserDetails userDetails) {
+<span class="nc" id="L45">        return generateToken(new HashMap&lt;&gt;(), userDetails);</span>
+    }
+
+    // MÉTODO PRINCIPAL DE GERAÇÃO DE TOKEN - MODIFICADO PARA INCLUIR ROLES e USERID
+    public String generateToken(Map&lt;String, Object&gt; extraClaims, UserDetails userDetails) {
+<span class="fc" id="L50">        Map&lt;String, Object&gt; claims = new HashMap&lt;&gt;(extraClaims); // Copia claims extras se houver</span>
+
+        // Adiciona as roles (authorities) como uma claim
+<span class="fc" id="L53">        List&lt;String&gt; roles = userDetails.getAuthorities().stream()</span>
+<span class="fc" id="L54">                .map(GrantedAuthority::getAuthority)</span>
+<span class="fc" id="L55">                .collect(Collectors.toList());</span>
+<span class="fc" id="L56">        claims.put(&quot;roles&quot;, roles);</span>
+
+
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">        if (userDetails instanceof User) {</span>
+<span class="fc" id="L60">            claims.put(&quot;userId&quot;, ((User) userDetails).getId());</span>
+
+        }
+
+<span class="fc" id="L64">        String subjectId = ((User) userDetails).getId().toString();</span>
+<span class="fc" id="L65">        logger.debug(&quot;Gerando token JWT para o usuário {}&quot;, subjectId);</span>
+
+<span class="fc" id="L67">        return Jwts.builder()</span>
+<span class="fc" id="L68">                .setClaims(claims) // Define todas as claims (incluindo as customizadas)</span>
+<span class="fc" id="L69">                .setSubject(subjectId)</span>
+<span class="fc" id="L70">                .setIssuedAt(new Date(System.currentTimeMillis()))</span>
+<span class="fc" id="L71">                .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))</span>
+<span class="fc" id="L72">                .signWith(getSignInKey(), SignatureAlgorithm.HS256)</span>
+<span class="fc" id="L73">                .compact();</span>
+    }
+
+
+    public boolean isTokenValid(String token, UserDetails userDetails) {
+        // Extrai o ID (que está no campo 'subject') do token
+<span class="fc" id="L79">        final String userIdFromToken = extractUserId(token);</span>
+
+        // Pega o ID do objeto UserDetails (fazendo o cast)
+<span class="fc" id="L82">        final String userIdFromUserDetails = ((User) userDetails).getId().toString();</span>
+
+        // Compara os dois IDs e verifica se o token não expirou
+<span class="pc bpc" id="L85" title="2 of 4 branches missed.">        return (userIdFromToken.equals(userIdFromUserDetails)) &amp;&amp; !isTokenExpired(token);</span>
+    }
+
+    private boolean isTokenExpired(String token) {
+<span class="fc" id="L89">        return extractExpiration(token).before(new Date());</span>
+    }
+
+    private Date extractExpiration(String token) {
+<span class="fc" id="L93">        return extractClaim(token, Claims::getExpiration);</span>
+    }
+
+    private Claims extractAllClaims(String token) {
+<span class="fc" id="L97">        return Jwts.parserBuilder()</span>
+<span class="fc" id="L98">                .setSigningKey(getSignInKey())</span>
+<span class="fc" id="L99">                .build()</span>
+<span class="fc" id="L100">                .parseClaimsJws(token)</span>
+<span class="fc" id="L101">                .getBody();</span>
+    }
+
+    private Key getSignInKey() {
+<span class="fc" id="L105">        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);</span>
+<span class="fc" id="L106">        return Keys.hmacShaKeyFor(keyBytes);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

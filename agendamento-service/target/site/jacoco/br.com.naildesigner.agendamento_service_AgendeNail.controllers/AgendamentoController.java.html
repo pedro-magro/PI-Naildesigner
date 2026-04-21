@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AgendamentoController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Agendamento Service</a> &gt; <a href="index.source.html" class="el_package">br.com.naildesigner.agendamento_service_AgendeNail.controllers</a> &gt; <span class="el_source">AgendamentoController.java</span></div><h1>AgendamentoController.java</h1><pre class="source lang-java linenums">package br.com.naildesigner.agendamento_service_AgendeNail.controllers;
+
+import br.com.naildesigner.agendamento_service_AgendeNail.dtos.AgendamentoDTO;
+import br.com.naildesigner.agendamento_service_AgendeNail.dtos.AgendamentoRequestDTO;
+import br.com.naildesigner.agendamento_service_AgendeNail.dtos.DisponibilidadeDTO;
+import br.com.naildesigner.agendamento_service_AgendeNail.services.AgendamentoService;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.security.oauth2.jwt.Jwt;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.UUID;
+
+@RestController
+@RequestMapping(&quot;/api/agendamentos&quot;)
+
+<span class="fc" id="L25">public class AgendamentoController {</span>
+
+    @Autowired
+    private AgendamentoService agendamentoService;
+
+    // --- Endpoints para Clientes (Autenticados) ---
+
+    /**
+     * Cria um novo agendamento. O ID do cliente é obtido automaticamente
+     * a partir do token JWT do usuário autenticado.
+     */
+    @PostMapping
+    public ResponseEntity&lt;AgendamentoDTO&gt; criarAgendamento(
+            @Valid @RequestBody AgendamentoRequestDTO dto,
+            Authentication authentication) {
+        try {
+<span class="nc" id="L41">            AgendamentoDTO novoAgendamento = agendamentoService.salvarAgendamento(dto, authentication);</span>
+<span class="nc" id="L42">            return new ResponseEntity&lt;&gt;(novoAgendamento, HttpStatus.CREATED);</span>
+<span class="nc" id="L43">        } catch (IllegalArgumentException | EntityNotFoundException e) {</span>
+            // Retorna um erro 400 com a mensagem de negócio (ex: &quot;Horário conflitante&quot;)
+<span class="nc" id="L45">            return ResponseEntity.badRequest().body(null); </span>
+        }
+    }
+
+    /**
+     * Busca os horários disponíveis para uma profissional e serviço numa data específica.
+     */
+    @GetMapping(&quot;/disponibilidade&quot;)
+    public ResponseEntity&lt;DisponibilidadeDTO&gt; buscarDisponibilidade(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data,
+            @RequestParam Long servicoId,
+            @RequestParam UUID profissionalId,
+            Authentication authentication) {
+        
+<span class="nc" id="L59">        DisponibilidadeDTO disponibilidade = agendamentoService.buscarHorariosDisponiveis(data, servicoId, profissionalId, authentication);</span>
+<span class="nc" id="L60">        return ResponseEntity.ok(disponibilidade);</span>
+    }
+    
+    /**
+     * Retorna os agendamentos pertencentes ao cliente autenticado.
+     */
+    @GetMapping(&quot;/meus&quot;)
+    public ResponseEntity&lt;List&lt;AgendamentoDTO&gt;&gt; listarMeusAgendamentos(Authentication authentication) {
+<span class="nc bnc" id="L68" title="All 4 branches missed.">        if (authentication == null || !(authentication.getPrincipal() instanceof Jwt)) {</span>
+<span class="nc" id="L69">            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();</span>
+        }
+
+        // Pega o objeto JWT do principal da autenticação
+<span class="nc" id="L73">        Jwt jwt = (Jwt) authentication.getPrincipal();</span>
+        
+        // Pega o &quot;subject&quot; (sub) do token, que DEVE ser o ID do usuário
+<span class="nc" id="L76">        String userIdString = jwt.getSubject();</span>
+        
+        // Converte a String do ID para o tipo UUID
+<span class="nc" id="L79">        UUID clienteId = UUID.fromString(userIdString);</span>
+        
+<span class="nc" id="L81">        List&lt;AgendamentoDTO&gt; agendamentos = agendamentoService.listarAgendamentosPorCliente(clienteId);</span>
+<span class="nc" id="L82">        return ResponseEntity.ok(agendamentos);</span>
+    }
+    /**
+     * Permite que um utilizador cancele o seu próprio agendamento.
+     */
+    @PutMapping(&quot;/{id}/cancelar&quot;)
+    public ResponseEntity&lt;AgendamentoDTO&gt; cancelarAgendamento(@PathVariable Long id, Authentication authentication) {
+<span class="nc bnc" id="L89" title="All 2 branches missed.">        if (authentication == null) {</span>
+<span class="nc" id="L90">             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();</span>
+        }
+        
+        try {
+            // A lógica de validação de permissão deve estar dentro do seu service
+<span class="nc" id="L95">            AgendamentoDTO agendamentoCancelado = agendamentoService.cancelarAgendamento(id, authentication);</span>
+<span class="nc" id="L96">            return ResponseEntity.ok(agendamentoCancelado);</span>
+<span class="nc" id="L97">        } catch (EntityNotFoundException e) {</span>
+<span class="nc" id="L98">            return ResponseEntity.notFound().build();</span>
+<span class="nc" id="L99">        } catch (IllegalAccessException e) {</span>
+<span class="nc" id="L100">            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();</span>
+<span class="nc" id="L101">        } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L102">            return ResponseEntity.badRequest().build();</span>
+        }
+    }
+
+    // --- Endpoints para Administradores ---
+
+    /**
+     * Lista TODOS os agendamentos no sistema. Apenas para ADMIN.
+     */
+    @GetMapping
+    @PreAuthorize(&quot;hasRole('ADMIN')&quot;)
+    public ResponseEntity&lt;List&lt;AgendamentoDTO&gt;&gt; listarTodosAgendamentos() {
+<span class="nc" id="L114">        List&lt;AgendamentoDTO&gt; agendamentos = agendamentoService.listarTodosAgendamentos();</span>
+<span class="nc" id="L115">        return ResponseEntity.ok(agendamentos);</span>
+    }
+
+    /**
+     * Busca um agendamento específico por ID. Apenas para ADMIN.
+     */
+    @GetMapping(&quot;/{id}&quot;)
+    @PreAuthorize(&quot;hasRole('ADMIN')&quot;)
+    public ResponseEntity&lt;AgendamentoDTO&gt; buscarAgendamentoPorId(@PathVariable Long id) {
+        try {
+<span class="nc" id="L125">            AgendamentoDTO agendamento = agendamentoService.buscarAgendamentoPorId(id);</span>
+<span class="nc" id="L126">            return ResponseEntity.ok(agendamento);</span>
+<span class="nc" id="L127">        } catch (EntityNotFoundException e) {</span>
+<span class="nc" id="L128">            return ResponseEntity.notFound().build();</span>
+        }
+    }
+    
+    @PostMapping(&quot;/admin&quot;)
+    @PreAuthorize(&quot;hasAuthority('ROLE_ADMIN')&quot;)
+    public ResponseEntity&lt;AgendamentoDTO&gt; criarAgendamentoPeloAdmin(
+            @Valid @RequestBody AgendamentoDTO dto,
+            Authentication authentication) { // Adicione o parâmetro Authentication
+        try {
+            // Passe o objeto authentication para o serviço
+<span class="nc" id="L139">        	AgendamentoDTO novoAgendamento = agendamentoService.salvarAgendamentoPeloAdmin(dto, authentication);</span>
+<span class="nc" id="L140">        	return new ResponseEntity&lt;&gt;(novoAgendamento, HttpStatus.CREATED);</span>
+<span class="nc" id="L141">        } catch (IllegalArgumentException | EntityNotFoundException e) {</span>
+<span class="nc" id="L142">            return ResponseEntity.badRequest().body(null);</span>
+        }
+    }
+
+    /**
+     * Atualiza um agendamento existente. Apenas para ADMIN.
+     */
+    @PutMapping(&quot;/{id}&quot;)
+    @PreAuthorize(&quot;hasRole('ADMIN')&quot;)
+    public ResponseEntity&lt;AgendamentoDTO&gt; atualizarAgendamento(@PathVariable Long id, @Valid @RequestBody AgendamentoDTO agendamentoDTO, Authentication authentication) {
+        try {
+<span class="nc" id="L153">            AgendamentoDTO agendamentoAtualizado = agendamentoService.atualizarAgendamento(id, agendamentoDTO, authentication);</span>
+<span class="nc" id="L154">            return ResponseEntity.ok(agendamentoAtualizado);</span>
+<span class="nc" id="L155">        } catch (EntityNotFoundException e) {</span>
+<span class="nc" id="L156">            return ResponseEntity.notFound().build();</span>
+<span class="nc" id="L157">        } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L158">            return ResponseEntity.badRequest().build();</span>
+        }
+    }
+
+    /**
+     * Deleta um agendamento. Apenas para ADMIN.
+     */
+    @DeleteMapping(&quot;/{id}&quot;)
+    @PreAuthorize(&quot;hasRole('ADMIN')&quot;)
+    public ResponseEntity&lt;Void&gt; deletarAgendamento(@PathVariable Long id) {
+        try {
+<span class="nc" id="L169">            agendamentoService.excluirAgendamento(id);</span>
+<span class="nc" id="L170">            return ResponseEntity.noContent().build(); // Retorno 204 No Content</span>
+<span class="nc" id="L171">        } catch (EntityNotFoundException e) {</span>
+<span class="nc" id="L172">            return ResponseEntity.notFound().build();</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

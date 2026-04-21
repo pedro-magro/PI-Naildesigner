@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ServicoDTOForAgendamento.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Agendamento Service</a> &gt; <a href="index.source.html" class="el_package">br.com.naildesigner.agendamento_service_AgendeNail.clients</a> &gt; <span class="el_source">ServicoDTOForAgendamento.java</span></div><h1>ServicoDTOForAgendamento.java</h1><pre class="source lang-java linenums">package br.com.naildesigner.agendamento_service_AgendeNail.clients;
+
+// É uma boa prática usar Lombok para DTOs para reduzir o código boilerplate
+// import lombok.Data;
+// import lombok.NoArgsConstructor;
+// import lombok.AllArgsConstructor;
+
+//@Data // Se estiver usando Lombok
+//@NoArgsConstructor // Se estiver usando Lombok
+//@AllArgsConstructor // Se estiver usando Lombok
+public class ServicoDTOForAgendamento {
+    private Long id;
+    private String nome;
+    private Integer duracao; // Duração em minutos
+    private Double preco;
+
+    // Construtor padrão (necessário para desserialização JSON)
+<span class="nc" id="L18">    public ServicoDTOForAgendamento() {}</span>
+
+    // Construtor com todos os argumentos (útil para testes ou criação manual)
+<span class="nc" id="L21">    public ServicoDTOForAgendamento(Long id, String nome, Integer duracao, Double preco) {</span>
+<span class="nc" id="L22">        this.id = id;</span>
+<span class="nc" id="L23">        this.nome = nome;</span>
+<span class="nc" id="L24">        this.duracao = duracao;</span>
+<span class="nc" id="L25">        this.preco = preco;</span>
+<span class="nc" id="L26">    }</span>
+
+    // Getters e Setters
+    public Long getId() {
+<span class="nc" id="L30">        return id;</span>
+    }
+
+    public void setId(Long id) {
+<span class="nc" id="L34">        this.id = id;</span>
+<span class="nc" id="L35">    }</span>
+
+    public String getNome() {
+<span class="nc" id="L38">        return nome;</span>
+    }
+
+    public void setNome(String nome) {
+<span class="nc" id="L42">        this.nome = nome;</span>
+<span class="nc" id="L43">    }</span>
+
+    public Integer getDuracao() {
+<span class="nc" id="L46">        return duracao;</span>
+    }
+
+    public void setDuracao(Integer duracao) {
+<span class="nc" id="L50">        this.duracao = duracao;</span>
+<span class="nc" id="L51">    }</span>
+
+    public Double getPreco() {
+<span class="nc" id="L54">        return preco;</span>
+    }
+
+    public void setPreco(Double preco) {
+<span class="nc" id="L58">        this.preco = preco;</span>
+<span class="nc" id="L59">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

@@ -1,0 +1,26 @@
+@startuml
+class br.com.naildesigner.frontend_web.FrontendWebApplicationTests {
+~ void contextLoads()
+}
+
+class br.com.naildesigner.frontend_web.FrontendWebApplication {
++ {static} void main(String[])
+}
+
+class br.com.naildesigner.frontend_web.controllers.FrontendController {
++ String adminDashboardPage()
++ String adminAgendamentosPage()
++ String adminDisponibilidadePage()
++ String adminServicosPage()
++ String adminUsuariosPage()
++ String authLoginPage()
++ String authRegisterPage()
++ String landingPage()
++ String clienteAgendamentoPage()
++ String clienteMeusAgendamentosPage()
++ String perfilPage()
++ String clienteServicosPage()
++ String sobrePage()
+}
+
+@enduml

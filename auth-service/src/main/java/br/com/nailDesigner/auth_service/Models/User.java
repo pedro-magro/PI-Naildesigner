@@ -33,13 +33,17 @@ public class User implements UserDetails {
 	    private Role role;
 	    
 	 // Getters, Setters, Constructors...
-	    
-	    
+	    public User(){
 
-	    @Override
-	    public Collection<? extends GrantedAuthority> getAuthorities() {
-	        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
-	    }
+		}
+		public User(String username, String password, String email, String phone, Role role){
+			this.id = UUID.randomUUID();
+			this.username = username;
+			this.password = password;
+			this.email = email;
+			this.phone = phone;
+			this.role = role;
+		}
 	    
 
 	    public String getPhone() {
@@ -79,6 +83,11 @@ public class User implements UserDetails {
 		public void setPassword(String password) {
 			this.password = password;
 		}
+
+	 @Override
+	 public Collection<? extends GrantedAuthority> getAuthorities() {
+		return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+	 }
 
 		@Override
 	    public String getPassword() {

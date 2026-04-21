@@ -5,6 +5,5 @@ br\com\naildesigner\servico_service\models\Servico.class
 br\com\naildesigner\servico_service\repositories\ServicoRepository.class
 br\com\naildesigner\servico_service\config\ServicoDataInitializer.class
 br\com\naildesigner\servico_service\controllers\ServicoController.class
-br\com\naildesigner\servico_service\dtos\ServicoDTO.class
 br\com\naildesigner\servico_service\services\JwtService.class
 br\com\naildesigner\servico_service\ServicoServiceApplication.class

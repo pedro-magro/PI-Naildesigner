@@ -1,0 +1,22 @@
+@startuml
+class br.com.naildesigner.api_gateway.ApiGatewayApplication {
++ {static} void main(String[])
+}
+
+class br.com.naildesigner.api_gateway.config.CorsConfig {
++ CorsWebFilter corsWebFilter()
+}
+
+class br.com.naildesigner.api_gateway.ApiGatewayApplicationTests {
+~ void contextLoads()
+}
+
+class br.com.naildesigner.api_gateway.config.GatewaySecurityConfig {
+- String jwtSecretKeyString
++ SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity)
++ ReactiveJwtDecoder reactiveJwtDecoder()
+- SecretKey getSignInKey()
+}
+
+
+@enduml

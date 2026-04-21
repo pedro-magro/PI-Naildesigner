@@ -1,0 +1,738 @@
+@startuml
+interface br.com.nailDesigner.auth_service.Repositories.UserRepository {
+~ Optional<User> findByUsername(String)
+~ List<User> findByRole(Role)
+~ Optional<User> findByEmail(String)
+}
+
+class br.com.naildesigner.agendamento_service_AgendeNail.config.FeignClientInterceptor {
+- {static} String AUTHORIZATION_HEADER
+- {static} String BEARER_TOKEN_TYPE
++ void apply(RequestTemplate)
+}
+
+
+class br.com.naildesigner.agendamento_service_AgendeNail.AgendamentoServiceAgendeNailApplicationTests {
+~ void contextLoads()
+}
+
+class br.com.naildesigner.agendamento_service_AgendeNail.services.BloqueioHorarioService {
+- BloqueioHorarioRepository bloqueioHorarioRepository
++ BloqueioHorarioDTO salvarBloqueioHorario(BloqueioHorarioDTO)
++ List<BloqueioHorarioDTO> listarTodosBloqueiosHorarios()
++ BloqueioHorarioDTO buscarBloqueioHorarioPorId(Long)
++ BloqueioHorarioDTO atualizarBloqueioHorario(Long,BloqueioHorarioDTO)
++ void excluirBloqueioHorario(Long)
++ List<BloqueioHorarioDTO> buscarBloqueiosPorProfissionalEData(UUID,LocalDate)
++ boolean isPeriodoDisponivelParaAgendamento(UUID,LocalDateTime,LocalDateTime,Long)
+- BloqueioHorarioDTO toDTO(BloqueioHorario)
+}
+
+
+class br.com.nailDesigner.auth_service.Controllers.AuthController {
+- AuthenticationManager authenticationManager
+- UserRepository userRepository
+- PasswordEncoder passwordEncoder
+- JwtService jwtService
++ ResponseEntity<LoginResponse> login(LoginRequest)
++ ResponseEntity<String> register(RegisterRequest)
++ ResponseEntity<UserProfileDto> getCurrentUser(Authentication)
++ ResponseEntity<String> updateCurrentUser(Authentication,UpdateProfileRequestDto)
++ ResponseEntity<List<ProfissionalDto>> getProfissionais()
++ ResponseEntity<String> getUserEmailById(UUID,Authentication)
++ ResponseEntity<List<User>> getAllUsers()
++ ResponseEntity<User> getUserById(UUID)
++ ResponseEntity<?> createUser(User)
++ ResponseEntity<User> updateUser(UUID,User)
++ ResponseEntity<Void> deleteUser(UUID)
+}
+
+
+class br.com.nailDesigner.auth_service.Controllers.AuthController$LoginRequest {
+- String username
+- String password
++ String password()
++ String username()
+}
+
+
+class br.com.nailDesigner.auth_service.Controllers.AuthController$LoginResponse {
+- String token
++ String token()
+}
+
+
+class br.com.nailDesigner.auth_service.Controllers.AuthController$RegisterRequest {
+- String username
+- String email
+- String password
+- String phone
++ String email()
++ String password()
++ String username()
++ String phone()
+}
+
+
+class br.com.naildesigner.agendamento_service_AgendeNail.services.JwtService {
+- String SECRET_KEY
++ String extractUsername(String)
++ List<String> extractRoles(String)
++ UUID extractUserId(String)
++ T extractClaim(String,Function<Claims,T>)
++ boolean isTokenSignatureAndExpirationValid(String)
+- boolean isTokenExpired(String)
+- Date extractExpiration(String)
+- Claims extractAllClaims(String)
+- Key getSignInKey()
+}
+
+
+class br.com.nailDesigner.auth_service.AuthServiceApplicationTests {
+~ void contextLoads()
+}
+
+class br.com.naildesigner.agendamento_service_AgendeNail.models.Agendamento {
+- Long id
+- UUID clienteId
+- Long servicoId
+- UUID profissionalId
+- LocalDateTime dataHoraInicio
+- LocalDateTime dataHoraFim
+- AgendamentoStatus status
+- String observacoes
++ Long getId()
++ void setId(Long)
++ UUID getClienteId()
++ void setClienteId(UUID)
++ Long getServicoId()
++ void setServicoId(Long)
++ LocalDateTime getDataHoraInicio()
++ void setDataHoraInicio(LocalDateTime)
++ LocalDateTime getDataHoraFim()
++ void setDataHoraFim(LocalDateTime)
++ AgendamentoStatus getStatus()
++ void setStatus(AgendamentoStatus)
++ String getObservacoes()
++ void setObservacoes(String)
++ UUID getProfissionalId()
++ void setProfissionalId(UUID)
+}
+
+
+enum br.com.nailDesigner.auth_service.Models.Role {
++  USER
++  ADMIN
+}
+
+class br.com.nailDesigner.auth.api.Dtos.ProfissionalDto {
+- UUID id
+- String username
++ UUID id()
++ String username()
+}
+
+
+class br.com.naildesigner.agendamento_service_AgendeNail.dtos.AgendamentoDTO {
+- Long id
+- UUID clienteId
+- String clienteNome
+- Long servicoId
+- String servicoNome
+- Double servicoPreco
+- Integer servicoDuracao
+- UUID profissionalId
+- String data
+- String hora
+- LocalDateTime dataHoraInicio
+- LocalDateTime dataHoraFim
+- AgendamentoStatus status
+- String observacoes
++ Long getId()
++ void setId(Long)
++ UUID getClienteId()
++ void setClienteId(UUID)
++ String getClienteNome()
++ void setClienteNome(String)
++ Long getServicoId()
++ void setServicoId(Long)
++ String getServicoNome()
++ void setServicoNome(String)
++ Double getServicoPreco()
++ void setServicoPreco(Double)
++ Integer getServicoDuracao()
++ void setServicoDuracao(Integer)
++ UUID getProfissionalId()
++ void setProfissionalId(UUID)
++ String getData()
++ void setData(String)
++ String getHora()
++ void setHora(String)
++ LocalDateTime getDataHoraInicio()
++ void setDataHoraInicio(LocalDateTime)
++ LocalDateTime getDataHoraFim()
++ void setDataHoraFim(LocalDateTime)
++ AgendamentoStatus getStatus()
++ void setStatus(AgendamentoStatus)
++ String getObservacoes()
++ void setObservacoes(String)
+}
+
+
+class br.com.nailDesigner.auth_service.Configs.DataInitializer {
+- UserRepository userRepository
+- PasswordEncoder passwordEncoder
++ void run(String)
+}
+
+
+class br.com.naildesigner.frontend_web.FrontendWebApplication {
++ {static} void main(String[])
+}
+
+class br.com.messaging.messaging.Config.JwtAuthFilter {
+- JwtService jwtService
+# void doFilterInternal(HttpServletRequest,HttpServletResponse,FilterChain)
+}
+
+
+interface br.com.naildesigner.agendamento_service_AgendeNail.clients.AuthServiceClient {
+~ String getEmailPorId(UUID)
+}
+
+class br.com.naildesigner.agendamento_service_AgendeNail.clients.ServicoDTOForAgendamento {
+- Long id
+- String nome
+- Integer duracao
+- Double preco
++ Long getId()
++ void setId(Long)
++ String getNome()
++ void setNome(String)
++ Integer getDuracao()
++ void setDuracao(Integer)
++ Double getPreco()
++ void setPreco(Double)
+}
+
+
+class br.com.messaging.messaging.Services.EmailService {
+- JavaMailSender mailSender
+- String fromEmail
++ void sendEmail(List<String>,String,String)
+}
+
+
+class br.com.naildesigner.servico_service.config.SecurityConfig {
+- JwtAuthFilter jwtAuthFilter
++ SecurityFilterChain securityFilterChain(HttpSecurity)
+}
+
+
+class br.com.naildesigner.frontend_web.controllers.FrontendController {
++ String adminDashboardPage()
++ String adminAgendamentosPage()
++ String adminDisponibilidadePage()
++ String adminServicosPage()
++ String adminUsuariosPage()
++ String authLoginPage()
++ String authRegisterPage()
++ String landingPage()
++ String clienteAgendamentoPage()
++ String clienteMeusAgendamentosPage()
++ String perfilPage()
++ String clienteServicosPage()
++ String sobrePage()
+}
+
+class br.com.messaging.messaging.Config.SecurityConfig {
+- JwtAuthFilter jwtAuthFilter
++ SecurityFilterChain securityFilterChain(HttpSecurity)
+}
+
+
+class br.com.naildesigner.servico_service.ServicoServiceApplicationTests {
+~ void contextLoads()
+}
+
+class br.com.nailDesigner.auth_service.Models.User {
+- UUID id
+- String username
+- String password
+- String email
+- String phone
+- Role role
++ Collection<? extends GrantedAuthority> getAuthorities()
++ String getPhone()
++ void setPhone(String)
++ String getEmail()
++ void setEmail(String)
++ Role getRole()
++ void setRole(Role)
++ void setId(UUID)
++ void setUsername(String)
++ void setPassword(String)
++ String getPassword()
++ String getUsername()
++ boolean isAccountNonExpired()
++ boolean isAccountNonLocked()
++ boolean isCredentialsNonExpired()
++ boolean isEnabled()
++ UUID getId()
+}
+
+
+class br.com.naildesigner.api_gateway.ApiGatewayApplication {
++ {static} void main(String[])
+}
+
+class br.com.messaging.messaging.MessagingApplication {
++ {static} void main(String[])
+}
+
+class br.com.messaging.messaging.MessagingApplicationTests {
+~ void contextLoads()
+}
+
+class br.com.naildesigner.agendamento_service_AgendeNail.models.BloqueioHorario {
+- Long id
+- LocalDate dataBloqueio
+- LocalTime horaInicio
+- LocalTime horaFim
+- UUID profissionalId
+- String motivo
++ Long getId()
++ void setId(Long)
++ LocalDate getDataBloqueio()
++ void setDataBloqueio(LocalDate)
++ LocalTime getHoraInicio()
++ void setHoraInicio(LocalTime)
++ LocalTime getHoraFim()
++ void setHoraFim(LocalTime)
++ UUID getProfissionalId()
++ void setProfissionalId(UUID)
++ String getMotivo()
++ void setMotivo(String)
+}
+
+
+class br.com.naildesigner.servico_service.services.ServicoService {
+- ServicoRepository servicoRepo
++ ServicoDTO salvar(ServicoDTO)
++ List<ServicoDTO> listarTodos()
++ ServicoDTO buscarPorId(Long)
++ ServicoDTO atualizar(ServicoDTO)
++ void excluir(Long)
+- ServicoDTO toDTO(Servico)
+}
+
+
+class br.com.naildesigner.agendamento_service_AgendeNail.dtos.AgendamentoRequestDTO {
+- Long servicoId
+- UUID profissionalId
+- LocalDateTime dataHoraInicio
+- String observacoes
++ UUID profissionalId()
++ Long servicoId()
++ String observacoes()
++ LocalDateTime dataHoraInicio()
+}
+
+
+class br.com.naildesigner.servico_service.models.Servico {
+- long id
+- String nome
+- String descricao
+- Double preco
+- Integer duracao
+- List<String> imagens
++ long getId()
++ void setId(long)
++ String getNome()
++ void setNome(String)
++ String getDescricao()
++ void setDescricao(String)
++ Double getPreco()
++ void setPreco(Double)
++ Integer getDuracao()
++ void setDuracao(Integer)
++ List<String> getImagens()
++ void setImagens(List<String>)
+}
+
+
+class br.com.nailDesigner.auth_service.AuthServiceApplication {
++ {static} void main(String[])
+}
+
+class br.com.naildesigner.agendamento_service_AgendeNail.clients.EmailRequestDto {
+- List<String> to
+- String subject
+- String body
++ List<String> getTo()
++ String getSubject()
++ String getBody()
++ void setTo(List<String>)
++ void setSubject(String)
++ void setBody(String)
+}
+
+
+class br.com.naildesigner.agendamento_service_AgendeNail.dtos.DisponibilidadeDTO {
+- LocalDate data
+- List<String> horariosDisponiveis
++ LocalDate getData()
++ void setData(LocalDate)
++ List<String> getHorariosDisponiveis()
++ void setHorariosDisponiveis(List<String>)
+}
+
+
+class br.com.messaging.messaging.Controllers.EmailController {
+- EmailService emailService
++ ResponseEntity<String> sendEmail(EmailDto)
+}
+
+
+class br.com.nailDesigner.auth_service.Configs.JwtAuthFilter {
+- JwtService jwtService
+- UserDetailsService userDetailsService
+# void doFilterInternal(HttpServletRequest,HttpServletResponse,FilterChain)
+}
+
+
+interface br.com.nailDesigner.auth.api.Clients.AuthServiceClient {
+~ ResponseEntity<LoginResponse> login(LoginRequest)
+~ ResponseEntity<String> register(RegisterRequest)
+}
+
+class br.com.naildesigner.servico_service.config.JwtAuthFilter {
+- JwtService jwtService
+# void doFilterInternal(HttpServletRequest,HttpServletResponse,FilterChain)
+}
+
+
+class br.com.naildesigner.frontend_web.FrontendWebApplicationTests {
+~ void contextLoads()
+}
+
+class br.com.naildesigner.servico_service.controllers.ServicoController {
+- ServicoService servicoService
++ ServicoDTO salvar(ServicoDTO)
++ List<ServicoDTO> listar()
++ ServicoDTO buscarPorId(Long)
++ ServicoDTO atualizar(Long,ServicoDTO)
++ void excluir(Long)
++ String hello()
+}
+
+
+class br.com.naildesigner.agendamento_service_AgendeNail.controllers.AgendamentoController {
+- AgendamentoService agendamentoService
++ ResponseEntity<AgendamentoDTO> criarAgendamento(AgendamentoRequestDTO,Authentication)
++ ResponseEntity<DisponibilidadeDTO> buscarDisponibilidade(LocalDate,Long,UUID,Authentication)
++ ResponseEntity<List<AgendamentoDTO>> listarMeusAgendamentos(Authentication)
++ ResponseEntity<AgendamentoDTO> cancelarAgendamento(Long,Authentication)
++ ResponseEntity<List<AgendamentoDTO>> listarTodosAgendamentos()
++ ResponseEntity<AgendamentoDTO> buscarAgendamentoPorId(Long)
++ ResponseEntity<AgendamentoDTO> criarAgendamentoPeloAdmin(AgendamentoDTO,Authentication)
++ ResponseEntity<AgendamentoDTO> atualizarAgendamento(Long,AgendamentoDTO,Authentication)
++ ResponseEntity<Void> deletarAgendamento(Long)
+}
+
+
+class br.com.naildesigner.agendamento_service_AgendeNail.controllers.BloqueioHorarioController {
+- BloqueioHorarioService bloqueioHorarioService
++ ResponseEntity<BloqueioHorarioDTO> criarBloqueio(BloqueioHorarioDTO)
++ ResponseEntity<List<BloqueioHorarioDTO>> listarBloqueios()
++ ResponseEntity<BloqueioHorarioDTO> buscarBloqueioPorId(Long)
++ ResponseEntity<BloqueioHorarioDTO> atualizarBloqueio(Long,BloqueioHorarioDTO)
++ ResponseEntity<Void> excluirBloqueio(Long)
++ ResponseEntity<List<BloqueioHorarioDTO>> buscarBloqueiosPorProfissionalEData(UUID,LocalDate)
+}
+
+
+class br.com.naildesigner.agendamento_service_AgendeNail.AgendamentoServiceApplication {
++ {static} void main(String[])
+}
+
+class br.com.naildesigner.api_gateway.config.CorsConfig {
++ CorsWebFilter corsWebFilter()
+}
+
+class br.com.nailDesigner.auth.api.Dtos.LoginRequest {
+- String username
+- String password
++ String password()
++ String username()
+}
+
+
+class br.com.naildesigner.api_gateway.config.GatewaySecurityConfig {
+- String jwtSecretKeyString
++ SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity)
++ ReactiveJwtDecoder reactiveJwtDecoder()
+- SecretKey getSignInKey()
+}
+
+
+class br.com.naildesigner.servico_service.services.JwtService {
+- String SECRET_KEY
++ String extractUsername(String)
++ List<String> extractRoles(String)
++ T extractClaim(String,Function<Claims,T>)
++ boolean isTokenSignatureAndExpirationValid(String)
+- boolean isTokenExpired(String)
+- Date extractExpiration(String)
+- Claims extractAllClaims(String)
+- Key getSignInKey()
+}
+
+
+class br.com.nailDesigner.auth_service.Services.UserDetailsServiceImpl {
+- UserRepository userRepository
++ UserDetails loadUserByUsername(String)
+}
+
+
+class br.com.naildesigner.agendamento_service_AgendeNail.services.AgendamentoService {
+- {static} Logger logger
+- AgendamentoRepository agendamentoRepository
+- BloqueioHorarioService bloqueioHorarioService
+- ServicoClient servicoClient
+- MessagingServiceClient messagingServiceClient
+- JwtService jwtService
+- AuthServiceClient authServiceClient
+- {static} LocalTime HORA_INICIO_TRABALHO
+- {static} LocalTime HORA_FIM_TRABALHO
+- {static} int INTERVALO_SLOT_MINUTOS
++ AgendamentoDTO salvarAgendamento(AgendamentoRequestDTO,Authentication)
++ List<AgendamentoDTO> listarAgendamentosPorCliente(UUID)
++ AgendamentoDTO cancelarAgendamento(Long,Authentication)
++ List<AgendamentoDTO> listarTodosAgendamentos()
++ AgendamentoDTO buscarAgendamentoPorId(Long)
++ AgendamentoDTO atualizarAgendamento(Long,AgendamentoDTO,Authentication)
++ void excluirAgendamento(Long)
++ DisponibilidadeDTO buscarHorariosDisponiveis(LocalDate,Long,UUID,Authentication)
+- String getBearerTokenFromRequest()
+- ServicoDTOForAgendamento buscarServico(Long,String)
+- void validarConflitos(UUID,LocalDateTime,LocalDateTime,Long)
+- List<LocalTime> gerarSlotsPotenciais(int)
++ List<AgendamentoDTO> listarAgendamentosPorCliente(Authentication)
++ AgendamentoDTO salvarAgendamentoPeloAdmin(AgendamentoDTO,Authentication)
++ AgendamentoDTO atualizarAgendamentoPeloAdmin(Long,AgendamentoDTO,Authentication)
+- void enviarEmailDeConfirmacao(Agendamento,ServicoDTOForAgendamento,Authentication)
+}
+
+
+class br.com.nailDesigner.messaging.api.dto.EmailDto {
+- List<String> to
+- String subject
+- String body
++ List<String> to()
++ String subject()
++ String body()
+}
+
+
+class br.com.naildesigner.servico_service.config.ServicoDataInitializer {
+- {static} Logger logger
+- ServicoRepository servicoRepository
++ void run(String)
+}
+
+
+class br.com.naildesigner.eurekaserver.EurekaServerApplication {
++ {static} void main(String[])
+}
+
+class br.com.nailDesigner.auth.api.Dtos.UpdateProfileRequestDto {
+- String username
+- String phone
+- String password
++ String password()
++ String username()
++ String phone()
+}
+
+
+class br.com.nailDesigner.auth_service.Configs.SecurityConfig {
+- JwtAuthFilter jwtAuthFilter
+- UserDetailsService userDetailsService
++ SecurityFilterChain securityFilterChain(HttpSecurity)
++ AuthenticationProvider authenticationProvider()
++ PasswordEncoder passwordEncoder()
++ AuthenticationManager authenticationManager(AuthenticationConfiguration)
+}
+
+
+class br.com.naildesigner.servico_service.ServicoServiceApplication {
++ {static} void main(String[])
+}
+
+class br.com.naildesigner.servico_service.dtos.ServicoDTO {
+- Long id
+- String nome
+- String descricao
+- Double preco
+- Integer duracao
+- List<String> imagens
++ Long getId()
++ void setId(Long)
++ String getNome()
++ void setNome(String)
++ String getDescricao()
++ void setDescricao(String)
++ Double getPreco()
++ void setPreco(Double)
++ Integer getDuracao()
++ void setDuracao(Integer)
++ List<String> getImagens()
++ void setImagens(List<String>)
+}
+
+
+class br.com.nailDesigner.auth_service.Services.JwtService {
+- String SECRET_KEY
+- long jwtExpiration
++ String extractUsername(String)
++ T extractClaim(String,Function<Claims,T>)
++ String generateToken(UserDetails)
++ String generateToken(Map<String,Object>,UserDetails)
++ boolean isTokenValid(String,UserDetails)
+- boolean isTokenExpired(String)
+- Date extractExpiration(String)
+- Claims extractAllClaims(String)
+- Key getSignInKey()
+}
+
+
+interface br.com.naildesigner.agendamento_service_AgendeNail.clients.MessagingServiceClient {
+~ ResponseEntity<String> sendEmail(EmailRequestDto,String)
+}
+
+class br.com.nailDesigner.auth.api.Dtos.UserProfileDto {
+- String username
+- String email
+- String phone
+- List<String> roles
++ String username()
++ String phone()
++ List<String> roles()
++ String email()
+}
+
+
+class br.com.nailDesigner.auth.api.Dtos.LoginResponse {
+- String token
++ String token()
+}
+
+
+enum br.com.naildesigner.agendamento_service_AgendeNail.enums.AgendamentoStatus {
++  PENDENTE
++  CONFIRMADO
++  CONCLUIDO
++  CANCELADO
+}
+
+interface br.com.naildesigner.servico_service.repositories.ServicoRepository {
+}
+class br.com.naildesigner.agendamento_service_AgendeNail.config.SecurityConfig {
+- String jwtSecretKeyString
++ SecurityFilterChain securityFilterChain(HttpSecurity)
++ JwtDecoder jwtDecoder()
+}
+
+
+class br.com.messaging.messaging.Services.JwtService {
+- String SECRET_KEY
++ String extractUsername(String)
++ List<String> extractRoles(String)
++ T extractClaim(String,Function<Claims,T>)
++ boolean isTokenSignatureAndExpirationValid(String)
+- boolean isTokenExpired(String)
+- Date extractExpiration(String)
+- Claims extractAllClaims(String)
+- Key getSignInKey()
+}
+
+
+class br.com.naildesigner.eurekaserver.EurekaServerApplicationTests {
+~ void contextLoads()
+}
+
+interface br.com.naildesigner.agendamento_service_AgendeNail.repositories.AgendamentoRepository {
+~ List<Agendamento> findByProfissionalIdAndDataHoraFimAfterAndDataHoraInicioBeforeAndStatusNot(UUID,LocalDateTime,LocalDateTime,AgendamentoStatus)
+~ List<Agendamento> findByProfissionalIdAndDataHoraFimAfterAndDataHoraInicioBeforeAndIdNotAndStatusNot(UUID,LocalDateTime,LocalDateTime,Long,AgendamentoStatus)
+~ List<Agendamento> findByProfissionalIdAndDataHoraInicioBetweenAndStatusNot(UUID,LocalDateTime,LocalDateTime,AgendamentoStatus)
+~ List<Agendamento> findByClienteId(UUID)
+}
+
+interface br.com.naildesigner.agendamento_service_AgendeNail.repositories.BloqueioHorarioRepository {
+~ List<BloqueioHorario> findByDataBloqueio(LocalDate)
+~ List<BloqueioHorario> findByProfissionalIdAndDataBloqueio(UUID,LocalDate)
+~ List<BloqueioHorario> findByProfissionalIdAndDataBloqueioAndHoraFimAfterAndHoraInicioBefore(UUID,LocalDate,LocalTime,LocalTime)
+~ List<BloqueioHorario> findByProfissionalIdAndDataBloqueioAndHoraFimAfterAndHoraInicioBeforeAndIdIsNot(UUID,LocalDate,LocalTime,LocalTime,Long)
+}
+
+class br.com.naildesigner.agendamento_service_AgendeNail.dtos.BloqueioHorarioDTO {
+- Long id
+- LocalDate dataBloqueio
+- LocalTime horaInicio
+- LocalTime horaFim
+- UUID profissionalId
+- String motivo
++ Long getId()
++ void setId(Long)
++ LocalDate getDataBloqueio()
++ void setDataBloqueio(LocalDate)
++ LocalTime getHoraInicio()
++ void setHoraInicio(LocalTime)
++ LocalTime getHoraFim()
++ void setHoraFim(LocalTime)
++ UUID getProfissionalId()
++ void setProfissionalId(UUID)
++ String getMotivo()
++ void setMotivo(String)
+}
+
+
+class br.com.naildesigner.api_gateway.ApiGatewayApplicationTests {
+~ void contextLoads()
+}
+
+interface br.com.naildesigner.agendamento_service_AgendeNail.clients.ServicoClient {
+~ ResponseEntity<ServicoDTOForAgendamento> getServicoById(Long,String)
+}
+
+class br.com.nailDesigner.auth.api.Dtos.RegisterRequest {
+- String username
+- String email
+- String password
+- String phone
++ String username()
++ String email()
++ String password()
++ String phone()
+}
+
+
+
+
+org.springframework.data.jpa.repository.JpaRepository <|-- br.com.nailDesigner.auth_service.Repositories.UserRepository
+feign.RequestInterceptor <|.. br.com.naildesigner.agendamento_service_AgendeNail.config.FeignClientInterceptor
+br.com.nailDesigner.auth_service.Controllers.AuthController +.. br.com.nailDesigner.auth_service.Controllers.AuthController$LoginRequest
+br.com.nailDesigner.auth_service.Controllers.AuthController +.. br.com.nailDesigner.auth_service.Controllers.AuthController$LoginResponse
+br.com.nailDesigner.auth_service.Controllers.AuthController +.. br.com.nailDesigner.auth_service.Controllers.AuthController$RegisterRequest
+org.springframework.boot.CommandLineRunner <|.. br.com.nailDesigner.auth_service.Configs.DataInitializer
+org.springframework.web.filter.OncePerRequestFilter <|-- br.com.messaging.messaging.Config.JwtAuthFilter
+org.springframework.security.core.userdetails.UserDetails <|.. br.com.nailDesigner.auth_service.Models.User
+org.springframework.web.filter.OncePerRequestFilter <|-- br.com.nailDesigner.auth_service.Configs.JwtAuthFilter
+org.springframework.web.filter.OncePerRequestFilter <|-- br.com.naildesigner.servico_service.config.JwtAuthFilter
+org.springframework.security.core.userdetails.UserDetailsService <|.. br.com.nailDesigner.auth_service.Services.UserDetailsServiceImpl
+org.springframework.boot.CommandLineRunner <|.. br.com.naildesigner.servico_service.config.ServicoDataInitializer
+org.springframework.data.jpa.repository.JpaRepository <|-- br.com.naildesigner.servico_service.repositories.ServicoRepository
+org.springframework.data.jpa.repository.JpaRepository <|-- br.com.naildesigner.agendamento_service_AgendeNail.repositories.AgendamentoRepository
+org.springframework.data.jpa.repository.JpaRepository <|-- br.com.naildesigner.agendamento_service_AgendeNail.repositories.BloqueioHorarioRepository
+@enduml

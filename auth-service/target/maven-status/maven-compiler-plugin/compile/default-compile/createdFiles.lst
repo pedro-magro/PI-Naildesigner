@@ -1,13 +1,10 @@
-br\com\nailDesigner\auth_service\Controllers\AuthController$LoginRequest.class
 br\com\nailDesigner\auth_service\Configs\JwtAuthFilter.class
 br\com\nailDesigner\auth_service\Repositories\UserRepository.class
-br\com\nailDesigner\auth_service\Controllers\AuthController$LoginResponse.class
-br\com\nailDesigner\auth_service\Controllers\AuthController$RegisterRequest.class
 br\com\nailDesigner\auth_service\Configs\SecurityConfig.class
+br\com\nailDesigner\auth_service\Controllers\AuthController$AdminUserResponse.class
 br\com\nailDesigner\auth_service\Services\UserDetailsServiceImpl.class
 br\com\nailDesigner\auth_service\AuthServiceApplication.class
 br\com\nailDesigner\auth_service\Models\User.class
 br\com\nailDesigner\auth_service\Services\JwtService.class
 br\com\nailDesigner\auth_service\Configs\DataInitializer.class
 br\com\nailDesigner\auth_service\Models\Role.class
-br\com\nailDesigner\auth_service\Controllers\AuthController.class

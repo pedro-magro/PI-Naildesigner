@@ -1,0 +1,7 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+Messaging Service,br.com.messaging.messaging.Config,JwtAuthFilter,76,3,12,0,20,1,7,1,1,1
+Messaging Service,br.com.messaging.messaging.Config,SecurityConfig,0,39,0,0,0,9,0,4,0,4
+Messaging Service,br.com.messaging.messaging,MessagingApplication,5,3,0,0,2,1,1,1,1,1
+Messaging Service,br.com.messaging.messaging.Controllers,EmailController,12,3,0,0,2,1,1,1,1,1
+Messaging Service,br.com.messaging.messaging.Services,EmailService,45,33,4,0,13,9,3,2,1,2
+Messaging Service,br.com.messaging.messaging.Services,JwtService,72,3,2,0,18,1,9,1,8,1

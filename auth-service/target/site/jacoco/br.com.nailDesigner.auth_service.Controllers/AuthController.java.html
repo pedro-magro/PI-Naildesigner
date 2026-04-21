@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuthController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Authentication Service</a> &gt; <a href="index.source.html" class="el_package">br.com.nailDesigner.auth_service.Controllers</a> &gt; <span class="el_source">AuthController.java</span></div><h1>AuthController.java</h1><pre class="source lang-java linenums">package br.com.nailDesigner.auth_service.Controllers;
+
+import br.com.nailDesigner.auth.api.Dtos.ProfissionalDto;
+import br.com.nailDesigner.auth.api.Dtos.UpdateProfileRequestDto;
+import br.com.nailDesigner.auth.api.Dtos.UserProfileDto;
+import br.com.nailDesigner.auth_service.Models.Role;
+import br.com.nailDesigner.auth_service.Models.User;
+import br.com.nailDesigner.auth_service.Repositories.UserRepository;
+import br.com.nailDesigner.auth_service.Services.JwtService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.UUID;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
+@RestController
+@RequestMapping(&quot;/auth&quot;)
+<span class="fc" id="L38">public class AuthController {</span>
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private JwtService jwtService;
+
+    // DTOs
+<span class="nc" id="L50">    public record LoginRequest(@NotBlank String username, @NotBlank String password) {}</span>
+<span class="nc" id="L51">    public record LoginResponse(String token) {}</span>
+<span class="nc" id="L52">    public record RegisterRequest(</span>
+        @NotBlank @Size(min = 3) String username,
+        @NotBlank @Email String email,
+        @NotBlank @Size(min = 6) String password,
+        @NotBlank (message = &quot;Telefone é obrigatório&quot;) String phone
+    ) {}
+<span class="nc" id="L58">    public record AdminUserResponse(UUID id, String username, String email, String phone, String role) {}</span>
+
+    private AdminUserResponse toAdminUserResponse(User user) {
+<span class="nc" id="L61">        return new AdminUserResponse(</span>
+<span class="nc" id="L62">            user.getId(),</span>
+<span class="nc" id="L63">            user.getUsername(),</span>
+<span class="nc" id="L64">            user.getEmail(),</span>
+<span class="nc" id="L65">            user.getPhone(),</span>
+<span class="nc" id="L66">            user.getRole().name()</span>
+        );
+    }
+
+ // Dentro da sua classe AuthController.java
+
+    @PostMapping(&quot;/login&quot;)
+    public ResponseEntity&lt;LoginResponse&gt; login(@RequestBody LoginRequest request) {
+        try {
+            // O AuthenticationManager usará seu UserDetailsServiceImpl para encontrar o usuário
+            // por e-mail ou username e validar a senha.
+<span class="nc" id="L77">            Authentication authentication = authenticationManager.authenticate(</span>
+<span class="nc" id="L78">                new UsernamePasswordAuthenticationToken(request.username(), request.password())</span>
+            );
+
+<span class="nc bnc" id="L81" title="All 2 branches missed.">            if (authentication.isAuthenticated()) {</span>
+                // Após a autenticação, o &quot;Principal&quot; é o seu objeto User (UserDetails).
+                // Podemos fazer um cast para pegar os detalhes completos.
+<span class="nc" id="L84">                User authenticatedUser = (User) authentication.getPrincipal();</span>
+
+                // Geramos o token usando o objeto User que já foi carregado e autenticado.
+                // Não precisamos buscar no banco de dados novamente!
+<span class="nc" id="L88">                String token = jwtService.generateToken(authenticatedUser);</span>
+                
+<span class="nc" id="L90">                return ResponseEntity.ok(new LoginResponse(token));</span>
+            } else {
+                // Este caso é raro, mas é bom tê-lo por segurança.
+<span class="nc" id="L93">                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);</span>
+            }
+<span class="nc" id="L95">        } catch (AuthenticationException e) {</span>
+            // Se a autenticação falhar (usuário não encontrado, senha errada),
+            // o authenticationManager lança uma exceção.
+<span class="nc" id="L98">            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();</span>
+        }
+    }
+
+
+    @PostMapping(&quot;/register&quot;)
+    public ResponseEntity&lt;String&gt; register(@Valid @RequestBody RegisterRequest request) {
+<span class="nc bnc" id="L105" title="All 2 branches missed.">        if (userRepository.findByUsername(request.username()).isPresent()) {</span>
+<span class="nc" id="L106">            return ResponseEntity.status(HttpStatus.CONFLICT).body(&quot;Username já existe.&quot;);</span>
+        }
+<span class="nc bnc" id="L108" title="All 2 branches missed.">        if (userRepository.findByEmail(request.email()).isPresent()) {</span>
+<span class="nc" id="L109">            return ResponseEntity.status(HttpStatus.CONFLICT).body(&quot;Email já existe.&quot;);</span>
+        }
+<span class="nc" id="L111">        User newUser = new User();</span>
+<span class="nc" id="L112">        newUser.setUsername(request.username());</span>
+<span class="nc" id="L113">        newUser.setEmail(request.email());</span>
+<span class="nc" id="L114">        newUser.setPassword(passwordEncoder.encode(request.password()));</span>
+<span class="nc" id="L115">        newUser.setRole(Role.USER); // Papel padrão para novos registros</span>
+<span class="nc" id="L116">        newUser.setPhone(request.phone());</span>
+        
+<span class="nc" id="L118">        userRepository.save(newUser);</span>
+<span class="nc" id="L119">        return ResponseEntity.status(HttpStatus.CREATED).body(&quot;Usuário registrado com sucesso!&quot;);</span>
+    }
+    
+ // Dentro da classe AuthController.java
+
+    @GetMapping(&quot;/me&quot;)
+    public ResponseEntity&lt;UserProfileDto&gt; getCurrentUser(Authentication authentication) {
+        // Verifica se a autenticação é válida e se o principal é uma instância do seu UserDetails
+<span class="nc bnc" id="L127" title="All 6 branches missed.">        if (authentication == null || !authentication.isAuthenticated() || !(authentication.getPrincipal() instanceof User)) {</span>
+            // Se não estiver autenticado ou o principal não for do tipo esperado, retorna UNAUTHORIZED
+<span class="nc" id="L129">            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();</span>
+        }
+        
+     // Casting para o seu objeto User
+<span class="nc" id="L133">        User currentUser = (User) authentication.getPrincipal(); </span>
+        
+        // Coleta as roles (autoridades) do usuário autenticado
+        // O método getAuthorities() é do UserDetails (implementado pelo seu User model)
+<span class="nc" id="L137">        List&lt;String&gt; roles = currentUser.getAuthorities().stream()</span>
+<span class="nc" id="L138">                               .map(authority -&gt; authority.getAuthority())</span>
+<span class="nc" id="L139">                               .collect(Collectors.toList());</span>
+
+<span class="nc" id="L141">        UserProfileDto userProfile = new UserProfileDto(</span>
+<span class="nc" id="L142">            currentUser.getUsername(),</span>
+<span class="nc" id="L143">            currentUser.getEmail(),</span>
+<span class="nc" id="L144">            currentUser.getPhone(), </span>
+            roles
+        );
+        
+<span class="nc" id="L148">        return ResponseEntity.ok(userProfile);</span>
+    }
+    
+    // --- CORREÇÃO APLICADA AQUI ---
+    @PutMapping(&quot;/me&quot;)
+    public ResponseEntity&lt;String&gt; updateCurrentUser(Authentication authentication, @RequestBody UpdateProfileRequestDto updateRequest) {
+<span class="nc bnc" id="L154" title="All 6 branches missed.">        if (authentication == null || !authentication.isAuthenticated() || !(authentication.getPrincipal() instanceof User)) {</span>
+<span class="nc" id="L155">            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();</span>
+        }
+        
+<span class="nc" id="L158">        User userAuthenticated = (User) authentication.getPrincipal();</span>
+<span class="nc" id="L159">        UUID userId = userAuthenticated.getId(); // Pega o ID do usuário autenticado</span>
+        
+<span class="nc" id="L161">        User userToUpdate = userRepository.findById(userId)</span>
+<span class="nc" id="L162">            .orElseThrow(() -&gt; new UsernameNotFoundException(&quot;Usuário não encontrado para atualização.&quot;));</span>
+
+<span class="nc" id="L164">        boolean isUpdated = false;</span>
+
+<span class="nc bnc" id="L166" title="All 6 branches missed.">        if (updateRequest.username() != null &amp;&amp; !updateRequest.username().isBlank() &amp;&amp; !updateRequest.username().equals(userToUpdate.getUsername())) {</span>
+<span class="nc bnc" id="L167" title="All 2 branches missed.">            if(userRepository.findByUsername(updateRequest.username()).isPresent()) {</span>
+<span class="nc" id="L168">                return ResponseEntity.status(HttpStatus.CONFLICT).body(&quot;Este nome de usuário já está em uso.&quot;);</span>
+            }
+<span class="nc" id="L170">            userToUpdate.setUsername(updateRequest.username());</span>
+<span class="nc" id="L171">            isUpdated = true;</span>
+        }
+<span class="nc bnc" id="L173" title="All 4 branches missed.">        if (updateRequest.phone() != null &amp;&amp; !updateRequest.phone().isBlank()) {</span>
+<span class="nc" id="L174">            userToUpdate.setPhone(updateRequest.phone());</span>
+<span class="nc" id="L175">            isUpdated = true;</span>
+        }
+<span class="nc bnc" id="L177" title="All 4 branches missed.">        if (updateRequest.password() != null &amp;&amp; !updateRequest.password().isBlank()) {</span>
+<span class="nc" id="L178">            userToUpdate.setPassword(passwordEncoder.encode(updateRequest.password()));</span>
+<span class="nc" id="L179">            isUpdated = true;</span>
+        }
+
+<span class="nc bnc" id="L182" title="All 2 branches missed.">        if (isUpdated) {</span>
+<span class="nc" id="L183">            userRepository.save(userToUpdate);</span>
+<span class="nc" id="L184">            return ResponseEntity.ok(&quot;Perfil atualizado com sucesso!&quot;);</span>
+        }
+
+<span class="nc" id="L187">        return ResponseEntity.ok(&quot;Nenhuma alteração foi fornecida.&quot;);</span>
+    }
+    
+    @GetMapping(&quot;/profissionais&quot;)
+    public ResponseEntity&lt;List&lt;ProfissionalDto&gt;&gt; getProfissionais() {
+        // Busca todos os usuários que têm a role de ADMIN
+<span class="nc" id="L193">        List&lt;User&gt; profissionais = userRepository.findByRole(Role.ADMIN);</span>
+        
+        // Converte a lista de User para uma lista de ProfissionalDto
+<span class="nc" id="L196">        List&lt;ProfissionalDto&gt; dtoList = profissionais.stream()</span>
+<span class="nc" id="L197">            .map(p -&gt; new ProfissionalDto(p.getId(), p.getUsername())) // Usando getUsername() para o nome</span>
+<span class="nc" id="L198">            .collect(Collectors.toList());</span>
+            
+<span class="nc" id="L200">        return ResponseEntity.ok(dtoList);</span>
+    }
+    @GetMapping(&quot;/users/{id}/email&quot;)
+    @PreAuthorize(&quot;hasAuthority('ROLE_ADMIN')&quot;)
+    public ResponseEntity&lt;String&gt; getUserEmailById(@PathVariable UUID id, Authentication authentication) {
+        // A segurança é garantida pela cadeia de filtros que exige um token válido.
+        // Opcional: Adicionar lógica para verificar se o chamador tem permissão (ex: é um ADMIN ou o próprio usuário).
+        
+<span class="nc" id="L208">        return userRepository.findById(id)</span>
+<span class="nc" id="L209">                .map(user -&gt; ResponseEntity.ok(user.getEmail())) // Se encontrar, retorna o email com status 200 OK.</span>
+<span class="nc" id="L210">                .orElse(ResponseEntity.notFound().build());      // Se não encontrar, retorna 404 Not Found.</span>
+    }
+    
+    @GetMapping(&quot;/users&quot;)
+    @PreAuthorize(&quot;hasAuthority('ROLE_ADMIN')&quot;)
+    public ResponseEntity&lt;List&lt;AdminUserResponse&gt;&gt; getAllUsers() {
+<span class="nc" id="L216">        return ResponseEntity.ok(</span>
+<span class="nc" id="L217">            userRepository.findAll().stream().map(this::toAdminUserResponse).toList()</span>
+        );
+    }
+
+    /**
+     * Busca um usuário específico por ID. Apenas para ADMIN.
+     */
+    @GetMapping(&quot;/users/{id}&quot;)
+    @PreAuthorize(&quot;hasAuthority('ROLE_ADMIN')&quot;)
+    public ResponseEntity&lt;AdminUserResponse&gt; getUserById(@PathVariable UUID id) {
+<span class="nc" id="L227">        return userRepository.findById(id)</span>
+<span class="nc" id="L228">            .map(this::toAdminUserResponse)</span>
+<span class="nc" id="L229">            .map(ResponseEntity::ok)</span>
+<span class="nc" id="L230">            .orElse(ResponseEntity.notFound().build());</span>
+    }
+    
+    @PostMapping(&quot;/users&quot;)
+    @PreAuthorize(&quot;hasAuthority('ROLE_ADMIN')&quot;)
+    public ResponseEntity&lt;?&gt; createUser(@Valid @RequestBody User user) {
+<span class="nc bnc" id="L236" title="All 2 branches missed.">        if (userRepository.findByUsername(user.getUsername()).isPresent()) {</span>
+<span class="nc" id="L237">            return ResponseEntity.status(HttpStatus.CONFLICT).body(&quot;Username já existe.&quot;);</span>
+        }
+<span class="nc bnc" id="L239" title="All 2 branches missed.">        if (userRepository.findByEmail(user.getEmail()).isPresent()) {</span>
+<span class="nc" id="L240">            return ResponseEntity.status(HttpStatus.CONFLICT).body(&quot;Email já existe.&quot;);</span>
+        }
+<span class="nc" id="L242">        user.setPassword(passwordEncoder.encode(user.getPassword()));</span>
+<span class="nc" id="L243">        User savedUser = userRepository.save(user);</span>
+<span class="nc" id="L244">        return new ResponseEntity&lt;&gt;(toAdminUserResponse(savedUser), HttpStatus.CREATED);</span>
+    }
+
+    /**
+     * Atualiza um usuário existente. Apenas para ADMIN.
+     */
+    @PutMapping(&quot;/users/{id}&quot;)
+    @PreAuthorize(&quot;hasAuthority('ROLE_ADMIN')&quot;)
+    public ResponseEntity&lt;?&gt; updateUser(@PathVariable UUID id, @RequestBody User userDetails) {
+<span class="nc" id="L253">        return userRepository.findById(id).map(user -&gt; {</span>
+<span class="nc bnc" id="L254" title="All 2 branches missed.">            if (!user.getUsername().equals(userDetails.getUsername())</span>
+<span class="nc bnc" id="L255" title="All 2 branches missed.">                &amp;&amp; userRepository.findByUsername(userDetails.getUsername()).isPresent()) {</span>
+<span class="nc" id="L256">                return ResponseEntity.status(HttpStatus.CONFLICT).body(&quot;Username já existe.&quot;);</span>
+            }
+<span class="nc bnc" id="L258" title="All 2 branches missed.">            if (!user.getEmail().equals(userDetails.getEmail())</span>
+<span class="nc bnc" id="L259" title="All 2 branches missed.">                &amp;&amp; userRepository.findByEmail(userDetails.getEmail()).isPresent()) {</span>
+<span class="nc" id="L260">                return ResponseEntity.status(HttpStatus.CONFLICT).body(&quot;Email já existe.&quot;);</span>
+            }
+<span class="nc" id="L262">            user.setUsername(userDetails.getUsername());</span>
+<span class="nc" id="L263">            user.setEmail(userDetails.getEmail());</span>
+<span class="nc" id="L264">            user.setPhone(userDetails.getPhone());</span>
+<span class="nc" id="L265">            user.setRole(userDetails.getRole());</span>
+            // Apenas atualiza a senha se uma nova for fornecida
+<span class="nc bnc" id="L267" title="All 4 branches missed.">            if (userDetails.getPassword() != null &amp;&amp; !userDetails.getPassword().isEmpty()) {</span>
+<span class="nc" id="L268">                user.setPassword(passwordEncoder.encode(userDetails.getPassword()));</span>
+            }
+<span class="nc" id="L270">            return ResponseEntity.ok(toAdminUserResponse(userRepository.save(user)));</span>
+<span class="nc" id="L271">        }).orElse(ResponseEntity.notFound().build());</span>
+    }
+
+    /**
+     * Deleta um usuário. Apenas para ADMIN.
+     */
+    @DeleteMapping(&quot;/users/{id}&quot;)
+    @PreAuthorize(&quot;hasAuthority('ROLE_ADMIN')&quot;)
+    public ResponseEntity&lt;Void&gt; deleteUser(@PathVariable UUID id) {
+<span class="nc bnc" id="L280" title="All 2 branches missed.">        if (!userRepository.existsById(id)) {</span>
+<span class="nc" id="L281">            return ResponseEntity.notFound().build();</span>
+        }
+<span class="nc" id="L283">        userRepository.deleteById(id);</span>
+<span class="nc" id="L284">        return ResponseEntity.noContent().build();</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

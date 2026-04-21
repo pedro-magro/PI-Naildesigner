@@ -1,0 +1,10 @@
+@startuml
+class br.com.naildesigner.eurekaserver.EurekaServerApplicationTests {
+~ void contextLoads()
+}
+
+class br.com.naildesigner.eurekaserver.EurekaServerApplication {
++ {static} void main(String[])
+}
+
+@enduml

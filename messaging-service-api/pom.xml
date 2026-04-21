@@ -19,13 +19,35 @@
     <artifactId>messaging-service-api</artifactId>
     <name>Messaging Service API</name>
     <description>API (DTOs e interfaces) para o Messaging Service</description>
+    <dependencies>
+        <dependency>
+            <groupId>com.resend</groupId>
+            <artifactId>resend-java</artifactId>
+            <version>LATEST</version>
+        </dependency>
+    </dependencies>
 
-    <!-- 
-        REMOÇÃO: As seções <properties> e <build> foram removidas.
-        A configuração de compilação do Java e outras propriedades são
-        agora gerenciadas centralmente pelo pom.xml pai.
-    -->
-
-    <!-- As dependências, se houver, seriam adicionadas aqui -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

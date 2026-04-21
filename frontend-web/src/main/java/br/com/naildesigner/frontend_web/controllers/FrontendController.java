@@ -80,9 +80,4 @@ public class FrontendController {
         return "clientes/sobre"; // Mapeia para src/main/resources/templates/clientes/sobre.html
     }
 
-    // --- Exemplo de Rota para /perfil se for a mesma para admin e cliente, ou para um perfil genérico ---
-    // Se '/perfil' for uma página única que se adapta, você pode ter um único mapeamento.
-    // Se for um perfil diferente para admin e cliente, e ambos usam a mesma URL,
-    // você pode precisar de lógica de autenticação/autorização para redirecionar.
-    // Por enquanto, o mapeamento acima em 'clientes/perfil' já cobre uma URL /perfil.
 }

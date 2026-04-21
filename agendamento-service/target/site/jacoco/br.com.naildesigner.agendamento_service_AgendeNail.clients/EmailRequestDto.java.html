@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EmailRequestDto.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Agendamento Service</a> &gt; <a href="index.source.html" class="el_package">br.com.naildesigner.agendamento_service_AgendeNail.clients</a> &gt; <span class="el_source">EmailRequestDto.java</span></div><h1>EmailRequestDto.java</h1><pre class="source lang-java linenums">package br.com.naildesigner.agendamento_service_AgendeNail.clients;
+
+import java.util.List;
+
+public class EmailRequestDto {
+
+    private List&lt;String&gt; to; // MODIFICADO para List&lt;String&gt;
+    private String subject;
+    private String body;
+
+<span class="nc" id="L11">    public EmailRequestDto() {</span>
+<span class="nc" id="L12">    }</span>
+
+<span class="nc" id="L14">    public EmailRequestDto(List&lt;String&gt; to, String subject, String body) {</span>
+<span class="nc" id="L15">        this.to = to;</span>
+<span class="nc" id="L16">        this.subject = subject;</span>
+<span class="nc" id="L17">        this.body = body;</span>
+<span class="nc" id="L18">    }</span>
+
+    // Getters
+    public List&lt;String&gt; getTo() {
+<span class="nc" id="L22">        return to;</span>
+    }
+
+    public String getSubject() {
+<span class="nc" id="L26">        return subject;</span>
+    }
+
+    public String getBody() {
+<span class="nc" id="L30">        return body;</span>
+    }
+
+    // Setters
+    public void setTo(List&lt;String&gt; to) {
+<span class="nc" id="L35">        this.to = to;</span>
+<span class="nc" id="L36">    }</span>
+
+    public void setSubject(String subject) {
+<span class="nc" id="L39">        this.subject = subject;</span>
+<span class="nc" id="L40">    }</span>
+
+    public void setBody(String body) {
+<span class="nc" id="L43">        this.body = body;</span>
+<span class="nc" id="L44">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

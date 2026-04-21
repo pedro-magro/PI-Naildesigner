@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BloqueioHorarioController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Agendamento Service</a> &gt; <a href="index.source.html" class="el_package">br.com.naildesigner.agendamento_service_AgendeNail.controllers</a> &gt; <span class="el_source">BloqueioHorarioController.java</span></div><h1>BloqueioHorarioController.java</h1><pre class="source lang-java linenums">package br.com.naildesigner.agendamento_service_AgendeNail.controllers;
+
+import br.com.naildesigner.agendamento_service_AgendeNail.dtos.BloqueioHorarioDTO;
+import br.com.naildesigner.agendamento_service_AgendeNail.services.BloqueioHorarioService; // Importe o NOVO serviço
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.UUID;
+
+@RestController // Indica que esta classe é um controlador REST
+@RequestMapping(&quot;/api/bloqueios&quot;) // Define o caminho base para todos os endpoints deste controlador
+<span class="fc" id="L17">public class BloqueioHorarioController {</span>
+
+    @Autowired
+    private BloqueioHorarioService bloqueioHorarioService; // Injeta o NOVO serviço de bloqueios
+
+    @PostMapping
+    public ResponseEntity&lt;BloqueioHorarioDTO&gt; criarBloqueio(@RequestBody BloqueioHorarioDTO dto) {
+        try {
+<span class="nc" id="L25">            BloqueioHorarioDTO novoBloqueio = bloqueioHorarioService.salvarBloqueioHorario(dto);</span>
+<span class="nc" id="L26">            return new ResponseEntity&lt;&gt;(novoBloqueio, HttpStatus.CREATED); // Retorna 201 Created</span>
+<span class="nc" id="L27">        } catch (IllegalArgumentException e) {</span>
+            // Captura erros de validação como conflito de horários de bloqueio
+<span class="nc" id="L29">            return new ResponseEntity&lt;&gt;(null, HttpStatus.BAD_REQUEST); // Retorna 400 Bad Request</span>
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity&lt;List&lt;BloqueioHorarioDTO&gt;&gt; listarBloqueios() {
+<span class="nc" id="L35">        List&lt;BloqueioHorarioDTO&gt; bloqueios = bloqueioHorarioService.listarTodosBloqueiosHorarios();</span>
+<span class="nc" id="L36">        return new ResponseEntity&lt;&gt;(bloqueios, HttpStatus.OK); // Retorna 200 OK</span>
+    }
+
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;BloqueioHorarioDTO&gt; buscarBloqueioPorId(@PathVariable Long id) {
+        try {
+<span class="nc" id="L42">            BloqueioHorarioDTO bloqueio = bloqueioHorarioService.buscarBloqueioHorarioPorId(id);</span>
+<span class="nc" id="L43">            return new ResponseEntity&lt;&gt;(bloqueio, HttpStatus.OK);</span>
+<span class="nc" id="L44">        } catch (EntityNotFoundException e) {</span>
+<span class="nc" id="L45">            return new ResponseEntity&lt;&gt;(HttpStatus.NOT_FOUND); // Retorna 404 Not Found</span>
+        }
+    }
+
+    @PutMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;BloqueioHorarioDTO&gt; atualizarBloqueio(@PathVariable Long id, @RequestBody BloqueioHorarioDTO dto) {
+        try {
+<span class="nc" id="L52">            BloqueioHorarioDTO bloqueioAtualizado = bloqueioHorarioService.atualizarBloqueioHorario(id, dto);</span>
+<span class="nc" id="L53">            return new ResponseEntity&lt;&gt;(bloqueioAtualizado, HttpStatus.OK);</span>
+<span class="nc" id="L54">        } catch (EntityNotFoundException e) {</span>
+<span class="nc" id="L55">            return new ResponseEntity&lt;&gt;(HttpStatus.NOT_FOUND); // Retorna 404 Not Found</span>
+<span class="nc" id="L56">        } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L57">            return new ResponseEntity&lt;&gt;(null, HttpStatus.BAD_REQUEST); // Retorna 400 Bad Request</span>
+        }
+    }
+
+    @DeleteMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Void&gt; excluirBloqueio(@PathVariable Long id) {
+        try {
+<span class="nc" id="L64">            bloqueioHorarioService.excluirBloqueioHorario(id);</span>
+<span class="nc" id="L65">            return new ResponseEntity&lt;&gt;(HttpStatus.NO_CONTENT); // Retorna 204 No Content</span>
+<span class="nc" id="L66">        } catch (EntityNotFoundException e) {</span>
+<span class="nc" id="L67">            return new ResponseEntity&lt;&gt;(HttpStatus.NOT_FOUND); // Retorna 404 Not Found</span>
+        }
+    }
+
+    // Você pode adicionar outros métodos conforme a necessidade, como buscar bloqueios por profissional e data
+    @GetMapping(&quot;/profissional/{profissionalId}/data/{dataBloqueio}&quot;)
+    public ResponseEntity&lt;List&lt;BloqueioHorarioDTO&gt;&gt; buscarBloqueiosPorProfissionalEData(
+            @PathVariable UUID profissionalId,
+            @PathVariable LocalDate dataBloqueio) {
+<span class="nc" id="L76">        List&lt;BloqueioHorarioDTO&gt; bloqueios = bloqueioHorarioService.buscarBloqueiosPorProfissionalEData(profissionalId, dataBloqueio);</span>
+<span class="nc" id="L77">        return new ResponseEntity&lt;&gt;(bloqueios, HttpStatus.OK);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

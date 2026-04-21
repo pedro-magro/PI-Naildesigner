@@ -1,0 +1,51 @@
+@startuml
+class br.com.messaging.messaging.Config.SecurityConfig {
+- JwtAuthFilter jwtAuthFilter
++ SecurityFilterChain securityFilterChain(HttpSecurity)
+}
+
+
+class br.com.messaging.messaging.Services.JwtService {
+- String SECRET_KEY
++ String extractUsername(String)
++ List<String> extractRoles(String)
++ T extractClaim(String,Function<Claims,T>)
++ boolean isTokenSignatureAndExpirationValid(String)
+- boolean isTokenExpired(String)
+- Date extractExpiration(String)
+- Claims extractAllClaims(String)
+- Key getSignInKey()
+}
+
+
+class br.com.messaging.messaging.Config.JwtAuthFilter {
+- JwtService jwtService
+# void doFilterInternal(HttpServletRequest,HttpServletResponse,FilterChain)
+}
+
+
+class br.com.messaging.messaging.MessagingApplication {
++ {static} void main(String[])
+}
+
+class br.com.messaging.messaging.MessagingApplicationTests {
+~ void contextLoads()
+}
+
+class br.com.messaging.messaging.Controllers.EmailController {
+- EmailService emailService
++ ResponseEntity<String> sendEmail(EmailDto)
+}
+
+
+class br.com.messaging.messaging.Services.EmailService {
+- JavaMailSender mailSender
+- String fromEmail
++ void sendEmail(List<String>,String,String)
+}
+
+
+
+
+org.springframework.web.filter.OncePerRequestFilter <|-- br.com.messaging.messaging.Config.JwtAuthFilter
+@enduml
