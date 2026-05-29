@@ -1,7 +1,6 @@
 package br.com.naildesigner.agendamento_service_AgendeNail.services;
 
 import br.com.naildesigner.agendamento_service_AgendeNail.clients.MessagingServiceClient;
-import br.com.naildesigner.agendamento_service_AgendeNail.clients.EmailRequestDto;
 import br.com.naildesigner.agendamento_service_AgendeNail.clients.ServicoClient;
 import br.com.naildesigner.agendamento_service_AgendeNail.dtos.*;
 import br.com.naildesigner.agendamento_service_AgendeNail.enums.AgendamentoStatus;
@@ -9,11 +8,13 @@ import br.com.naildesigner.agendamento_service_AgendeNail.models.Agendamento;
 import br.com.naildesigner.agendamento_service_AgendeNail.repositories.AgendamentoRepository;
 import br.com.naildesigner.agendamento_service_AgendeNail.clients.ServicoDTOForAgendamento;
 import br.com.naildesigner.agendamento_service_AgendeNail.clients.AuthServiceClient;
+import br.com.nailDesigner.messaging.api.dto.EmailDto;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -43,6 +44,9 @@ public class AgendamentoService {
     @Autowired private MessagingServiceClient messagingServiceClient;
     @Autowired private JwtService jwtService;
     @Autowired private AuthServiceClient authServiceClient;
+    @Autowired private EmailPublisher emailPublisher;
+    @Value("${messaging.email.fallback-enabled:false}")
+    private boolean emailFallbackEnabled;
 
     private static final LocalTime HORA_INICIO_TRABALHO = LocalTime.of(9, 0);
     private static final LocalTime HORA_FIM_TRABALHO = LocalTime.of(18, 0);
@@ -93,13 +97,13 @@ public class AgendamentoService {
                     salvo.getDataHoraInicio().toLocalTime()
                 );
                 
-                EmailRequestDto emailRequest = new EmailRequestDto(destinatarios, assunto, corpo);
+                EmailDto emailRequest = new EmailDto(destinatarios, assunto, corpo);
                 
                 // Constrói o cabeçalho de autorização completo
                 String bearerToken = "Bearer " + token;
 
                 // CHAMA O MÉTODO CORRETO ("sendEmail") com os parâmetros corretos
-                messagingServiceClient.sendEmail(emailRequest, bearerToken);
+                publicarEmailComFallback(emailRequest, token);
 
                 logger.info("Pedido de envio de email para o agendamento ID {}.", salvo.getId());
             } else {
@@ -352,7 +356,6 @@ public class AgendamentoService {
         try {
             // Extrai o token para a chamada ao messaging-service.
             Jwt jwt = (Jwt) authentication.getPrincipal();
-            String bearerToken = "Bearer " + jwt.getTokenValue();
 
             // Busca os emails do cliente e do profissional no auth-service.
             String emailCliente = authServiceClient.getEmailPorId(agendamento.getClienteId()); 
@@ -371,10 +374,10 @@ public class AgendamentoService {
                     agendamento.getDataHoraInicio().toLocalTime()
                 );
                 
-                EmailRequestDto emailRequest = new EmailRequestDto(destinatarios, assunto, corpo);
+                EmailDto emailRequest = new EmailDto(destinatarios, assunto, corpo);
                 
                 // Chama o messaging-service para enviar o email.
-                messagingServiceClient.sendEmail(emailRequest, bearerToken);
+                publicarEmailComFallback(emailRequest, jwt.getTokenValue());
                 logger.info("Pedido de envio de email para o agendamento ID {}.", agendamento.getId());
             }
         } catch (Exception e) {
@@ -383,4 +386,18 @@ public class AgendamentoService {
         }
     }
 
+    private void publicarEmailComFallback(EmailDto emailRequest, String token) {
+        try {
+            emailPublisher.publishEmail(emailRequest);
+        } catch (Exception rabbitException) {
+            logger.error("Falha ao publicar email no RabbitMQ: {}", rabbitException.getMessage());
+            if (!emailFallbackEnabled) {
+                throw rabbitException;
+            }
+
+            String bearerToken = token.startsWith("Bearer ") ? token : "Bearer " + token;
+            messagingServiceClient.sendEmail(emailRequest, bearerToken);
+            logger.warn("Email enviado via fallback Feign.");
+        }
+    }
 }

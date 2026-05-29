@@ -32,6 +32,7 @@
         <module>messaging-service-api</module> <!-- Adicionado -->
         <module>messaging-service</module>
         <module>frontend-web</module>
+        <module>coverage-report</module>
     </modules>
 
     <!-- ================================================================== -->
@@ -88,6 +89,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.14</version>
                 <executions>
                     <execution>
                         <goals>

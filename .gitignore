@@ -6,7 +6,9 @@
 
 # BlueJ files
 *.ctxt
-
+# IDE
+.idea
+.idea/
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
@@ -24,10 +26,15 @@ hs_err_pid*
 replay_pid*
 
 #important files
-
+/target
+target/
 /jacoco
 *.env
 .env
 .env.*
 !.env.example
 *.application.properties
+.codex-work
+.codex
+.codex/
+outputs

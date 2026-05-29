@@ -1,7 +1,6 @@
 package br.com.naildesigner.agendamento_service_AgendeNail.clients;
 
-import br.com.naildesigner.agendamento_service_AgendeNail.clients.EmailRequestDto;
-
+import br.com.nailDesigner.messaging.api.dto.EmailDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,7 +50,7 @@ public interface MessagingServiceClient {
      */
     @PostMapping("/emails/send") // Caminho do endpoint NO messaging-service
     ResponseEntity<String> sendEmail(
-        @RequestBody EmailRequestDto emailRequest,
+        @RequestBody EmailDto emailRequest,
         @RequestHeader("Authorization") String bearerToken
     );
 }

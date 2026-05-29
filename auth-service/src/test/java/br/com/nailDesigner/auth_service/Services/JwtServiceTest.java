@@ -2,6 +2,7 @@ package br.com.nailDesigner.auth_service.Services;
 
 import br.com.nailDesigner.auth_service.Models.Role;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,4 +46,75 @@ public class JwtServiceTest {
         assertTrue(jwtService.isTokenValid(token, user));
 
     }
+
+    @Test
+    public void deveGerarTokenComRolesValidas(){
+        String token = jwtService.generateToken(new HashMap<>(), user);
+
+        Claims claims = jwtService.extractClaim(token, c -> c);
+
+        List<String> roles = claims.get("roles", List.class);
+        assertNotNull(claims);
+        assertTrue(roles.contains("ROLE_USER"));
+    }
+
+    @Test
+    public void deveGerarTokenComUserIdValido(){
+        String token = jwtService.generateToken(new HashMap<>(), user);
+
+        Claims claims = jwtService.extractClaim(token, c -> c);
+        assertEquals(user.getId().toString(), claims.getSubject());
+        assertEquals(user.getId().toString(), String.valueOf(claims.get("userId")));
+    }
+
+    @Test
+    public void devePreservarClaimsExtrasAoGerarToken(){
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("origem", "forntend");
+        extraClaims.put("destino", "pedro");
+
+        String token = jwtService.generateToken(extraClaims, user);
+
+        Claims claims = jwtService.extractClaim(token, c -> c);
+
+        assertEquals("forntend", claims.get("origem"));
+        assertEquals("pedro", claims.get("destino"));
+    }
+
+    @Test
+    public void deveRetornarFalseQuandoTokenForDeOutroUsuario(){
+        String token = jwtService.generateToken(new HashMap<>(), user);
+
+        User otherUser = new User("Paulo", "12345678", "paulo@email.com", "1140028922", Role.USER);
+
+        assertFalse(jwtService.isTokenValid(token, otherUser));
+    }
+
+    @Test
+    public void DeveExtrairIdDoToken(){
+        String token = jwtService.generateToken(new HashMap<>(), user);
+        assertEquals(user.getId().toString(), jwtService.extractUserId(token));
+    }
+
+    @Test
+    public void deveLancarExecaoQuandoTentarExtrairDeTokenInvalido(){
+        String token = "token-invalido";
+
+        assertThrows(Exception.class, () -> jwtService.extractUserId(token));
+    }
+
+    @Test
+    public void deveGerarTokenComSucessoSemClaimsExtra(){
+        String token = jwtService.generateToken(new HashMap<>(), user);
+
+        assertNotNull(token);
+        assertTrue(jwtService.isTokenValid(token, user));
+        assertEquals(user.getId().toString(), jwtService.extractUserId(token));
+    }
+
+
+
+
+
+
 }
