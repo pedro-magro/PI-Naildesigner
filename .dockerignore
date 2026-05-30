@@ -1,0 +1,12 @@
+.git
+.idea
+.codex
+.codex-work
+target
+**/target
+*.log
+*.env
+.env
+.env.*
+!.env.example
+outputs
