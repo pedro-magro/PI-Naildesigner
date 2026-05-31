@@ -7,10 +7,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestClientResponseException;
 
 @Service
 public class EmailService {
@@ -54,6 +56,19 @@ public class EmailService {
             logger.info("Email enviado com sucesso para {} destinatário(s).", to.size());
         } catch (RestClientException e) {
             logger.error("Erro ao enviar email via Resend: {}", e.getMessage());
+            if (isDefinitiveFailure(e)) {
+                throw new IllegalArgumentException("Falha definitiva ao enviar email via Resend.", e);
+            }
+            throw e;
         }
+    }
+
+    public boolean isDefinitiveFailure(RestClientException exception) {
+        if (!(exception instanceof RestClientResponseException responseException)) {
+            return false;
+        }
+
+        HttpStatusCode statusCode = responseException.getStatusCode();
+        return statusCode.is4xxClientError() && statusCode.value() != 429;
     }
 }

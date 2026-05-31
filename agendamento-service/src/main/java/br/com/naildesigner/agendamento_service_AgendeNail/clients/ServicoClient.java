@@ -1,5 +1,6 @@
 package br.com.naildesigner.agendamento_service_AgendeNail.clients;
 
+import br.com.naildesigner.agendamento_service_AgendeNail.config.FeignRetryConfig;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 // Ex: import br.com.naildesigner.agendamento_service_AgendeNail.dtos.ServicoDTOForAgendamento;
 // Ou: import br.com.naildesigner.servico_service_api.dtos.ServicoDTOForAgendamento;
 
-@FeignClient(name = "servico-service") // Usa o nome do serviço no Eureka
+@FeignClient(name = "servico-service", configuration = FeignRetryConfig.class) // Usa o nome do serviço no Eureka
 public interface ServicoClient {
 
     /**
