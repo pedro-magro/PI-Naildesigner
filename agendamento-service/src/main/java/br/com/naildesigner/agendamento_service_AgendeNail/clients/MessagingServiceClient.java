@@ -1,5 +1,6 @@
 package br.com.naildesigner.agendamento_service_AgendeNail.clients;
 
+import br.com.naildesigner.agendamento_service_AgendeNail.config.FeignRetryConfig;
 import br.com.nailDesigner.messaging.api.dto.EmailDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
  * O 'name' em @FeignClient DEVE corresponder ao spring.application.name
  * do messaging-service como registrado no Eureka.
  */
-@FeignClient(name = "messaging-service")
+@FeignClient(name = "messaging-service", configuration = FeignRetryConfig.class)
 public interface MessagingServiceClient {
 
     /**

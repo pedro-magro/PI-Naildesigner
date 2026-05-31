@@ -22,7 +22,7 @@ import reactor.core.publisher.Mono;
 class RateLimitWebFilterTest {
 
     @Test
-    void devePermitirRequisicaoQuandoBucketTemTokens() {
+    void ct101_devePermitirRequisicaoQuandoBucketTemTokens() {
         RateLimitWebFilter filter = new RateLimitWebFilter(
             properties(true, 2, 2, 60, true),
             new RateLimitBucketService(properties(true, 2, 2, 60, true))
@@ -38,7 +38,7 @@ class RateLimitWebFilterTest {
     }
 
     @Test
-    void deveBloquearRequisicaoQuandoBucketEstiverExausto() {
+    void ct102_deveBloquearRequisicaoQuandoBucketEstiverExausto() {
         RateLimitProperties properties = properties(true, 1, 1, 60, true);
         RateLimitWebFilter filter = new RateLimitWebFilter(properties, new RateLimitBucketService(properties));
 
@@ -61,7 +61,7 @@ class RateLimitWebFilterTest {
     }
 
     @Test
-    void deveIgnorarCaminhosPublicosConfigurados() {
+    void ct103_deveIgnorarCaminhosPublicosConfigurados() {
         RateLimitProperties properties = properties(true, 1, 1, 60, true);
         properties.getPublicPaths().add("/api/auth/login");
 
@@ -77,7 +77,7 @@ class RateLimitWebFilterTest {
     }
 
     @Test
-    void deveIgnorarRequisicoesOptions() {
+    void ct104_deveIgnorarRequisicoesOptions() {
         RateLimitProperties properties = properties(true, 1, 1, 60, true);
         RateLimitWebFilter filter = new RateLimitWebFilter(properties, new RateLimitBucketService(properties));
         TrackingWebFilterChain chain = new TrackingWebFilterChain();
@@ -90,7 +90,7 @@ class RateLimitWebFilterTest {
     }
 
     @Test
-    void shouldUseDifferentBucketsPerPathWhenEnabled() {
+    void ct106_deveUsarBucketsDiferentesPorPathQuandoHabilitado() {
         RateLimitProperties properties = properties(true, 1, 1, 60, true);
         RateLimitWebFilter filter = new RateLimitWebFilter(properties, new RateLimitBucketService(properties));
 
@@ -107,7 +107,7 @@ class RateLimitWebFilterTest {
     }
 
     @Test
-    void shouldShareBucketAcrossPathsWhenPathIsNotPartOfKey() {
+    void ct105_deveCompartilharBucketEntrePathsQuandoPathNaoFazParteDaChave() {
         RateLimitProperties properties = properties(true, 1, 1, 60, false);
         RateLimitWebFilter filter = new RateLimitWebFilter(properties, new RateLimitBucketService(properties));
 

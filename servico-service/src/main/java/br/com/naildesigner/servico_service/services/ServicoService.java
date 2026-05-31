@@ -6,6 +6,8 @@ import br.com.naildesigner.servico_service.models.Servico;
 import br.com.naildesigner.servico_service.repositories.ServicoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +19,7 @@ public class ServicoService {
     @Autowired
     private ServicoRepository servicoRepo;
 
+    @CacheEvict(value = {"servicos", "servicoPorId"}, allEntries = true)
     public ResponseServicoDTO salvar(RequestServicoDTO dto) {
         if(validarInput(dto)){
 
@@ -34,16 +37,19 @@ public class ServicoService {
 
     }
 
+    @Cacheable("servicos")
     public List<ResponseServicoDTO> listarTodos() {
         return servicoRepo.findAll().stream().map(this::toDTO).collect(Collectors.toList());
     }
 
+    @Cacheable(value = "servicoPorId", key = "#id")
     public ResponseServicoDTO buscarPorId(Long id) {
         Servico servico = servicoRepo.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Serviço não encontrado com ID: " + id));
         return toDTO(servico);
     }
 
+    @CacheEvict(value = {"servicos", "servicoPorId"}, allEntries = true)
     public ResponseServicoDTO atualizar(Long id, RequestServicoDTO dto) {
         Servico servico = servicoRepo.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Serviço não encontrado com ID: " + id));
@@ -55,6 +61,7 @@ public class ServicoService {
         return toDTO(servicoRepo.save(servico));
     }
 
+    @CacheEvict(value = {"servicos", "servicoPorId"}, allEntries = true)
     public void excluir(Long id) {
         servicoRepo.deleteById(id);
     }

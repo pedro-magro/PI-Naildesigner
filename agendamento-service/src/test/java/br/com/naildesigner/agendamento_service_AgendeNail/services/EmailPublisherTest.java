@@ -23,7 +23,7 @@ class EmailPublisherTest {
     private EmailPublisher emailPublisher;
 
     @Test
-    void devePublicarEmailNaExchangeConfigurada() {
+    void ct95_devePublicarEmailNaExchangeConfigurada() {
         EmailDto emailDto = new EmailDto(List.of("cliente@nail.com"), "Assunto", "Corpo");
         ReflectionTestUtils.setField(emailPublisher, "exchange", "email.exchange");
         ReflectionTestUtils.setField(emailPublisher, "routingKey", "email.routing.key");

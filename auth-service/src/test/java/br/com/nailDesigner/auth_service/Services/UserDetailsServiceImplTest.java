@@ -36,7 +36,7 @@ public class UserDetailsServiceImplTest {
     }
 
     @Test
-    public void deveBuscarUsuarioPorUsername(){
+    public void ct99H_deveBuscarUsuarioPorUsername(){
         when(userRepository.findByUsername("pedro")).thenReturn(Optional.of(user));
 
         UserDetails resultado = userDetailsService.loadUserByUsername("pedro");
@@ -47,7 +47,7 @@ public class UserDetailsServiceImplTest {
     }
 
     @Test
-    public void deveBuscarUsuarioPorIdQuandoIdentificadorForUuid(){
+    public void ct99I_deveBuscarUsuarioPorIdQuandoIdentificadorForUuid(){
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
         UserDetails resultado = userDetailsService.loadUserByUsername(user.getId().toString());
@@ -59,7 +59,7 @@ public class UserDetailsServiceImplTest {
     }
 
     @Test
-    public void deveRemoverEspacosAntesDeBuscarUsuario(){
+    public void ct99J_deveRemoverEspacosAntesDeBuscarUsuario(){
         when(userRepository.findByUsername("pedro")).thenReturn(Optional.of(user));
 
         UserDetails resultado = userDetailsService.loadUserByUsername(" pedro ");
@@ -69,28 +69,28 @@ public class UserDetailsServiceImplTest {
     }
 
     @Test
-    public void deveLancarExcecaoQuandoUsuarioNaoEncontrado(){
+    public void ct99K_deveLancarExcecaoQuandoUsuarioNaoEncontrado(){
         when(userRepository.findByUsername("pedro")).thenReturn(Optional.empty());
 
         assertThrows(Exception.class, () -> userDetailsService.loadUserByUsername("pedro"));
     }
 
     @Test
-    public void deveLancarExcecaoQuandoEmailNaoEncontrado(){
+    public void ct99L_deveLancarExcecaoQuandoEmailNaoEncontrado(){
         when(userRepository.findByEmail("pedro@gmail.com")).thenReturn(Optional.empty());
 
         assertThrows(Exception.class, () -> userDetailsService.loadUserByUsername("pedro@gmail.com"));
     }
 
     @Test
-    public void deveLancarExcecaoQuandoIdNaoEncontrado(){
+    public void ct99M_deveLancarExcecaoQuandoIdNaoEncontrado(){
         when(userRepository.findById(user.getId())).thenReturn(Optional.empty());
 
         assertThrows(Exception.class, () -> userDetailsService.loadUserByUsername(user.getId().toString()));
     }
 
     @Test
-    public void deveRetornarInstanciaDeUser(){
+    public void ct99N_deveRetornarInstanciaDeUser(){
         when(userRepository.findByUsername("pedro")).thenReturn(Optional.of(user));
 
         UserDetails resultado = userDetailsService.loadUserByUsername("pedro");

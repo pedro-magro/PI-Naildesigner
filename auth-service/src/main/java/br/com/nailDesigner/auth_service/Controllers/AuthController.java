@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -150,6 +152,7 @@ public class AuthController {
     
     // --- CORREÇÃO APLICADA AQUI ---
     @PutMapping("/me")
+    @CacheEvict(value = "profissionais", allEntries = true)
     public ResponseEntity<String> updateCurrentUser(Authentication authentication, @RequestBody UpdateProfileRequestDto updateRequest) {
         if (authentication == null || !authentication.isAuthenticated() || !(authentication.getPrincipal() instanceof User)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -188,6 +191,7 @@ public class AuthController {
     }
     
     @GetMapping("/profissionais")
+    @Cacheable("profissionais")
     public ResponseEntity<List<ProfissionalDto>> getProfissionais() {
         // Busca todos os usuários que têm a role de ADMIN
         List<User> profissionais = userRepository.findByRole(Role.ADMIN);
@@ -232,6 +236,7 @@ public class AuthController {
     
     @PostMapping("/users")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @CacheEvict(value = "profissionais", allEntries = true)
     public ResponseEntity<?> createUser(@Valid @RequestBody User user) {
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Username já existe.");
@@ -249,6 +254,7 @@ public class AuthController {
      */
     @PutMapping("/users/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @CacheEvict(value = "profissionais", allEntries = true)
     public ResponseEntity<?> updateUser(@PathVariable UUID id, @RequestBody User userDetails) {
         return userRepository.findById(id).map(user -> {
             if (!user.getUsername().equals(userDetails.getUsername())
@@ -276,6 +282,7 @@ public class AuthController {
      */
     @DeleteMapping("/users/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @CacheEvict(value = "profissionais", allEntries = true)
     public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
         if (!userRepository.existsById(id)) {
             return ResponseEntity.notFound().build();

@@ -119,21 +119,21 @@ public class AgendamentoServiceTest {
     LocalDateTime esperado = LocalDateTime.of(2023, 10, 1, 10, 30);
 
     @Test
-    public void deveCalcularHorarioDeFimCorretamente(){
+    public void ct58_deveCalcularHorarioDeFimCorretamente(){
        LocalDateTime fimAgendamento = agendamentoService.calcularHorarioFim(dataHoraInicio, 30);
 
        assertEquals(esperado, fimAgendamento);
     }
 
     @Test
-    public void deveValidarDisponibilidadeCorretamente(){
+    public void ct71_deveValidarDisponibilidadeCorretamente(){
         when(agendamentoRepository.findByProfissionalIdAndDataHoraFimAfterAndDataHoraInicioBeforeAndIdNotAndStatusNot(profissionalId, inicio, fim, agendamentoId, AgendamentoStatus.CANCELADO)).thenReturn(new ArrayList<>());
         boolean disponivel = agendamentoService.validarDisponibilidade(profissionalId, inicio, fim, agendamentoId);
         assertTrue(disponivel);
     }
 
     @Test
-    public void deveDarFalseQuandoNaoTiverDisponibilidade(){
+    public void ct60_deveDarFalseQuandoNaoTiverDisponibilidade(){
         Agendamento agendamento = new Agendamento();
         agendamento.setProfissionalId(profissionalId);
         agendamento.setDataHoraInicio(inicio);
@@ -151,7 +151,7 @@ public class AgendamentoServiceTest {
     }
 
     @Test
-    void deveUsarFeignComoFallbackQuandoRabbitFalhar() {
+    void ct70_deveUsarFeignComoFallbackQuandoRabbitFalhar() {
         EmailDto emailDto = new EmailDto(List.of("cliente@nail.com"), "Assunto", "Corpo");
         ReflectionTestUtils.setField(agendamentoService, "emailFallbackEnabled", true);
         doThrow(new RuntimeException("rabbit indisponivel")).when(emailPublisher).publishEmail(emailDto);
@@ -162,7 +162,7 @@ public class AgendamentoServiceTest {
     }
 
     @Test
-    void devePropagarErroQuandoFallbackFeignEstiverDesabilitado() {
+    void ct67_devePropagarErroQuandoFallbackFeignEstiverDesabilitado() {
         EmailDto emailDto = new EmailDto(List.of("cliente@nail.com"), "Assunto", "Corpo");
         ReflectionTestUtils.setField(agendamentoService, "emailFallbackEnabled", false);
         doThrow(new RuntimeException("rabbit indisponivel")).when(emailPublisher).publishEmail(emailDto);
@@ -176,7 +176,7 @@ public class AgendamentoServiceTest {
     }
 
     @Test
-    void deveSalvarAgendamentoCorretamente() {
+    void ct68_deveSalvarAgendamentoCorretamente() {
 
 
 
@@ -224,7 +224,7 @@ public class AgendamentoServiceTest {
     }
 
     @Test
-    public void deveLancarExceptionQuandoAgendamentoSobreposto() {
+    public void ct66_deveLancarExceptionQuandoAgendamentoSobreposto() {
         ServicoDTOForAgendamento servico = new ServicoDTOForAgendamento();
         servico.setDuracao(60);
 
@@ -241,7 +241,7 @@ public class AgendamentoServiceTest {
     }
 
     @Test
-    public void deveFalharAoNaoReceberServicoValido(){
+    public void ct61_deveFalharAoNaoReceberServicoValido(){
         when(servicoClient.getServicoById(eq(1L), anyString()))
                 .thenThrow(new RuntimeException("erro"));
 
@@ -251,7 +251,7 @@ public class AgendamentoServiceTest {
     }
 
     @Test
-    public void deveSalvarAgendamentoMesmoQuandoEnvioDeEmailFalha(){
+    public void ct69_deveSalvarAgendamentoMesmoQuandoEnvioDeEmailFalha(){
         ServicoDTOForAgendamento servico = new ServicoDTOForAgendamento();
         servico.setDuracao(60);
         servico.setNome("Manicure");
@@ -282,7 +282,7 @@ public class AgendamentoServiceTest {
     }
 
     @Test
-    public void naoDeveEnviarEmailQuandoNaoHouveremEmailsValidos(){
+    public void ct74_naoDeveEnviarEmailQuandoNaoHouveremEmailsValidos(){
         ServicoDTOForAgendamento servico = new ServicoDTOForAgendamento();
         servico.setDuracao(60);
         servico.setNome("Manicure");
@@ -298,7 +298,7 @@ public class AgendamentoServiceTest {
     }
 
     @Test
-    public void deveCancelarAgendamentoComSucesso() throws IllegalAccessException{
+    public void ct59_deveCancelarAgendamentoComSucesso() throws IllegalAccessException{
 
         when(agendamentoRepository.findById(id)).thenReturn(Optional.of(agendamento));
         when(agendamentoRepository.save(any(Agendamento.class)))
@@ -317,7 +317,7 @@ public class AgendamentoServiceTest {
     }
 
     @Test
-    public void deveLancarExcecaoQuandoAuthenticationForNull(){
+    public void ct65_deveLancarExcecaoQuandoAuthenticationForNull(){
         assertThrows(IllegalAccessException.class, () ->
                 agendamentoService.cancelarAgendamento(1L, null));
 
@@ -326,7 +326,7 @@ public class AgendamentoServiceTest {
     }
 
     @Test
-    public void deveFalharSeJWTForInvalido(){
+    public void ct64_deveFalharSeJWTForInvalido(){
         Authentication authentication = mock(Authentication.class);
         lenient().when(authentication.getDetails()).thenReturn("usuario-invalido");
 
@@ -338,7 +338,7 @@ public class AgendamentoServiceTest {
     }
 
     @Test
-    public void deveFalharQuandoAgendamentoNaoForEncontrado(){
+    public void ct62_deveFalharQuandoAgendamentoNaoForEncontrado(){
         when(agendamentoRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () ->
@@ -348,7 +348,7 @@ public class AgendamentoServiceTest {
     }
 
     @Test
-    public void deveFalharQuandoOutroUsuarioTentarCancelarAgendamentoDeOutroUsuario(){
+    public void ct63_deveFalharQuandoOutroUsuarioTentarCancelarAgendamentoDeOutroUsuario(){
         UUID outroClient = UUID.randomUUID();
 
         Agendamento agendamento = new Agendamento();
@@ -365,7 +365,7 @@ public class AgendamentoServiceTest {
     }
 
     @Test
-    public void naoDeveCancelarAgendamentoQuandoStatusForConcluido(){
+    public void ct73_naoDeveCancelarAgendamentoQuandoStatusForConcluido(){
         Agendamento agendamento = new Agendamento();
         agendamento.setId(1L);
         agendamento.setClienteId(clienteId);
@@ -380,7 +380,7 @@ public class AgendamentoServiceTest {
     }
 
     @Test
-    public void naoDeveCancelarAgendamentoComStatusDeCancelado(){
+    public void ct72_naoDeveCancelarAgendamentoComStatusDeCancelado(){
         Agendamento agendamento = new Agendamento();
         agendamento.setId(1L);
         agendamento.setClienteId(clienteId);
