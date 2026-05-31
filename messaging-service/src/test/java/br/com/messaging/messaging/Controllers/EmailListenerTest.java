@@ -18,7 +18,7 @@ class EmailListenerTest {
     private EmailService emailService;
 
     @Test
-    void deveEncaminharEmailConsumidoParaServicoDeEnvio() {
+    void ct94_deveEncaminharEmailConsumidoParaServicoDeEnvio() {
         EmailListener listener = new EmailListener(emailService);
         EmailDto emailDto = new EmailDto(List.of("cliente@nail.com"), "Assunto", "Corpo");
 

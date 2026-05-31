@@ -15,7 +15,7 @@ class RabbitMQConfigTest {
     private final RabbitMQConfig config = new RabbitMQConfig();
 
     @Test
-    void ct226_deveConfigurarRetryLimitadoParaPublicacaoRabbit() {
+    void ct225_deveConfigurarRetryLimitadoParaPublicacaoRabbit() {
         RetryTemplate retryTemplate = config.rabbitRetryTemplate();
         AtomicInteger tentativas = new AtomicInteger();
 
@@ -28,7 +28,7 @@ class RabbitMQConfigTest {
     }
 
     @Test
-    void ct234_naoDeveRetentarErrorsNaPublicacaoRabbit() {
+    void ct234A_naoDeveRetentarErrorsNaPublicacaoRabbit() {
         RetryTemplate retryTemplate = config.rabbitRetryTemplate();
         AtomicInteger tentativas = new AtomicInteger();
 
@@ -41,7 +41,7 @@ class RabbitMQConfigTest {
     }
 
     @Test
-    void ct226_deveCriarConversorJson() {
+    void ct225A_deveCriarConversorJson() {
         assertNotNull(config.rabbitMessageConverter());
     }
 }

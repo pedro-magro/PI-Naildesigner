@@ -53,14 +53,14 @@ class EmailServiceTest {
     }
 
     @Test
-    void deveIgnorarEnvioSemDestinatarios() {
+    void ct97_deveIgnorarEnvioSemDestinatarios() {
         emailService.sendEmail(List.of(), "Assunto", "Corpo");
 
         verifyNoInteractions(restClient);
     }
 
     @Test
-    void deveEnviarEmailQuandoPayloadForValido() {
+    void ct96_deveEnviarEmailQuandoPayloadForValido() {
         when(restClient.post()).thenReturn(requestBodyUriSpec);
         when(requestBodyUriSpec.uri("/emails")).thenReturn(requestBodySpec);
         when(requestBodySpec.body(any(Object.class))).thenReturn(requestBodySpec);
@@ -115,7 +115,7 @@ class EmailServiceTest {
     }
 
     @Test
-    void ct233_deveConverterFalhaDefinitivaEmIllegalArgumentException() {
+    void ct233A_deveConverterFalhaDefinitivaEmIllegalArgumentException() {
         when(restClient.post()).thenReturn(requestBodyUriSpec);
         when(requestBodyUriSpec.uri("/emails")).thenReturn(requestBodySpec);
         when(requestBodySpec.body(any(Object.class))).thenReturn(requestBodySpec);

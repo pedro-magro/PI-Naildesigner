@@ -11,7 +11,7 @@ import io.github.bucket4j.Bucket;
 class RateLimitBucketServiceTest {
 
     @Test
-    void shouldReuseBucketForSameKeyAndCreateNewBucketForDifferentKeys() {
+    void ct100_deveReutilizarBucketParaMesmaChaveECriarNovoParaChaveDiferente() {
         RateLimitProperties properties = new RateLimitProperties();
         properties.setCapacity(5);
         properties.setRefillTokens(5);

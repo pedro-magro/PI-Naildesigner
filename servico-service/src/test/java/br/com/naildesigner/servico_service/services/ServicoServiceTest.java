@@ -42,20 +42,20 @@ public class ServicoServiceTest {
     }
 
     @Test
-    public void deveRetornarTrueQuandoInputValido(){
+    public void ct115_deveRetornarTrueQuandoInputValido(){
         boolean precoValidado = servicoService.validarInput(dtoValida);
         assertTrue(precoValidado);
 
     }
 
     @Test
-    public void deveRetornarFalseQuandoInputInvalido(){
+    public void ct114_deveRetornarFalseQuandoInputInvalido(){
         boolean precoValidado = servicoService.validarInput(dtoInvalida);
         assertFalse(precoValidado);
     }
 
     @Test
-    public void deveSalvarServicoComSucesso() {
+    public void ct116_deveSalvarServicoComSucesso() {
         when(servicoRepository.save(any(Servico.class)))
                 .thenAnswer(invocation -> {
                     Servico servico = invocation.getArgument(0);
@@ -80,7 +80,7 @@ public class ServicoServiceTest {
     }
 
     @Test
-    public void deveLancarExceptionQuandoInputInvalido(){
+    public void ct112_deveLancarExceptionQuandoInputInvalido(){
         assertThrows(IllegalArgumentException.class, () ->
                 servicoService.salvar(dtoInvalida));
 
@@ -88,7 +88,7 @@ public class ServicoServiceTest {
     }
 
     @Test
-    public void deveListarTodosOsServicos() {
+    public void ct113_deveListarTodosOsServicos() {
         Servico servico = new Servico();
         servico.setId(1L);
         servico.setNome(dtoValida.nome());
@@ -107,7 +107,7 @@ public class ServicoServiceTest {
     }
 
     @Test
-    public void deveBuscarServicoPorIdComSucesso() {
+    public void ct108_deveBuscarServicoPorIdComSucesso() {
         Servico servico = new Servico();
         servico.setId(1L);
         servico.setNome(dtoValida.nome());
@@ -126,7 +126,7 @@ public class ServicoServiceTest {
     }
 
     @Test
-    public void deveLancarExcecaoQuandoServicoNaoForEncontrado() {
+    public void ct111_deveLancarExcecaoQuandoServicoNaoForEncontrado() {
         when(servicoRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () ->
@@ -135,7 +135,7 @@ public class ServicoServiceTest {
     }
 
     @Test
-    public void deveAtualizarServicoComSucesso() {
+    public void ct107_deveAtualizarServicoComSucesso() {
         Servico existente = new Servico();
         existente.setId(1L);
         existente.setNome("Antigo");
@@ -158,7 +158,7 @@ public class ServicoServiceTest {
     }
 
     @Test
-    public void deveLancarExcecaoAoAtualizarServicoInexistente() {
+    public void ct110_deveLancarExcecaoAoAtualizarServicoInexistente() {
         when(servicoRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () ->
@@ -169,7 +169,7 @@ public class ServicoServiceTest {
     }
 
     @Test
-    public void deveExcluirServicoPorId(){
+    public void ct109_deveExcluirServicoPorId(){
         servicoService.excluir(1L);
         verify(servicoRepository).deleteById(1L);
     }

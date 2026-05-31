@@ -52,7 +52,7 @@ public class BloqueioHorarioServiceTest {
     }
 
     @Test
-    public void deveSalvarBloqueioHorarioComSucesso(){
+    public void ct90_deveSalvarBloqueioHorarioComSucesso(){
         when(bloqueioDeHorarioRepository
                 .findByProfissionalIdAndDataBloqueioAndHoraFimAfterAndHoraInicioBefore(
                         profissionalId, data, LocalTime.of(10, 0), LocalTime.of(12, 0)))
@@ -83,7 +83,7 @@ public class BloqueioHorarioServiceTest {
     }
 
     @Test
-    public void naoDeveSalvarQuandoHoraFimForAnteriorHoraInicio(){
+    public void ct93_naoDeveSalvarQuandoHoraFimForAnteriorHoraInicio(){
         dto.setHoraInicio(LocalTime.of(14, 0));
         dto.setHoraFim(LocalTime.of(12, 0));
 
@@ -93,7 +93,7 @@ public class BloqueioHorarioServiceTest {
     }
 
     @Test
-    public void naoDeveSalvarQuandoHaConflitoDeBloqueios(){
+    public void ct92_naoDeveSalvarQuandoHaConflitoDeBloqueios(){
         BloqueioHorario conflito = new BloqueioHorario();
         conflito.setId(99L);
 
@@ -108,7 +108,7 @@ public class BloqueioHorarioServiceTest {
     }
 
     @Test
-    public void devePermitirBloqueioDeDiaInteiro(){
+    public void ct82_devePermitirBloqueioDeDiaInteiro(){
         dto.setHoraInicio(null);
         dto.setHoraFim(null);
 
@@ -126,7 +126,7 @@ public class BloqueioHorarioServiceTest {
     }
 
     @Test
-    public void deveBuscarBloqueioPorIdComSucesso(){
+    public void ct76_deveBuscarBloqueioPorIdComSucesso(){
         BloqueioHorario bloqueio = new BloqueioHorario();
         bloqueio.setId(1L);
         bloqueio.setProfissionalId(profissionalId);
@@ -147,14 +147,14 @@ public class BloqueioHorarioServiceTest {
     }
 
     @Test
-    public void deveLancarExcecaoQuandoBloqueioNaoExistir(){
+    public void ct80_deveLancarExcecaoQuandoBloqueioNaoExistir(){
         when(bloqueioDeHorarioRepository.findById(1L)).thenReturn(Optional.empty());
         assertThrows(EntityNotFoundException.class, () ->
                 bloqueioDeHorarioService.buscarBloqueioHorarioPorId(1L));
     }
 
     @Test
-    public void deveAtualizarBloqueioComSucesso() {
+    public void ct75_deveAtualizarBloqueioComSucesso() {
         BloqueioHorario existente = new BloqueioHorario();
         existente.setId(1L);
         existente.setProfissionalId(profissionalId);
@@ -179,7 +179,7 @@ public class BloqueioHorarioServiceTest {
     }
 
     @Test
-    public void deveFalharAoAtualizarBloqueioInexistente(){
+    public void ct78_deveFalharAoAtualizarBloqueioInexistente(){
         when(bloqueioDeHorarioRepository.findById(1L)).thenReturn(Optional.empty());
         assertThrows(EntityNotFoundException.class, () ->
                 bloqueioDeHorarioService.atualizarBloqueioHorario(1L, dto));
@@ -187,7 +187,7 @@ public class BloqueioHorarioServiceTest {
     }
 
     @Test
-    public void naoDeveAtualizarQuandoHouverConflito(){
+    public void ct91_naoDeveAtualizarQuandoHouverConflito(){
         BloqueioHorario existente = new BloqueioHorario();
         existente.setId(1L);
 
@@ -204,7 +204,7 @@ public class BloqueioHorarioServiceTest {
     }
 
     @Test
-    public void deveDeletarBloqueioComSucesso(){
+    public void ct77_deveDeletarBloqueioComSucesso(){
         when(bloqueioDeHorarioRepository.existsById(1L)).thenReturn(true);
 
         bloqueioDeHorarioService.excluirBloqueioHorario(1L);
@@ -213,7 +213,7 @@ public class BloqueioHorarioServiceTest {
     }
 
     @Test
-    public void deveFalharAoDeletarBloqueioInexistente(){
+    public void ct79_deveFalharAoDeletarBloqueioInexistente(){
         when(bloqueioDeHorarioRepository.existsById(1L)).thenReturn(false);
         assertThrows(EntityNotFoundException.class, () ->
                 bloqueioDeHorarioService.excluirBloqueioHorario(1L));
@@ -221,7 +221,7 @@ public class BloqueioHorarioServiceTest {
     }
 
     @Test
-    public void deveListarTodosBloqueios() {
+    public void ct81_deveListarTodosBloqueios() {
         BloqueioHorario bloqueio = new BloqueioHorario();
         bloqueio.setId(1L);
         bloqueio.setProfissionalId(profissionalId);
@@ -236,7 +236,7 @@ public class BloqueioHorarioServiceTest {
     }
 
     @Test
-    public void deveRetornarTrueQuandoNaoHouverBloqueiosNoDia() {
+    public void ct89_deveRetornarTrueQuandoNaoHouverBloqueiosNoDia() {
         LocalDateTime inicioAgendamento = LocalDateTime.of(2026, 5, 10, 10, 0);
         LocalDateTime fimAgendamento = LocalDateTime.of(2026, 5, 10, 11, 0);
 
@@ -251,7 +251,7 @@ public class BloqueioHorarioServiceTest {
     }
 
     @Test
-    public void deveRetornarFalseQuandoHouverSobreposicaoParcial() {
+    public void ct86_deveRetornarFalseQuandoHouverSobreposicaoParcial() {
         BloqueioHorario bloqueio = new BloqueioHorario();
         bloqueio.setProfissionalId(profissionalId);
         bloqueio.setDataBloqueio(data);
@@ -272,7 +272,7 @@ public class BloqueioHorarioServiceTest {
     }
 
     @Test
-    public void deveRetornarFalseQuandoAgendamentoEstiverContidoNoBloqueio() {
+    public void ct83_deveRetornarFalseQuandoAgendamentoEstiverContidoNoBloqueio() {
         BloqueioHorario bloqueio = new BloqueioHorario();
         bloqueio.setProfissionalId(profissionalId);
         bloqueio.setDataBloqueio(data);
@@ -293,7 +293,7 @@ public class BloqueioHorarioServiceTest {
     }
 
     @Test
-    public void deveRetornarFalseQuandoBloqueioEstiverContidoNoAgendamento() {
+    public void ct84_deveRetornarFalseQuandoBloqueioEstiverContidoNoAgendamento() {
         BloqueioHorario bloqueio = new BloqueioHorario();
         bloqueio.setProfissionalId(profissionalId);
         bloqueio.setDataBloqueio(data);
@@ -314,7 +314,7 @@ public class BloqueioHorarioServiceTest {
     }
 
     @Test
-    public void deveRetornarTrueQuandoAgendamentoComecarNoFimDoBloqueio() {
+    public void ct87_deveRetornarTrueQuandoAgendamentoComecarNoFimDoBloqueio() {
         BloqueioHorario bloqueio = new BloqueioHorario();
         bloqueio.setProfissionalId(profissionalId);
         bloqueio.setDataBloqueio(data);
@@ -335,7 +335,7 @@ public class BloqueioHorarioServiceTest {
     }
 
     @Test
-    public void deveRetornarTrueQuandoAgendamentoTerminarNoInicioDoBloqueio() {
+    public void ct88_deveRetornarTrueQuandoAgendamentoTerminarNoInicioDoBloqueio() {
         BloqueioHorario bloqueio = new BloqueioHorario();
         bloqueio.setProfissionalId(profissionalId);
         bloqueio.setDataBloqueio(data);
@@ -356,7 +356,7 @@ public class BloqueioHorarioServiceTest {
     }
 
     @Test
-    public void deveRetornarFalseQuandoHouverBloqueioDeDiaInteiro() {
+    public void ct85_deveRetornarFalseQuandoHouverBloqueioDeDiaInteiro() {
         BloqueioHorario bloqueio = new BloqueioHorario();
         bloqueio.setProfissionalId(profissionalId);
         bloqueio.setDataBloqueio(data);

@@ -37,7 +37,7 @@ public class JwtServiceTest {
 
 
     @Test
-    public void deveGerarTokenValido(){
+    public void ct99_deveGerarTokenValido(){
 
         String token = jwtService.generateToken(new HashMap<>(), user);
 
@@ -48,7 +48,7 @@ public class JwtServiceTest {
     }
 
     @Test
-    public void deveGerarTokenComRolesValidas(){
+    public void ct99A_deveGerarTokenComRolesValidas(){
         String token = jwtService.generateToken(new HashMap<>(), user);
 
         Claims claims = jwtService.extractClaim(token, c -> c);
@@ -59,7 +59,7 @@ public class JwtServiceTest {
     }
 
     @Test
-    public void deveGerarTokenComUserIdValido(){
+    public void ct99B_deveGerarTokenComUserIdValido(){
         String token = jwtService.generateToken(new HashMap<>(), user);
 
         Claims claims = jwtService.extractClaim(token, c -> c);
@@ -68,7 +68,7 @@ public class JwtServiceTest {
     }
 
     @Test
-    public void devePreservarClaimsExtrasAoGerarToken(){
+    public void ct99C_devePreservarClaimsExtrasAoGerarToken(){
         Map<String, Object> extraClaims = new HashMap<>();
         extraClaims.put("origem", "forntend");
         extraClaims.put("destino", "pedro");
@@ -82,7 +82,7 @@ public class JwtServiceTest {
     }
 
     @Test
-    public void deveRetornarFalseQuandoTokenForDeOutroUsuario(){
+    public void ct99D_deveRetornarFalseQuandoTokenForDeOutroUsuario(){
         String token = jwtService.generateToken(new HashMap<>(), user);
 
         User otherUser = new User("Paulo", "12345678", "paulo@email.com", "1140028922", Role.USER);
@@ -91,20 +91,20 @@ public class JwtServiceTest {
     }
 
     @Test
-    public void DeveExtrairIdDoToken(){
+    public void ct99E_deveExtrairIdDoToken(){
         String token = jwtService.generateToken(new HashMap<>(), user);
         assertEquals(user.getId().toString(), jwtService.extractUserId(token));
     }
 
     @Test
-    public void deveLancarExecaoQuandoTentarExtrairDeTokenInvalido(){
+    public void ct99F_deveLancarExecaoQuandoTentarExtrairDeTokenInvalido(){
         String token = "token-invalido";
 
         assertThrows(Exception.class, () -> jwtService.extractUserId(token));
     }
 
     @Test
-    public void deveGerarTokenComSucessoSemClaimsExtra(){
+    public void ct99G_deveGerarTokenComSucessoSemClaimsExtra(){
         String token = jwtService.generateToken(new HashMap<>(), user);
 
         assertNotNull(token);

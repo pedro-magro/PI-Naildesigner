@@ -29,7 +29,7 @@ class RabbitMQConfigTest {
     }
 
     @Test
-    void ct229_deveConfigurarRetryLimitadoParaListenerRabbit() {
+    void ct228_deveConfigurarRetryLimitadoParaListenerRabbit() {
         RetryTemplate retryTemplate = config.listenerRetryTemplate();
         AtomicInteger tentativas = new AtomicInteger();
 
@@ -53,7 +53,7 @@ class RabbitMQConfigTest {
     }
 
     @Test
-    void ct234_naoDeveRetentarErrorsNoListenerRabbit() {
+    void ct234B_naoDeveRetentarErrorsNoListenerRabbit() {
         RetryTemplate retryTemplate = config.listenerRetryTemplate();
         AtomicInteger tentativas = new AtomicInteger();
 
@@ -66,7 +66,7 @@ class RabbitMQConfigTest {
     }
 
     @Test
-    void ct229_deveCriarInterceptorDeRetryDoListener() {
+    void ct228A_deveCriarInterceptorDeRetryDoListener() {
         assertNotNull(config.rabbitRetryInterceptor());
     }
 }
