@@ -1,0 +1,175 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: naildesigner-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-naildesigner}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-naildesigner}
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+      AUTH_DB_NAME: ${AUTH_DB_NAME:-auth_db}
+      SERVICO_DB_NAME: ${SERVICO_DB_NAME:-servico_db}
+      AGENDAMENTO_DB_NAME: ${AGENDAMENTO_DB_NAME:-agendamento_db}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-naildesigner} -d ${POSTGRES_DB:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: naildesigner-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME:-myqueue}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-rabbitqueue}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  eureka-server:
+    build:
+      context: .
+      dockerfile: eureka-server/Dockerfile
+    container_name: naildesigner-eureka
+    ports:
+      - "8761:8761"
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8761/actuator/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: auth-service/Dockerfile
+    container_name: naildesigner-auth
+    environment:
+      AUTH_DB_URL: jdbc:postgresql://postgres:5432/${AUTH_DB_NAME:-auth_db}
+      AUTH_DB_USERNAME: ${AUTH_DB_USERNAME:-naildesigner}
+      AUTH_DB_PASSWORD: ${AUTH_DB_PASSWORD:-naildesigner}
+      JWT_SECRET: ${JWT_SECRET}
+      APP_SEED_ENABLED: "false"
+      EUREKA_DEFAULT_ZONE: http://eureka-server:8761/eureka/
+    ports:
+      - "8081:8081"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+
+  messaging-service:
+    build:
+      context: .
+      dockerfile: messaging-service/Dockerfile
+    container_name: naildesigner-messaging
+    environment:
+      JWT_SECRET: ${JWT_SECRET}
+      EUREKA_DEFAULT_ZONE: http://eureka-server:8761/eureka/
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: ${RABBITMQ_USERNAME:-myqueue}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-rabbitqueue}
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+      RESEND_BASE_URL: ${RESEND_BASE_URL:-https://api.resend.com}
+      RESEND_FROM_EMAIL: ${RESEND_FROM_EMAIL:-onboarding@resend.dev}
+    ports:
+      - "8082:8082"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+
+  agendamento-service:
+    build:
+      context: .
+      dockerfile: agendamento-service/Dockerfile
+    container_name: naildesigner-agendamento
+    environment:
+      AGENDAMENTO_DB_URL: jdbc:postgresql://postgres:5432/${AGENDAMENTO_DB_NAME:-agendamento_db}
+      AGENDAMENTO_DB_USERNAME: ${AGENDAMENTO_DB_USERNAME:-naildesigner}
+      AGENDAMENTO_DB_PASSWORD: ${AGENDAMENTO_DB_PASSWORD:-naildesigner}
+      JWT_SECRET: ${JWT_SECRET}
+      EUREKA_DEFAULT_ZONE: http://eureka-server:8761/eureka/
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: ${RABBITMQ_USERNAME:-myqueue}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-rabbitqueue}
+    ports:
+      - "8083:8083"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+
+  servico-service:
+    build:
+      context: .
+      dockerfile: servico-service/Dockerfile
+    container_name: naildesigner-servico
+    environment:
+      SERVICO_DB_URL: jdbc:postgresql://postgres:5432/${SERVICO_DB_NAME:-servico_db}
+      SERVICO_DB_USERNAME: ${SERVICO_DB_USERNAME:-naildesigner}
+      SERVICO_DB_PASSWORD: ${SERVICO_DB_PASSWORD:-naildesigner}
+      JWT_SECRET: ${JWT_SECRET}
+      EUREKA_DEFAULT_ZONE: http://eureka-server:8761/eureka/
+    ports:
+      - "8084:8084"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: api-gateway/Dockerfile
+    container_name: naildesigner-gateway
+    environment:
+      JWT_SECRET: ${JWT_SECRET}
+      EUREKA_DEFAULT_ZONE: http://eureka-server:8761/eureka/
+    ports:
+      - "8080:8080"
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      auth-service:
+        condition: service_started
+      agendamento-service:
+        condition: service_started
+      servico-service:
+        condition: service_started
+      messaging-service:
+        condition: service_started
+
+  frontend-web:
+    build:
+      context: .
+      dockerfile: frontend-web/Dockerfile
+    container_name: naildesigner-frontend
+    ports:
+      - "8085:8085"
+    depends_on:
+      api-gateway:
+        condition: service_started
+
+volumes:
+  postgres_data:
+  rabbitmq_data:

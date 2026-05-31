@@ -1,0 +1,3 @@
+-- O agendamento-service nao possui DataInitializer no codigo atual.
+-- Os dados de agendamento/bloqueio devem ser criados pelo fluxo da aplicacao
+-- para evitar seeds com datas vencidas.
